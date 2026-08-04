@@ -15,6 +15,8 @@ namespace Team_8_Final_Project
 
         public DbSet<Loan> Loans { get; set; }
 
+        public DbSet<Reservation> Reservations { get; set; }
+
         // 2 - connect to database
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)

@@ -2,6 +2,10 @@
 {
     public class Reservation
     {
-
+        public int ReservationId { get; set; }
+        public int BookCopyId { get; set; }
+        public int UserId { get; set; }
+        public string ReservationDate { get; set; }
+        public string ReservationStatus { get; set; }
     }
 }

@@ -1,8 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Team_8_Final_Project.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Team_8_Final_Project
 {
-    public class ProjectContext
+    public class ProjectContext : DbContext
     {
         // 1 - register models
 

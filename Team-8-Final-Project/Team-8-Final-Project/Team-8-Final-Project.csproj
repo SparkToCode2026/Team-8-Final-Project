@@ -8,9 +8,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Repos\**" />
+    <Compile Remove="Services\**" />
+    <Content Remove="Repos\**" />
+    <Content Remove="Services\**" />
+    <EmbeddedResource Remove="Repos\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <None Remove="Repos\**" />
+    <None Remove="Services\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="Services\" />
-    <Folder Include="Repos\" />
+    <Folder Include="Models\" />
   </ItemGroup>
 
   <ItemGroup>

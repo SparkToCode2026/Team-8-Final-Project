@@ -10,9 +10,9 @@ namespace Team_8_Final_Project
     {
         // 1 - register models
 
-        // public DbSet<Employee> employees { get; set; } // change name to model name
-        // public DbSet<Department> departments { get; set; } // change name to model name
-
+        
+        public DbSet<Book> books { get; set; }
+        public DbSet<BookCopy> bookCopies { get; set; }
 
         // 2 - connect to database
 

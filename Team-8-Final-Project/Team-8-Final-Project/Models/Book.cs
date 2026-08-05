@@ -15,6 +15,9 @@ namespace Team_8_Final_Project.Models
         public int Year { get; set; }
 
 
+        public List<BookCopy> bookCopies { get; set; }
+
+
 
 
     }

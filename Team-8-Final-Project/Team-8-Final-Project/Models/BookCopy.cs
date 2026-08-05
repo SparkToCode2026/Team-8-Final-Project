@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Team_8_Final_Project.Models
 {
@@ -20,10 +22,16 @@ namespace Team_8_Final_Project.Models
     public class BookCopy
     {
         [Key]
+        [JsonIgnore]
         public int BookCopyId { get; set; }
         public string Barcode { get; set; }
         public ConditionStatus Condition { get; set; }
         public AvailabilityStatus AvailabilityStatus { get; set; }
+
+
+        [ForeignKey("book")]
+        public int BookId { get; set; }
+        public Book book { get; set; }
 
     }
 }

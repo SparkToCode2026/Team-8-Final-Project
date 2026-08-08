@@ -3,17 +3,25 @@ using System.Text.Json.Serialization;
 
 namespace Team_8_Final_Project.Models
 {
+    public enum UserRole
+    {
+        Member,
+        Librarian,
+        Admin
+    }
     public class User
     {
         [Key]
         [JsonIgnore]
         public int UserID { get; set; }
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-        public string UserEmail { get; set; } = string.Empty;
-        public string UserPhoneNo { get; set; } = string.Empty;
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string UserEmail { get; set; }
+        public string UserPhoneNo { get; set; }
         public DateTime DOB { get; set; }
-        public string Role { get; set; } = "Member";
-        public string PasswordHash { get; set; } = string.Empty;
+        public UserRole Role { get; set; } = UserRole.Member;
+        public string PasswordHash { get; set; }
+
+
     }
 }

@@ -10,9 +10,7 @@ namespace Team_8_Final_Project
     {
         // 1 - register models
 
-        // public DbSet<Employee> employees { get; set; } // change name to model name
-        // public DbSet<Department> departments { get; set; } // change name to model name
-        public DbSet<User> Users { get; set; }
+        public DbSet<User> users { get; set; }
         public DbSet<Author> authors { get; set; }
 
 
@@ -21,11 +19,12 @@ namespace Team_8_Final_Project
 
 
 
-        public DbSet<Loan> Loans { get; set; }
-
-        public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<Loan> loans { get; set; }
+        public DbSet<Reservation> reservations { get; set; }
         
-      
+        
+        public DbSet<Shelf> shelves { get; set; }
+        public DbSet<Event> events { get; set; }
 
         // 2 - connect to database
 

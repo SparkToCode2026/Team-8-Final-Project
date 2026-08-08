@@ -1,4 +1,6 @@
-﻿namespace Team_8_Final_Project.Models
+﻿using System.Text.Json.Serialization;
+
+namespace Team_8_Final_Project.Models
 {
     public enum LoanStatus
     {
@@ -9,6 +11,8 @@
 
     public class Loan
     {
+        [Key]
+        [JsonIgnore]
         public int LoanId { get; set; }
         public string LoanStartDate { get; set; }
         public string LoanEndDate { get; set; }
@@ -21,7 +25,8 @@
         public BookCopy BookCopy { get; set; }
 
         [ForeignKey("UserId")]
-        public int UserId { get; set; }
+        public int UserID { get; set; }
+        public User user { get; set; }
 
     }
 }

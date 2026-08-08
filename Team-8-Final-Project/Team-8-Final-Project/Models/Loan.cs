@@ -19,7 +19,7 @@ namespace Team_8_Final_Project.Models
         public string LoanStartDate { get; set; }
         public string LoanEndDate { get; set; }
         public string LoanReturnDate { get; set; }
-        public string LoanStatus { get; set; }
+        public LoanStatus  loanStatus { get; set; }  
 
 
         [ForeignKey("BookCopyId")]

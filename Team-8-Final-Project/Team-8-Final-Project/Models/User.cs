@@ -25,5 +25,7 @@ namespace Team_8_Final_Project.Models
 
         public List<Loan> Loans { get; set; }
 
+        public List<Reservation> Reservations { get; set; }
+
     }
 }

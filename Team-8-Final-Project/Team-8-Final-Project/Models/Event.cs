@@ -12,5 +12,7 @@ public class Event
     public DateTime EventDate{ get; set; }
     public string EventLocation { get; set; }
     public string EventDescription { get; set; }
+    
 
+    public List<User> Users { get; set; }
 }

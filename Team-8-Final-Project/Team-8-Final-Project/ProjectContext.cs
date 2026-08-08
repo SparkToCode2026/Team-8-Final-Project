@@ -13,6 +13,12 @@ namespace Team_8_Final_Project
         // public DbSet<Employee> employees { get; set; } // change name to model name
         // public DbSet<Department> departments { get; set; } // change name to model name
 
+        public DbSet<Loan> Loans { get; set; }
+
+        public DbSet<Reservation> Reservations { get; set; }
+        
+        public DbSet<Book> books { get; set; }
+        public DbSet<BookCopy> bookCopies { get; set; }
 
         // 2 - connect to database
 

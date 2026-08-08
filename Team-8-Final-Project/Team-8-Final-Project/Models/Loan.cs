@@ -22,11 +22,11 @@ namespace Team_8_Final_Project.Models
         public LoanStatus  loanStatus { get; set; }  
 
 
-        [ForeignKey("BookCopyId")]
+        [ForeignKey("bookCopy")]
         public int BookCopyId { get; set; }
-        public BookCopy BookCopy { get; set; }
+        public BookCopy bookCopy { get; set; }
 
-        [ForeignKey("UserId")]
+        [ForeignKey("user")]
         public int UserID { get; set; }
         public User user { get; set; }
 

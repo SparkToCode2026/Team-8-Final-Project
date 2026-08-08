@@ -13,5 +13,8 @@ namespace Team_8_Final_Project.Models
         public string Email { get; set; }
         public string Biography { get; set; }
         public string Nationality { get; set; }
+
+
+        public List<Book> Books { get; set; }
     }
 }

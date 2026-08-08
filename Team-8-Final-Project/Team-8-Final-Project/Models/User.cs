@@ -23,5 +23,7 @@ namespace Team_8_Final_Project.Models
         public string PasswordHash { get; set; }
 
 
+        public List<Loan> Loans { get; set; }
+
     }
 }

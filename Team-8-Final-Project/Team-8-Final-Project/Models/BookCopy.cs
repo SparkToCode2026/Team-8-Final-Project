@@ -35,5 +35,9 @@ namespace Team_8_Final_Project.Models
 
         public List<Loan> loans { get; set; }
 
+        [ForeignKey("shelf")]
+        public int ShelfId { get; set; }
+        public Shelf shelf { get; set; }
+
     }
 }

@@ -12,5 +12,5 @@ public class Shelf
     public string Section { get; set; }
     public int FloorNumber { get; set; }
 
-
+    public List<BookCopy> bookCopies { get; set; }
 }

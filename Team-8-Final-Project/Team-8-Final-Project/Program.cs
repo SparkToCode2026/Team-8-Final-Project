@@ -10,7 +10,8 @@ namespace Team_8_Final_Project
             // Add services to the container.
 
             builder.Services.AddControllers();
-           
+            builder.Services.AddDbContext<ProjectContext>();
+
 
             var app = builder.Build();
 

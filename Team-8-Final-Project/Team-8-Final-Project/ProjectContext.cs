@@ -16,16 +16,21 @@ namespace Team_8_Final_Project
         public DbSet<Loan> Loans { get; set; }
 
         public DbSet<Reservation> Reservations { get; set; }
-        
+
         public DbSet<Book> books { get; set; }
+
         public DbSet<BookCopy> bookCopies { get; set; }
+
+        public DbSet<Fine> Fines { get; set; }
+
+        public DbSet<Review> Reviews { get; set; }
 
         // 2 - connect to database
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             options.UseSqlServer(
-            "Server=;Database=CompanyProjectDB;Trusted_Connection=True;TrustServerCertificate=True;" // change server name to your server name when testing 
+            "Server=Server=DESKTOP-8CRFLQK\\\\SQLEXPRESS;"
             );
         }
     }

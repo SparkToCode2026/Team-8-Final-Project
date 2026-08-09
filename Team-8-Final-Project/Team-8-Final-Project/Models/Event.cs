@@ -6,6 +6,5 @@ public class Event
     public string EventName { get; set; }
     public DateTime EventDAte{ get; set; }
     public string EventLocation { get; set; }
-    public string EventDescription { get; set;
-
-}
+    public string EventDescription { get; set; }
+    }

@@ -14,20 +14,17 @@ namespace Team_8_Final_Project
         public DbSet<Author> authors { get; set; }
 
 
-        public DbSet<Reservation> Reservations { get; set; }
-
         public DbSet<Book> books { get; set; }
-
         public DbSet<BookCopy> bookCopies { get; set; }
-
-        public DbSet<Fine> Fines { get; set; }
-
-        public DbSet<Review> Reviews { get; set; }
 
 
         public DbSet<Loan> loans { get; set; }
         public DbSet<Reservation> reservations { get; set; }
-        
+
+
+        public DbSet<Fine> Fines { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+     
         
         public DbSet<Shelf> shelves { get; set; }
         public DbSet<Event> events { get; set; }

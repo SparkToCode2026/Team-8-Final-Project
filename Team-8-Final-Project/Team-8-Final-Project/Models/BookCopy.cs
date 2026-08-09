@@ -33,5 +33,11 @@ namespace Team_8_Final_Project.Models
         public int BookId { get; set; }
         public Book book { get; set; }
 
+        public List<Loan> loans { get; set; }
+
+        [ForeignKey("shelf")]
+        public int ShelfId { get; set; }
+        public Shelf shelf { get; set; }
+
     }
 }

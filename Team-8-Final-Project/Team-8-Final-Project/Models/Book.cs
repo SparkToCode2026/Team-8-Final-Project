@@ -17,6 +17,7 @@ namespace Team_8_Final_Project.Models
 
         public List<BookCopy> bookCopies { get; set; }
 
+        public List<Author> Authors { get; set; }
 
 
 

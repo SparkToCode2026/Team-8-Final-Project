@@ -15,7 +15,7 @@ namespace Team_8_Final_Project.Models
         [Key]
         [JsonIgnore]
         public int ReservationId { get; set; }
-        public string ReservationDate { get; set; }
+        public DateTime ReservationDate { get; set; }
         public ReservationStatus status { get; set; }
 
         [ForeignKey("bookCopy")]

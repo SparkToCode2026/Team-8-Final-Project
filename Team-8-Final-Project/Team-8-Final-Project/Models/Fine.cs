@@ -25,8 +25,8 @@ namespace Team_8_Final_Project.Models
         public DateTime FineIssueDate { get; set; }
 
 
-        [ForeignKey("LoanId")]
-        public int LoanID { get; set; }
+        [ForeignKey("loan")]
+        public int LoanId { get; set; }
         public Loan loan { get; set; }
     }
 }

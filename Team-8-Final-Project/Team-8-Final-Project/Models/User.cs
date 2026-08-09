@@ -27,5 +27,6 @@ namespace Team_8_Final_Project.Models
 
         public List<Reservation> Reservations { get; set; }
 
+        public List<Event> Events { get; set; }
     }
 }

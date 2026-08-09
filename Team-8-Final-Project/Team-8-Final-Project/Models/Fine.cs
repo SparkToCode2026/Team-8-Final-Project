@@ -4,27 +4,29 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Team_8_Final_Project.Models
 {
+    public enum FinePaymentStatus
+    {
+        Paid,
+        Unpaid,
+        Dismissed
+    }
     public class Fine
     {
         [Key]
-        public int FineID { get; set; }
+        public int FineId { get; set; }
 
         [Required]
         public decimal FineAmount { get; set; }
 
         [Required]
-        [StringLength(20)]
-        public string FinePaymentStatus { get; set; } = string.Empty;
+        public FinePaymentStatus Status { get; set; }
 
         [Required]
         public DateTime FineIssueDate { get; set; }
 
-        // Foreign Key
-        [Required]
-        public int LoanID { get; set; }
 
-        // Navigation Property
-        [ForeignKey(nameof(LoanID))]
-        public Loan? Loan { get; set; }
+        [ForeignKey("LoanId")]
+        public int LoanID { get; set; }
+        public Loan loan { get; set; }
     }
 }

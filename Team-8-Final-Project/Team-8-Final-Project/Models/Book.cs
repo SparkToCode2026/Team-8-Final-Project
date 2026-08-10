@@ -22,7 +22,7 @@ namespace Team_8_Final_Project.Models
 
         public List<Author> Authors { get; set; }
 
-
+        public List<Review> Reviews { get; set; } 
 
     }
 }

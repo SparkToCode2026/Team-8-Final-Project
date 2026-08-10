@@ -31,7 +31,7 @@ namespace Team_8_Final_Project
 
         // 2 - connect to database
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
+        public ProjectContext(DbContextOptions<ProjectContext> options) : base(options)
         {
 
         }

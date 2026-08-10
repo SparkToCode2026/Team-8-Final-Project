@@ -8,8 +8,11 @@ namespace Team_8_Final_Project.Models
         [Key]
         [JsonIgnore]
         public int AuthorID { get; set; }
+        [Required]
         public string FirstName { get; set; }
+        [Required]
         public string LastName { get; set; }
+        [Required]
         public string Email { get; set; }
         public string Biography { get; set; }
         public string Nationality { get; set; }

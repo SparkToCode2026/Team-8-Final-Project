@@ -1,4 +1,6 @@
 
+using Microsoft.EntityFrameworkCore;
+
 namespace Team_8_Final_Project
 {
     public class Program
@@ -8,10 +10,10 @@ namespace Team_8_Final_Project
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddDbContext<ProjectContext>(options =>
+               options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddControllers();
-            builder.Services.AddDbContext<ProjectContext>();
-
 
             var app = builder.Build();
 

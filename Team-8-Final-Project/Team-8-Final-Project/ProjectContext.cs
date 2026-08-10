@@ -31,9 +31,11 @@ namespace Team_8_Final_Project
 
         // 2 - connect to database
 
-        public ProjectContext(DbContextOptions<ProjectContext> options) : base(options)
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-
+            options.UseSqlServer(
+            "Server=Laptopius\\SQLEXPRESS;Database=CompanyProjectDB;Trusted_Connection=True;TrustServerCertificate=True;"
+            );
         }
     }
 }

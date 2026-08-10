@@ -24,5 +24,7 @@ namespace Team_8_Final_Project.Models
 
         public List<Review> Reviews { get; set; } 
 
+        public List<Reservation> Reservations { get; set; }
+
     }
 }

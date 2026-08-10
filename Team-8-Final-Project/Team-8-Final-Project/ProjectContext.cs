@@ -33,9 +33,7 @@ namespace Team_8_Final_Project
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            options.UseSqlServer(
-            "Server=Server=DESKTOP-8CRFLQK\\\\SQLEXPRESS;"
-            );
+
         }
     }
 }

@@ -11,11 +11,12 @@ namespace Team_8_Final_Project
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            //DbContext
             builder.Services.AddDbContext<ProjectContext>(options =>
                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+            //////////////////////
             builder.Services.AddControllers();
-
+            //swagger
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {

@@ -34,5 +34,7 @@ namespace Team_8_Final_Project.Models
         [ForeignKey("user")]
         public int UserID { get; set; }
         public User user { get; set; }
+
+        public Fine fine { get; set; } // Navigation property for the associated Fine 
     }
 }

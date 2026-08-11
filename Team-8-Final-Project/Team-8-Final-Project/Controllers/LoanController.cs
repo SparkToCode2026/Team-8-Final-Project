@@ -5,10 +5,10 @@ namespace Team_8_Final_Project.Controllers
 {
     [ApiController]
     [Route("Loan")]
-    public class LoanController
+    public class LoanController : ControllerBase
     {
-        public class LoanController : ControllerBase
-        {
+        
+       
             private ProjectContext context;
 
             public LoanController(ProjectContext _context) 
@@ -22,6 +22,6 @@ namespace Team_8_Final_Project.Controllers
                 context.loans.Add(l);
                 context.SaveChanges();
             }
-        }
+        
     }
 }

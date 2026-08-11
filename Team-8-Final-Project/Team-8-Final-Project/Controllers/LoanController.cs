@@ -7,21 +7,35 @@ namespace Team_8_Final_Project.Controllers
     [Route("Loan")]
     public class LoanController : ControllerBase
     {
-        
-       
-            private ProjectContext context;
 
-            public LoanController(ProjectContext _context) 
+
+        private ProjectContext context;
+
+        public LoanController(ProjectContext _context)
+        {
+            context = _context;
+        }
+
+        [HttpPost("AddLoan")]
+        public void AddLoan(Loan l)
+        {
+            context.loans.Add(l);
+            context.SaveChanges();
+        }
+
+        public void RemoveLoan(int id)
+        {
+            Loan l = context.loans.FirstOrDefault(l => l.LoanId == id);
+
+            if (l == null)
             {
-                context = _context;
+
             }
-
-            [HttpPost("AddLoan")]
-            public void AddLoan(Loan l)
+            else
             {
-                context.loans.Add(l);
+                context.loans.Remove(l);
                 context.SaveChanges();
             }
-        
+        }
     }
 }

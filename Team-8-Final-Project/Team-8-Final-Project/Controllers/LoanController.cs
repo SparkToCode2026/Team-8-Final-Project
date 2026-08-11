@@ -95,5 +95,7 @@ namespace Team_8_Final_Project.Controllers
             List<Loan> loans = context.loans.Where(l => l.BookCopyId == bookCopyId).ToList();
             return loans;
         }
+
+
     }
 }

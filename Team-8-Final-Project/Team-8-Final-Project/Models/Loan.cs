@@ -23,6 +23,7 @@ namespace Team_8_Final_Project.Models
         [Required]
         public DateTime LoanDueDate { get; set; }
         public DateTime LoanReturnDate { get; set; }
+        [Required]
         public LoanStatus  loanStatus { get; set; }
 
         // Foreign Key - BookCopy

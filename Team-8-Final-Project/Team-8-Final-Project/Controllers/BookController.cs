@@ -52,6 +52,23 @@ namespace Team_8_Final_Project.Controllers
             return Ok(newBook);
         }
 
+        // Reassign a Book to a different Publisher
+        [HttpPut("ReassignPublisher")]
+        [Authorize(Roles = "Librarian,Admin")]
+        public IActionResult ReassignPublisher(int id, int newPublisherId)
+        {
+            Book b = context.books.FirstOrDefault(b => b.BookId == id);
+
+            if (b == null)
+            {
+                return NotFound("Book not found.");
+            }
+
+            b.PublisherId = newPublisherId;
+            context.SaveChanges();
+
+            return Ok(b);
+        }
 
 
     }

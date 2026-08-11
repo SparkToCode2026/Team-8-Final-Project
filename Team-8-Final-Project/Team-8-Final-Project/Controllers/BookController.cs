@@ -11,5 +11,17 @@ namespace Team_8_Final_Project.Controllers
         {
             context = _context;
         }
+
+        // Add a new Book
+        [HttpPost("AddBook")]
+        public IActionResult AddBook(Book b)
+        {
+            context.books.Add(b);
+            context.SaveChanges();
+
+            return Ok(b);
+        }
+
     }
+    
 }

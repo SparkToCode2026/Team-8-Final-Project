@@ -64,7 +64,7 @@ namespace Team_8_Final_Project.Controllers
         public IActionResult GetAllLoans()
         {
             List<Loan> loans = context.Loans.ToList();
-            return loans;
+            return Ok(loans);
         }
 
         

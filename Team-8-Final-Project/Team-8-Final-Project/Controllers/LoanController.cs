@@ -16,6 +16,13 @@ namespace Team_8_Final_Project.Controllers
             context = _context;
         }
 
+        // Request URL => http://localhost:5240/Loan/AddLoan
+        // Request method => POST
+        // Request body => { "LoanStartDate": "2024-06-01T00:00:00", "LoanAmount": 100.0,
+        // "LoanDueDate": "2024-06-15T00:00:00", "LoanReturnDate": null,
+        // "loanStatus": 0, "BookCopyId": 1, "UserID": 1 }
+        // Send request => Call function
+
         [HttpPost("AddLoan")]
         public void AddLoan(Loan l)
         {

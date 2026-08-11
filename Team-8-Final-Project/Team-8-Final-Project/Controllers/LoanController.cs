@@ -39,6 +39,7 @@ namespace Team_8_Final_Project.Controllers
             }
         }
 
+        [HttpGet("GetLoan")]
         public Loan GetLoan(int id)
         {
             Loan l = context.loans.FirstOrDefault(l => l.LoanId == id);

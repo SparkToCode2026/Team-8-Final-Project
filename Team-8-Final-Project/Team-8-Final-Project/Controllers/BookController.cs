@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Team_8_Final_Project.Models;
 namespace Team_8_Final_Project.Controllers
 {
@@ -14,6 +15,7 @@ namespace Team_8_Final_Project.Controllers
 
         // Add a new Book
         [HttpPost("AddBook")]
+        [Authorize(Roles = "Librarian,Admin")]
         public IActionResult AddBook(Book b)
         {
             context.books.Add(b);
@@ -24,6 +26,7 @@ namespace Team_8_Final_Project.Controllers
 
         // Full Update of a Book
         [HttpPut("UpdateBook/{id}")]
+        [Authorize(Roles = "Librarian,Admin")]
         public IActionResult UpdateBook(int id, Book newBook)
         {
             Book b = context.books.FirstOrDefault(b => b.BookId == id);
@@ -48,6 +51,8 @@ namespace Team_8_Final_Project.Controllers
 
             return Ok(newBook);
         }
+
+
 
     }
 

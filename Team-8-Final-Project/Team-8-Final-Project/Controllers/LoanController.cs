@@ -52,5 +52,14 @@ namespace Team_8_Final_Project.Controllers
             List<Loan> loans = context.loans.ToList();
             return loans;
         }
+
+        [HttpPatch("UpdateLoanAmount")]
+        public void UpdateLoanAmount(int id, double newAmount)
+        {
+            Loan l = context.loans.FirstOrDefault(l => l.LoanId == id);
+
+            l.LoanAmount = newAmount;
+            context.SaveChanges();
+        }
     }
 }

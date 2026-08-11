@@ -36,6 +36,6 @@ namespace Team_8_Final_Project.Models
         public int UserID { get; set; }
         public User User { get; set; }
 
-        public Fine Fine { get; set; } // Navigation property for the associated Fine 
+        public Fine? Fine { get; set; } // Navigation property for the associated Fine 
     }
 }

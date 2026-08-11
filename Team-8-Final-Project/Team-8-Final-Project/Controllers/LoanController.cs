@@ -24,10 +24,11 @@ namespace Team_8_Final_Project.Controllers
         // Send request => Call function
 
         [HttpPost("AddLoan")]
-        public void AddLoan(Loan l)
+        public int AddLoan(Loan l)
         {
             context.Loans.Add(l);
             context.SaveChanges();
+            return l.LoanId;
         }
 
         // Request URL => http://localhost:5240/Loan/RemoveLoan?id=2

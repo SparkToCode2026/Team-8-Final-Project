@@ -82,7 +82,7 @@ namespace Team_8_Final_Project.Controllers
         public IActionResult GetLoansByUser(int userId)
         {
             List<Loan> loans = context.Loans.Where(l => l.UserID == userId).ToList();
-            return loans;
+            return Ok(loans);
         }
 
         [HttpGet("GetLoansByBookCopy")]

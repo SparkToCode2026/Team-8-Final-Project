@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using Team_8_Final_Project.Models;
 
 namespace Team_8_Final_Project.Controllers
@@ -16,6 +17,18 @@ namespace Team_8_Final_Project.Controllers
             context = _context;
         }
 
+        public class CreateLoanDto
+        {
+            [Required]
+            public DateTime LoanDueDate { get; set; }
+
+            [Required]
+            public int BookCopyId { get; set; }
+
+            [Required]
+            public int UserID { get; set; }
+        }
+
         // Request URL => http://localhost:5240/Loan/AddLoan
         // Request method => POST
         // Request body => { "LoanStartDate": "2024-06-01T00:00:00", "LoanAmount": 100.0,
@@ -24,11 +37,19 @@ namespace Team_8_Final_Project.Controllers
         // Send request => Call function
 
         [HttpPost("AddLoan")]
-        public IActionResult AddLoan(Loan l)
+        public IActionResult AddLoan(CreateLoanDto dto)
         {
-            context.Loans.Add(l);
+            var loan = new Loan
+            {
+                LoanStartDate = DateTime.Now,
+                LoanDueDate = dto.LoanDueDate,
+                BookCopyId = dto.BookCopyId,
+                UserID = dto.UserID,
+                loanStatus = LoanStatus.Active
+            };
+            context.Loans.Add(loan);
             context.SaveChanges();
-            return Ok(l.LoanId);
+            return Ok(loan);
         }
 
         // Request URL => http://localhost:5240/Loan/RemoveLoan?id=2

@@ -88,7 +88,7 @@ namespace Team_8_Final_Project.Controllers
             List<Loan> loans = context.loans.Where(l => l.UserID == userId).ToList();
             return loans;
         }
-        
+
         [HttpGet("GetLoansByBookCopy")]
         public List<Loan> GetLoansByBookCopy(int bookCopyId)
         {
@@ -96,6 +96,24 @@ namespace Team_8_Final_Project.Controllers
             return loans;
         }
 
+        [HttpPut("UpdateLoan")]
+        public void UpdateLoan(int id, Loan newLoan)
+        {
+            Loan l = context.loans.FirstOrDefault(l => l.LoanId == id);
+            if (l != null)
+            {
+                l.LoanStartDate = newLoan.LoanStartDate;
+                l.LoanAmount = newLoan.LoanAmount;
+                l.LoanDueDate = newLoan.LoanDueDate;
+                l.LoanReturnDate = newLoan.LoanReturnDate;
+                l.loanStatus = newLoan.loanStatus;
+                l.BookCopyId = newLoan.BookCopyId;
+                l.UserID = newLoan.UserID;
 
+                context.SaveChanges();
+            }
+
+
+        }
     }
 }

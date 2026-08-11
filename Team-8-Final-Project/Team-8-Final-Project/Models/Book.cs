@@ -9,7 +9,7 @@ namespace Team_8_Final_Project.Models
         [JsonIgnore]
         public int BookId {  get; set; }
         [Required]
-        public string IBSN { get; set; }
+        public string ISBN { get; set; }
         [Required]
         public string BookTitle { get; set; }
         public int BookEdition { get; set; }

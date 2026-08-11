@@ -103,7 +103,6 @@ namespace Team_8_Final_Project.Controllers
             if (l != null)
             {
                 l.LoanStartDate = newLoan.LoanStartDate;
-                l.LoanAmount = newLoan.LoanAmount;
                 l.LoanDueDate = newLoan.LoanDueDate;
                 l.LoanReturnDate = newLoan.LoanReturnDate;
                 l.loanStatus = newLoan.loanStatus;

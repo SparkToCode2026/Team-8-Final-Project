@@ -89,7 +89,7 @@ namespace Team_8_Final_Project.Controllers
         public IActionResult GetLoansByBookCopy(int bookCopyId)
         {
             List<Loan> loans = context.Loans.Where(l => l.BookCopyId == bookCopyId).ToList();
-            return loans;
+            return Ok(loans);
         }
 
         [HttpPut("UpdateLoan")]

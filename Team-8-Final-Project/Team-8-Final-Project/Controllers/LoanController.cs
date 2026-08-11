@@ -30,6 +30,11 @@ namespace Team_8_Final_Project.Controllers
             context.SaveChanges();
         }
 
+        // Request URL => http://localhost:5240/Loan/RemoveLoan?id=2
+        // Request method => DELETE
+        // Request body => empty
+        // Send request => Call function
+
         [HttpDelete("RemoveLoan")]
         public void RemoveLoan(int id)
         {

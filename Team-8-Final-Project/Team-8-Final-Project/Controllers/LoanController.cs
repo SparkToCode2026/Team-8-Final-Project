@@ -46,6 +46,7 @@ namespace Team_8_Final_Project.Controllers
             return l;
         }
 
+        [HttpGet("GetAllLoans")]
         public List<Loan> GetAllLoans()
         {
             List<Loan> loans = context.loans.ToList();

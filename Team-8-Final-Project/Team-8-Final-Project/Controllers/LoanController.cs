@@ -38,5 +38,11 @@ namespace Team_8_Final_Project.Controllers
                 context.SaveChanges();
             }
         }
+
+        public Loan GetLoan(int id)
+        {
+            Loan l = context.loans.FirstOrDefault(l => l.LoanId == id);
+            return l;
+        }
     }
 }

@@ -108,8 +108,10 @@ namespace Team_8_Final_Project.Controllers
                 context.SaveChanges();
                 return Ok();
             }
-
-
+            else
+            {
+                return NotFound("Loan not found");
+            }
         }
     }
 }

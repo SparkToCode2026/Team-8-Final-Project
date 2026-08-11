@@ -76,5 +76,12 @@ namespace Team_8_Final_Project.Controllers
             List<Loan> loans = context.loans.Where(l => l.UserID == userId).ToList();
             return loans;
         }
+        
+        [HttpGet("GetLoansByBookCopy")]
+        public List<Loan> GetLoansByBookCopy(int bookCopyId)
+        {
+            List<Loan> loans = context.loans.Where(l => l.BookCopyId == bookCopyId).ToList();
+            return loans;
+        }
     }
 }

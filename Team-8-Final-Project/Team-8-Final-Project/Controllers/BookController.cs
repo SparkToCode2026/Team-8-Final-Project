@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Team_8_Final_Project.Models;
 namespace Team_8_Final_Project.Controllers
 {
@@ -39,7 +40,7 @@ namespace Team_8_Final_Project.Controllers
             b.BookTitle = newBook.BookTitle;
             b.ISBN = newBook.ISBN;
             b.Year = newBook.Year;
-            
+
             b.BookLanguage = newBook.BookLanguage;
             b.BookEdition = newBook.BookEdition;
             b.Authors = newBook.Authors;
@@ -97,7 +98,18 @@ namespace Team_8_Final_Project.Controllers
             return Ok(b);
         }
 
-         
+        // Get all Books
+        [HttpGet("GetAllBooks")]
+        [Authorize]
+        public IActionResult GetAllBooks()
+        {
+            List<Book> books = context.books.Include(b => b.Authors)
+                                            .Include(b => b.Category)
+                                            .Include(b => b.Publisher)
+                                            .ToList();
+            return Ok(books);
+
+        }
 
     }
 

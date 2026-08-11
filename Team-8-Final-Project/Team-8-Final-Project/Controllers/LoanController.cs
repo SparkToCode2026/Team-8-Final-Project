@@ -70,9 +70,11 @@ namespace Team_8_Final_Project.Controllers
             context.SaveChanges();
         }
 
-        public void GetLoansByUser(int userId)
+        [HttpGet("GetLoansByUser")]
+        public List<Loan> GetLoansByUser(int userId)
         {
             List<Loan> loans = context.loans.Where(l => l.UserID == userId).ToList();
+            return loans;
         }
     }
 }

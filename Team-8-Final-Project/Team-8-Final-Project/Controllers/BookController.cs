@@ -111,6 +111,25 @@ namespace Team_8_Final_Project.Controllers
 
         }
 
+        // Search Book by Title
+        [HttpGet("SearchBook")]
+        [Authorize]
+        public IActionResult SearchBook(string title)
+        {
+            List<Book> books = context.books.Include(b => b.Authors)
+                                            .Include(b => b.Category)
+                                            .Include(b => b.Publisher)
+                                            .Where(b => b.BookTitle.Contains(title))
+                                            .ToList();
+
+            if (books.Count == 0)
+            {
+                return NotFound("No books found with that title.");
+            }
+
+            return Ok(books);
+        }
+
     }
 
 }

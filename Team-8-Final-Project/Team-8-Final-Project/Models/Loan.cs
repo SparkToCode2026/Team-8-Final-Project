@@ -19,10 +19,7 @@ namespace Team_8_Final_Project.Models
 
         [Required]
         public DateTime LoanStartDate { get; set; }
-
-        [Required]
-        public Double LoanAmount { get; set; }
-
+                
         [Required]
         public DateTime LoanDueDate { get; set; }
         public DateTime LoanReturnDate { get; set; }

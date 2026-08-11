@@ -17,6 +17,8 @@ namespace Team_8_Final_Project
         public DbSet<Reservation> Reservations { get; set; }
 
         public DbSet<Book> books { get; set; }
+        public DbSet<Publisher> Publishers { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         public DbSet<BookCopy> bookCopies { get; set; }
 

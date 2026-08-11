@@ -71,6 +71,24 @@ namespace Team_8_Final_Project.Controllers
         }
 
 
+        // Delete a Book
+        [HttpDelete("DeleteBook")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult DeleteBook(int id)
+        {
+            Book b = context.books.FirstOrDefault(b => b.BookId == id);
+
+            if (b == null)
+            {
+                return NotFound("Book not found.");
+            }
+
+            context.books.Remove(b);
+            context.SaveChanges();
+
+            return Ok(b);
+        }
+
     }
 
 }

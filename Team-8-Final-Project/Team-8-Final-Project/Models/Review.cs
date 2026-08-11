@@ -21,10 +21,10 @@ namespace Team_8_Final_Project.Models
 
         [ForeignKey("book")]
         public int BookId { get; set; }
-        public Book book { get; set; }
+        public Book Book { get; set; }
 
         [ForeignKey("user")]
         public int UserId { get; set; }
-        public User user { get; set; }
+        public User User { get; set; }
     }
 }

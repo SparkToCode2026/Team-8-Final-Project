@@ -26,7 +26,7 @@ namespace Team_8_Final_Project.Controllers
         [HttpPost("AddLoan")]
         public void AddLoan(Loan l)
         {
-            context.loans.Add(l);
+            context.Loans.Add(l);
             context.SaveChanges();
         }
 
@@ -38,7 +38,7 @@ namespace Team_8_Final_Project.Controllers
         [HttpDelete("RemoveLoan")]
         public void RemoveLoan(int id)
         {
-            Loan l = context.loans.FirstOrDefault(l => l.LoanId == id);
+            Loan l = context.Loans.FirstOrDefault(l => l.LoanId == id);
 
             if (l == null)
             {
@@ -46,7 +46,7 @@ namespace Team_8_Final_Project.Controllers
             }
             else
             {
-                context.loans.Remove(l);
+                context.Loans.Remove(l);
                 context.SaveChanges();
             }
         }
@@ -54,14 +54,14 @@ namespace Team_8_Final_Project.Controllers
         [HttpGet("GetLoan")]
         public Loan GetLoan(int id)
         {
-            Loan l = context.loans.FirstOrDefault(l => l.LoanId == id);
+            Loan l = context.Loans.FirstOrDefault(l => l.LoanId == id);
             return l;
         }
 
         [HttpGet("GetAllLoans")]
         public List<Loan> GetAllLoans()
         {
-            List<Loan> loans = context.loans.ToList();
+            List<Loan> loans = context.Loans.ToList();
             return loans;
         }
 
@@ -70,7 +70,7 @@ namespace Team_8_Final_Project.Controllers
         [HttpPatch("UpdateLoanStatus")]
         public void UpdateLoanStatus(int id, LoanStatus newStatus)
         {
-            Loan l = context.loans.FirstOrDefault(l => l.LoanId == id);
+            Loan l = context.Loans.FirstOrDefault(l => l.LoanId == id);
             l.loanStatus = newStatus;
             context.SaveChanges();
         }
@@ -78,21 +78,21 @@ namespace Team_8_Final_Project.Controllers
         [HttpGet("GetLoansByUser")]
         public List<Loan> GetLoansByUser(int userId)
         {
-            List<Loan> loans = context.loans.Where(l => l.UserID == userId).ToList();
+            List<Loan> loans = context.Loans.Where(l => l.UserID == userId).ToList();
             return loans;
         }
 
         [HttpGet("GetLoansByBookCopy")]
         public List<Loan> GetLoansByBookCopy(int bookCopyId)
         {
-            List<Loan> loans = context.loans.Where(l => l.BookCopyId == bookCopyId).ToList();
+            List<Loan> loans = context.Loans.Where(l => l.BookCopyId == bookCopyId).ToList();
             return loans;
         }
 
         [HttpPut("UpdateLoan")]
         public void UpdateLoan(int id, Loan newLoan)
         {
-            Loan l = context.loans.FirstOrDefault(l => l.LoanId == id);
+            Loan l = context.Loans.FirstOrDefault(l => l.LoanId == id);
             if (l != null)
             {
                 l.LoanStartDate = newLoan.LoanStartDate;

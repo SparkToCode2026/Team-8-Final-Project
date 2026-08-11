@@ -37,18 +37,19 @@ namespace Team_8_Final_Project.Controllers
         // Send request => Call function
 
         [HttpDelete("RemoveLoan")]
-        public void RemoveLoan(int id)
+        public string RemoveLoan(int id)
         {
             Loan l = context.Loans.FirstOrDefault(l => l.LoanId == id);
 
             if (l == null)
             {
-
+                return "Loan not found";
             }
             else
             {
                 context.Loans.Remove(l);
                 context.SaveChanges();
+                return "Loan removed successfully";
             }
         }
 

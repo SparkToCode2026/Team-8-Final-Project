@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Team_8_Final_Project.Models
 {
@@ -27,6 +28,7 @@ namespace Team_8_Final_Project.Models
 
         [ForeignKey("loan")]
         public int LoanId { get; set; }
+        [JsonIgnore]
         public Loan loan { get; set; }
     }
 }

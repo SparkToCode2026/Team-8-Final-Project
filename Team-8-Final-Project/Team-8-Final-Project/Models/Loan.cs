@@ -28,13 +28,13 @@ namespace Team_8_Final_Project.Models
         // Foreign Key - BookCopy
         [ForeignKey("bookCopy")]
         public int BookCopyId { get; set; }
-        public BookCopy bookCopy { get; set; }
+        public BookCopy BookCopy { get; set; }
 
         // Foreign Key - User
         [ForeignKey("user")]
         public int UserID { get; set; }
-        public User user { get; set; }
+        public User User { get; set; }
 
-        public Fine fine { get; set; } // Navigation property for the associated Fine 
+        public Fine Fine { get; set; } // Navigation property for the associated Fine 
     }
 }

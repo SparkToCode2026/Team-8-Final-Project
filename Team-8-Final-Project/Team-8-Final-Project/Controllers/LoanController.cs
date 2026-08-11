@@ -49,7 +49,7 @@ namespace Team_8_Final_Project.Controllers
             {
                 context.Loans.Remove(l);
                 context.SaveChanges();
-                return "Loan removed successfully";
+                return Ok("Loan removed successfully");
             }
         }
 

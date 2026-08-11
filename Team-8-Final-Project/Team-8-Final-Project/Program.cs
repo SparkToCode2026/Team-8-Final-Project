@@ -52,7 +52,8 @@ namespace Team_8_Final_Project
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
 
             app.UseHttpsRedirection();

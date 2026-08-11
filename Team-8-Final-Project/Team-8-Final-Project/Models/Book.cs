@@ -21,11 +21,11 @@ namespace Team_8_Final_Project.Models
 
         [ForeignKey("publisher")]
         public int PublisherID { get; set; }
-        public Publisher Publisher { get; set; }
+        // public Publisher Publisher { get; set; }
 
         [ForeignKey("category")]
         public int CategoryID { get; set; }
-        public Category Category { get; set; }
+        // public Category Category { get; set; }
 
         public List<BookCopy> BookCopies { get; set; }
 

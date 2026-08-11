@@ -129,25 +129,18 @@ namespace Team_8_Final_Project.Controllers
         }
 
         [HttpPut("UpdateLoan")]
-        public IActionResult UpdateLoan(int id, Loan newLoan)
+        public IActionResult UpdateLoan(int id, UpdateLoanDto dto)
         {
             Loan l = context.Loans.FirstOrDefault(l => l.LoanId == id);
-            if (l != null)
-            {
-                l.LoanStartDate = newLoan.LoanStartDate;
-                l.LoanDueDate = newLoan.LoanDueDate;
-                l.LoanReturnDate = newLoan.LoanReturnDate;
-                l.loanStatus = newLoan.loanStatus;
-                l.BookCopyId = newLoan.BookCopyId;
-                l.UserID = newLoan.UserID;
+            if (l == null) return NotFound("Loan not found");
 
-                context.SaveChanges();
-                return Ok();
-            }
-            else
-            {
-                return NotFound("Loan not found");
-            }
+            l.LoanStartDate = dto.LoanStartDate;
+            l.LoanDueDate = dto.LoanDueDate;
+            l.BookCopyId = dto.BookCopyId;
+            l.UserID = dto.UserID;
+
+            context.SaveChanges();
+            return Ok(l);
         }
     }
 }

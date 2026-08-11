@@ -1,6 +1,15 @@
-﻿namespace Team_8_Final_Project.Controllers
+﻿using Microsoft.AspNetCore.Mvc;
+using Team_8_Final_Project.Models;
+namespace Team_8_Final_Project.Controllers
 {
-    public class BookCopyController
+    [ApiController]
+    [Route("BookCopy")]
+    public class BookCopyController : ControllerBase
     {
+        private ProjectContext context;
+        public BookCopyController(ProjectContext _context)
+        {
+            context = _context;
+        }
     }
 }

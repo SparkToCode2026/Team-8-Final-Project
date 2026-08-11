@@ -29,6 +29,21 @@ namespace Team_8_Final_Project.Controllers
             public int UserID { get; set; }
         }
 
+        public class UpdateLoanDto
+        {
+            [Required]
+            public DateTime LoanStartDate { get; set; }
+
+            [Required]
+            public DateTime LoanDueDate { get; set; }
+
+            [Required]
+            public int BookCopyId { get; set; }
+
+            [Required]
+            public int UserID { get; set; }
+        }
+
         // Request URL => http://localhost:5240/Loan/AddLoan
         // Request method => POST
         // Request body => { "LoanStartDate": "2024-06-01T00:00:00", "LoanAmount": 100.0,

@@ -43,7 +43,7 @@ namespace Team_8_Final_Project.Controllers
 
             if (l == null)
             {
-                return "Loan not found";
+                return NotFound("Loan not found");
             }
             else
             {

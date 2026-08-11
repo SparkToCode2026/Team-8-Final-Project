@@ -83,11 +83,21 @@ namespace Team_8_Final_Project.Controllers
                 return NotFound("Book not found.");
             }
 
+            // Check if the book has any copies
+            bool hasCopies = context.bookCopies.Any(bc => bc.BookId == id);
+
+            if (hasCopies)
+            {
+                return BadRequest("This book cannot be deleted because it has book copies.");
+            }
+
             context.books.Remove(b);
             context.SaveChanges();
 
             return Ok(b);
         }
+
+         
 
     }
 

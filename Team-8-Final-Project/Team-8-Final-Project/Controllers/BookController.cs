@@ -53,7 +53,7 @@ namespace Team_8_Final_Project.Controllers
         }
 
         // Reassign a Book to a different Publisher
-        [HttpPut("ReassignPublisher")]
+        [HttpPatch("ReassignPublisher")]
         [Authorize(Roles = "Librarian,Admin")]
         public IActionResult ReassignPublisher(int id, int newPublisherId)
         {

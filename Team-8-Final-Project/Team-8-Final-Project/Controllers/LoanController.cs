@@ -23,6 +23,7 @@ namespace Team_8_Final_Project.Controllers
             context.SaveChanges();
         }
 
+        [HttpDelete("RemoveLoan")]
         public void RemoveLoan(int id)
         {
             Loan l = context.loans.FirstOrDefault(l => l.LoanId == id);

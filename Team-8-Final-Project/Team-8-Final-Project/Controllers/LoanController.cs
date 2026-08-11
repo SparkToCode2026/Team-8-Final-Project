@@ -106,6 +106,7 @@ namespace Team_8_Final_Project.Controllers
                 l.UserID = newLoan.UserID;
 
                 context.SaveChanges();
+                return Ok();
             }
 
 

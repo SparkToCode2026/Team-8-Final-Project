@@ -65,14 +65,7 @@ namespace Team_8_Final_Project.Controllers
             return loans;
         }
 
-        [HttpPatch("UpdateLoanAmount")]
-        public void UpdateLoanAmount(int id, double newAmount)
-        {
-            Loan l = context.loans.FirstOrDefault(l => l.LoanId == id);
-
-            l.LoanAmount = newAmount;
-            context.SaveChanges();
-        }
+        
 
         [HttpPatch("UpdateLoanStatus")]
         public void UpdateLoanStatus(int id, LoanStatus newStatus)

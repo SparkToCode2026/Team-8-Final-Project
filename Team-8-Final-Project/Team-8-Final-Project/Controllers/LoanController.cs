@@ -45,5 +45,11 @@ namespace Team_8_Final_Project.Controllers
             Loan l = context.loans.FirstOrDefault(l => l.LoanId == id);
             return l;
         }
+
+        public List<Loan> GetAllLoans()
+        {
+            List<Loan> loans = context.loans.ToList();
+            return loans;
+        }
     }
 }

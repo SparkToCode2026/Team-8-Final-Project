@@ -75,6 +75,7 @@ namespace Team_8_Final_Project.Controllers
             Loan l = context.Loans.FirstOrDefault(l => l.LoanId == id);
             l.loanStatus = newStatus;
             context.SaveChanges();
+            return Ok();
         }
 
         [HttpGet("GetLoansByUser")]

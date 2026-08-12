@@ -69,5 +69,22 @@ namespace Team_8_Final_Project.Controllers
 
             return Ok(review);
         }
+        // Case 4 - Delete Review
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteReview(int id)
+        {
+            var review = await _context.Reviews.FindAsync(id);
+
+            if (review == null)
+            {
+                return NotFound();
+            }
+
+            _context.Reviews.Remove(review);
+            await _context.SaveChangesAsync();
+
+            return Ok("Review deleted successfully.");
+        }
     }
 }

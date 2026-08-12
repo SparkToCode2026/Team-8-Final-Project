@@ -34,13 +34,13 @@ namespace Team_8_Final_Project.Models
 
         [ForeignKey("book")]
         public int BookId { get; set; }
-        public Book book { get; set; }
+        public Book Book { get; set; }
 
-        public List<Loan> loans { get; set; }
+        public List<Loan> Loans { get; set; }
 
         [ForeignKey("shelf")]
         public int ShelfId { get; set; }
-        public Shelf shelf { get; set; }
+        public Shelf Shelf { get; set; }
 
     }
 }

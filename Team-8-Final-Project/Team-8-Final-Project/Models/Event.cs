@@ -15,6 +15,7 @@ public class Event
     [Required]
     public string EventLocation { get; set; }
     public string EventDescription { get; set; }
+    public int EventMaxCap { get; set; }
     
     
 

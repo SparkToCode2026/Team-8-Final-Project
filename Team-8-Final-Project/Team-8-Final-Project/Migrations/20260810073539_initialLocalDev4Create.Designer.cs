@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Team_8_Final_Project;
 
@@ -11,9 +12,11 @@ using Team_8_Final_Project;
 namespace Team_8_Final_Project.Migrations
 {
     [DbContext(typeof(ProjectContext))]
-    partial class ProjectContextModelSnapshot : ModelSnapshot
+    [Migration("20260810073539_initialLocalDev4Create")]
+    partial class initialLocalDev4Create
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,7 +85,7 @@ namespace Team_8_Final_Project.Migrations
 
                     b.HasKey("AuthorID");
 
-                    b.ToTable("Authors");
+                    b.ToTable("authors");
                 });
 
             modelBuilder.Entity("Team_8_Final_Project.Models.Book", b =>
@@ -104,22 +107,16 @@ namespace Team_8_Final_Project.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CategoryID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ISBN")
+                    b.Property<string>("IBSN")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PublisherID")
-                        .HasColumnType("int");
 
                     b.Property<int>("Year")
                         .HasColumnType("int");
 
                     b.HasKey("BookId");
 
-                    b.ToTable("Books");
+                    b.ToTable("books");
                 });
 
             modelBuilder.Entity("Team_8_Final_Project.Models.BookCopy", b =>
@@ -155,7 +152,7 @@ namespace Team_8_Final_Project.Migrations
 
                     b.HasIndex("ShelfId");
 
-                    b.ToTable("BookCopies");
+                    b.ToTable("bookCopies");
                 });
 
             modelBuilder.Entity("Team_8_Final_Project.Models.Event", b =>
@@ -177,16 +174,13 @@ namespace Team_8_Final_Project.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("EventMaxCap")
-                        .HasColumnType("int");
-
                     b.Property<string>("EventName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("EventID");
 
-                    b.ToTable("Events");
+                    b.ToTable("events");
                 });
 
             modelBuilder.Entity("Team_8_Final_Project.Models.Fine", b =>
@@ -211,8 +205,7 @@ namespace Team_8_Final_Project.Migrations
 
                     b.HasKey("FineId");
 
-                    b.HasIndex("LoanId")
-                        .IsUnique();
+                    b.HasIndex("LoanId");
 
                     b.ToTable("Fines");
                 });
@@ -249,7 +242,7 @@ namespace Team_8_Final_Project.Migrations
 
                     b.HasIndex("UserID");
 
-                    b.ToTable("Loans");
+                    b.ToTable("loans");
                 });
 
             modelBuilder.Entity("Team_8_Final_Project.Models.Reservation", b =>
@@ -266,10 +259,10 @@ namespace Team_8_Final_Project.Migrations
                     b.Property<DateTime>("ReservationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Status")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("status")
                         .HasColumnType("int");
 
                     b.HasKey("ReservationId");
@@ -278,7 +271,7 @@ namespace Team_8_Final_Project.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reservations");
+                    b.ToTable("reservations");
                 });
 
             modelBuilder.Entity("Team_8_Final_Project.Models.Review", b =>
@@ -335,7 +328,7 @@ namespace Team_8_Final_Project.Migrations
 
                     b.HasKey("ShelfId");
 
-                    b.ToTable("Shelves");
+                    b.ToTable("shelves");
                 });
 
             modelBuilder.Entity("Team_8_Final_Project.Models.User", b =>
@@ -374,7 +367,7 @@ namespace Team_8_Final_Project.Migrations
 
                     b.HasKey("UserID");
 
-                    b.ToTable("Users");
+                    b.ToTable("users");
                 });
 
             modelBuilder.Entity("AuthorBook", b =>
@@ -409,114 +402,108 @@ namespace Team_8_Final_Project.Migrations
 
             modelBuilder.Entity("Team_8_Final_Project.Models.BookCopy", b =>
                 {
-                    b.HasOne("Team_8_Final_Project.Models.Book", "Book")
-                        .WithMany("BookCopies")
+                    b.HasOne("Team_8_Final_Project.Models.Book", "book")
+                        .WithMany("bookCopies")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Team_8_Final_Project.Models.Shelf", "Shelf")
-                        .WithMany("BookCopies")
+                    b.HasOne("Team_8_Final_Project.Models.Shelf", "shelf")
+                        .WithMany("bookCopies")
                         .HasForeignKey("ShelfId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Book");
+                    b.Navigation("book");
 
-                    b.Navigation("Shelf");
+                    b.Navigation("shelf");
                 });
 
             modelBuilder.Entity("Team_8_Final_Project.Models.Fine", b =>
                 {
-                    b.HasOne("Team_8_Final_Project.Models.Loan", "Loan")
-                        .WithOne("Fine")
-                        .HasForeignKey("Team_8_Final_Project.Models.Fine", "LoanId")
+                    b.HasOne("Team_8_Final_Project.Models.Loan", "loan")
+                        .WithMany()
+                        .HasForeignKey("LoanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Loan");
+                    b.Navigation("loan");
                 });
 
             modelBuilder.Entity("Team_8_Final_Project.Models.Loan", b =>
                 {
-                    b.HasOne("Team_8_Final_Project.Models.BookCopy", "BookCopy")
-                        .WithMany("Loans")
+                    b.HasOne("Team_8_Final_Project.Models.BookCopy", "bookCopy")
+                        .WithMany("loans")
                         .HasForeignKey("BookCopyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Team_8_Final_Project.Models.User", "User")
+                    b.HasOne("Team_8_Final_Project.Models.User", "user")
                         .WithMany("Loans")
                         .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("BookCopy");
+                    b.Navigation("bookCopy");
 
-                    b.Navigation("User");
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("Team_8_Final_Project.Models.Reservation", b =>
                 {
-                    b.HasOne("Team_8_Final_Project.Models.Book", "Book")
+                    b.HasOne("Team_8_Final_Project.Models.Book", "book")
                         .WithMany("Reservations")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Team_8_Final_Project.Models.User", "User")
+                    b.HasOne("Team_8_Final_Project.Models.User", "user")
                         .WithMany("Reservations")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Book");
+                    b.Navigation("book");
 
-                    b.Navigation("User");
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("Team_8_Final_Project.Models.Review", b =>
                 {
-                    b.HasOne("Team_8_Final_Project.Models.Book", "Book")
+                    b.HasOne("Team_8_Final_Project.Models.Book", "book")
                         .WithMany("Reviews")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Team_8_Final_Project.Models.User", "User")
+                    b.HasOne("Team_8_Final_Project.Models.User", "user")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Book");
+                    b.Navigation("book");
 
-                    b.Navigation("User");
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("Team_8_Final_Project.Models.Book", b =>
                 {
-                    b.Navigation("BookCopies");
-
                     b.Navigation("Reservations");
 
                     b.Navigation("Reviews");
+
+                    b.Navigation("bookCopies");
                 });
 
             modelBuilder.Entity("Team_8_Final_Project.Models.BookCopy", b =>
                 {
-                    b.Navigation("Loans");
-                });
-
-            modelBuilder.Entity("Team_8_Final_Project.Models.Loan", b =>
-                {
-                    b.Navigation("Fine")
-                        .IsRequired();
+                    b.Navigation("loans");
                 });
 
             modelBuilder.Entity("Team_8_Final_Project.Models.Shelf", b =>
                 {
-                    b.Navigation("BookCopies");
+                    b.Navigation("bookCopies");
                 });
 
             modelBuilder.Entity("Team_8_Final_Project.Models.User", b =>

@@ -101,10 +101,9 @@ namespace Team_8_Final_Project.Controllers
         [Authorize]
         public IActionResult GetAllBookCopies()
         {
-            List<BookCopy> bookCopies = context.BookCopies
-                .Include(bc => bc.Book)
-                .Include(bc => bc.Shelf)
-                .ToList();
+            List<BookCopy> bookCopies = context.BookCopies.Include(bc => bc.Book)
+                                                          .Include(bc => bc.Shelf)
+                                                          .ToList();
 
             return Ok(bookCopies);
         }

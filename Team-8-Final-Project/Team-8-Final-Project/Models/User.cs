@@ -13,7 +13,7 @@ namespace Team_8_Final_Project.Models
     {
         [Key]
         [JsonIgnore]
-        public int UserID { get; set; }
+        public int UserId { get; set; }
         [Required]
         public string FirstName { get; set; }
         [Required]

@@ -47,7 +47,7 @@ namespace Team_8_Final_Project.Controllers
             _context.Publishers.Add(publisher);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetPublisherById), new { id = publisher.PublisherID }, publisher);
+            return CreatedAtAction(nameof(GetPublisherById), new { id = publisher.PublisherId }, publisher);
         }
 
         [HttpPut("{id}")]
@@ -72,13 +72,13 @@ namespace Team_8_Final_Project.Controllers
             var newPublisher = await _context.Publishers.FindAsync(newPublisherId);
             if (oldPublisher == null || newPublisher == null) return NotFound();
 
-            var booksToReassign = await _context.books
-                .Where(b => b.PublisherID == id)
+            var booksToReassign = await _context.Books
+                .Where(b => b.PublisherId == id)
                 .ToListAsync();
 
             foreach (var book in booksToReassign)
             {
-                book.PublisherID = newPublisherId;
+                book.PublisherId = newPublisherId;
             }
 
             await _context.SaveChangesAsync();
@@ -90,7 +90,7 @@ namespace Team_8_Final_Project.Controllers
         {
             var publisher = await _context.Publishers
                 .Include(p => p.Books)
-                .FirstOrDefaultAsync(p => p.PublisherID == id);
+                .FirstOrDefaultAsync(p => p.PublisherId == id);
 
             if (publisher == null) return NotFound();
 
@@ -117,7 +117,7 @@ namespace Team_8_Final_Project.Controllers
         {
             var publisher = await _context.Publishers
                 .Include(p => p.Books)
-                .FirstOrDefaultAsync(p => p.PublisherID == id);
+                .FirstOrDefaultAsync(p => p.PublisherId == id);
 
             if (publisher == null) return NotFound();
             return Ok(publisher);
@@ -127,7 +127,7 @@ namespace Team_8_Final_Project.Controllers
         public async Task<ActionResult<IEnumerable<Publisher>>> GetPublishersByCategory(int categoryId)
         {
             var publishers = await _context.Publishers
-                .Where(p => p.Books.Any(b => b.CategoryID == categoryId))
+                .Where(p => p.Books.Any(b => b.CategoryId == categoryId))
                 .Include(p => p.Books)
                 .ToListAsync();
 
@@ -140,7 +140,7 @@ namespace Team_8_Final_Project.Controllers
             var result = await _context.Publishers
                 .Select(p => new
                 {
-                    p.PublisherID,
+                    p.PublisherId,
                     p.PublisherName,
                     BookCount = p.Books.Count
                 })

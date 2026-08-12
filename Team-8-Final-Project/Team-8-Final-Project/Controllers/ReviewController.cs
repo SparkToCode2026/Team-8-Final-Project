@@ -123,5 +123,26 @@ namespace Team_8_Final_Project.Controllers
 
             return Ok(reviews);
         }
+        // Case 8 - Get Average Rating for a Book
+        [HttpGet("average/{bookId}")]
+        public async Task<IActionResult> GetAverageRating(int bookId)
+        {
+            var reviews = _context.Reviews
+                .Where(r => r.BookId == bookId);
+
+            if (!await reviews.AnyAsync())
+            {
+                return NotFound("No reviews found for this book.");
+            }
+
+            var averageRating = await reviews
+                .AverageAsync(r => r.Rating);
+
+            return Ok(new
+            {
+                BookId = bookId,
+                AverageRating = averageRating
+            });
+        }
     }
 }

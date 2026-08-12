@@ -123,6 +123,23 @@ namespace Team_8_Final_Project.Controllers
             return Ok(bookCopy);
         }
 
+        // Filter by Availability Status
+        [HttpGet("FilterBookCopiesByAvailabilityStatus")]
+        [Authorize]
+        public IActionResult FilterBookCopiesByAvailabilityStatus(AvailabilityStatus availabilityStatus)
+        {
+            List<BookCopy> bookCopies = context.BookCopies.Where(bc => bc.AvailabilityStatus == availabilityStatus)
+                                                          .Include(bc => bc.Book)
+                                                          .Include(bc => bc.Shelf)
+                                                          .ToList();
+            if (bookCopies.Count == 0)
+            {
+                return NotFound("No available book copies found.");
+            }
+
+            return Ok(bookCopies);
+        }
+        
 
     }
 }

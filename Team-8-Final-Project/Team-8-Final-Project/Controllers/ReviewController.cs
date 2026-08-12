@@ -113,5 +113,15 @@ namespace Team_8_Final_Project.Controllers
 
             return Ok(review);
         }
+        // Case 7 - Filter High Rating Reviews
+        [HttpGet("filter")]
+        public async Task<IActionResult> FilterHighRatings(int bookId)
+        {
+            var reviews = await _context.Reviews
+                .Where(r => r.BookId == bookId && r.Rating >= 4)
+                .ToListAsync();
+
+            return Ok(reviews);
+        }
     }
 }

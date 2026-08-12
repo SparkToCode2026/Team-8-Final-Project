@@ -51,5 +51,23 @@ namespace Team_8_Final_Project.Controllers
 
             return Ok(review);
         }
+        // Case 3 - Update Review Comment Only
+        [HttpPatch("{id}/comment")]
+        [Authorize]
+        public async Task<IActionResult> UpdateReviewComment(int id, string comment)
+        {
+            var review = await _context.Reviews.FindAsync(id);
+
+            if (review == null)
+            {
+                return NotFound();
+            }
+
+            review.Comment = comment;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(review);
+        }
     }
 }

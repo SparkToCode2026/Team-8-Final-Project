@@ -108,6 +108,21 @@ namespace Team_8_Final_Project.Controllers
             return Ok(bookCopies);
         }
 
+        // Get a book copy by Barcode
+        [HttpGet("GetBookCopyByBarcode")]
+        [Authorize]
+        public IActionResult GetBookCopyByBarcode(string barcode)
+        {
+            BookCopy bookCopy = context.BookCopies.FirstOrDefault(bc => bc.Barcode == barcode);
+
+            if (bookCopy == null)
+            {
+                return NotFound("Book copy not found.");
+            }
+
+            return Ok(bookCopy);
+        }
+
 
     }
 }

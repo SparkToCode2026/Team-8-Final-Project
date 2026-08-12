@@ -47,5 +47,37 @@ namespace Team_8_Final_Project.Controllers
             return Ok(existingBookCopy);
         }
 
+        // Update condition and/or availability status of a book copy
+        [HttpPatch("UpdateBookCopyStatus")]
+        [Authorize(Roles = "Admin, Librarian")]
+        public IActionResult UpdateBookCopyStatus( int id, ConditionStatus? condition, AvailabilityStatus? availabilityStatus)
+        {
+            BookCopy existingBookCopy = context.BookCopies.FirstOrDefault(bc => bc.BookCopyId == id);
+
+            if (existingBookCopy == null)
+            {
+                return NotFound("Book copy not found.");
+            }
+
+            if (condition == null && availabilityStatus == null)
+            {
+                return BadRequest("Please provide condition, availability status, or both.");
+            }
+
+            if (condition != null)
+            {
+                existingBookCopy.Condition = condition.Value;
+            }
+
+            if (availabilityStatus != null)
+            {
+                existingBookCopy.AvailabilityStatus = availabilityStatus.Value;
+            }
+
+            context.SaveChanges();
+
+            return Ok(existingBookCopy);
+        }
+
     }
 }

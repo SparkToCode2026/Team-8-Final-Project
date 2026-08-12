@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Team_8_Final_Project.Models;
 namespace Team_8_Final_Project.Controllers
 {
@@ -94,6 +95,20 @@ namespace Team_8_Final_Project.Controllers
 
             return Ok("BookCopy with ID "+ id + "has been deleted.");
         }
+
+        // Get all book copies
+        [HttpGet("GetAllBookCopies")]
+        [Authorize]
+        public IActionResult GetAllBookCopies()
+        {
+            List<BookCopy> bookCopies = context.BookCopies
+                .Include(bc => bc.Book)
+                .Include(bc => bc.Shelf)
+                .ToList();
+
+            return Ok(bookCopies);
+        }
+
 
     }
 }

@@ -152,7 +152,46 @@ namespace Team_8_Final_Project.Controllers
             return Ok(books);
         }
 
+        // Sort Books
+        [HttpGet("SortBooks")]
+        [Authorize]
+        public IActionResult SortBooks(string sortBy, string order)
+        {
+            List<Book> books = context.Books
+                .Include(b => b.Authors)
+                .Include(b => b.Category)
+                .Include(b => b.Publisher)
+                .ToList();
 
+            if (sortBy == "title")
+            {
+                if (order == "asc")
+                {
+                    books = books.OrderBy(b => b.BookTitle).ToList();
+                }
+                else if (order == "desc")
+                {
+                    books = books.OrderByDescending(b => b.BookTitle).ToList();
+                }
+            }
+            else if (sortBy == "year")
+            {
+                if (order == "asc")
+                {
+                    books = books.OrderBy(b => b.Year).ToList();
+                }
+                else if (order == "desc")
+                {
+                    books = books.OrderByDescending(b => b.Year).ToList();
+                }
+            }
+            else
+            {
+                return BadRequest("Invalid sorting option.");
+            }
+
+            return Ok(books);
+        }
 
     }
 }

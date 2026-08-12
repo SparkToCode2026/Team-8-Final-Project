@@ -86,5 +86,16 @@ namespace Team_8_Final_Project.Controllers
 
             return Ok("Review deleted successfully.");
         }
+        // Case 5 - Get Reviews for a Specific Book with User Details
+        [HttpGet("book/{bookId}")]
+        public async Task<IActionResult> GetReviewsByBook(int bookId)
+        {
+            var reviews = await _context.Reviews
+                .Include(r => r.user)
+                .Where(r => r.BookId == bookId)
+                .ToListAsync();
+
+            return Ok(reviews);
+        }
     }
 }

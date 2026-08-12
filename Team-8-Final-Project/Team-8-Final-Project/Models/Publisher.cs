@@ -5,7 +5,7 @@ namespace Team_8_Final_Project.Models
     public class Publisher
     {
         [Key]
-        public int PublisherID { get; set; }
+        public int PublisherId { get; set; }
 
         [Required]
         [MaxLength(50)]
@@ -25,7 +25,7 @@ namespace Team_8_Final_Project.Models
         [EmailAddress]
         public string PublisherEmail { get; set; }
 
-        public ICollection<Book> Books { get; set; } = new List<Book>();
+        public List<Book> Books { get; set; }
     }
 }
 

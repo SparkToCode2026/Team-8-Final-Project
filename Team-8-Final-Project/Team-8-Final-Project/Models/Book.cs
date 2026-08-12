@@ -19,11 +19,11 @@ namespace Team_8_Final_Project.Models
         public string BookLanguage { get; set; }
         public int Year { get; set; }
 
-        [ForeignKey("publisher")]
+        [ForeignKey("Publisher")]
         public int PublisherId { get; set; }
         public Publisher Publisher { get; set; }
 
-        [ForeignKey("category")]
+        [ForeignKey("Category")]
         public int CategoryId { get; set; }
         public Category Category { get; set; }
 

@@ -130,6 +130,29 @@ namespace Team_8_Final_Project.Controllers
             return Ok(books);
         }
 
-    }
+        // Filter Books by Category, Language, and Year
+        [HttpGet("FilterBooks")]
+        [Authorize]
+        public IActionResult FilterBooks(int? categoryId, string? language, int? year)
+        {
+            List<Book> books = context.books.Include(b => b.Authors)
+                                            .Include(b => b.Category)
+                                            .Include(b => b.Publisher)
+                                            .Where(b =>
+                                                 (!categoryId.HasValue || b.CategoryId == categoryId) &&
+                                                 (language == null || b.BookLanguage == language) &&
+                                                 (!year.HasValue || b.Year == year))
+                                            .ToList();
 
+            if (books.Count == 0)
+            {
+                return NotFound("No books match the selected filters.");
+            }
+
+            return Ok(books);
+        }
+
+
+
+    }
 }

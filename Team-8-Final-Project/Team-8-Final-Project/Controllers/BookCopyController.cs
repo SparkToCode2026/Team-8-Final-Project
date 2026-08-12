@@ -79,5 +79,21 @@ namespace Team_8_Final_Project.Controllers
             return Ok(existingBookCopy);
         }
 
+        // Delete a book copy
+        [HttpDelete("DeleteBookCopy")]
+        [Authorize(Roles = "Admin, Librarian")]
+        public IActionResult DeleteBookCopy(int id)
+        {
+            BookCopy existingBookCopy = context.BookCopies.FirstOrDefault(bc => bc.BookCopyId == id);
+            if (existingBookCopy == null)
+            {
+                return NotFound("Book copy not found.");
+            }
+            context.BookCopies.Remove(existingBookCopy);
+            context.SaveChanges();
+
+            return Ok("BookCopy with ID "+ id + "has been deleted.");
+        }
+
     }
 }

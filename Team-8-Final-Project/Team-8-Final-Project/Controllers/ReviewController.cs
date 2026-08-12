@@ -37,6 +37,11 @@ namespace Team_8_Final_Project.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateReview(int id, Review updatedReview)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var review = await _context.Reviews.FindAsync(id);
 
             if (review == null)

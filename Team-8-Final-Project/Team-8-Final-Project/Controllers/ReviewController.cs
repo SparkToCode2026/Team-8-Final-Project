@@ -97,5 +97,21 @@ namespace Team_8_Final_Project.Controllers
 
             return Ok(reviews);
         }
+        // Case 6 - Get Review by ID
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetReviewById(int id)
+        {
+            var review = await _context.Reviews
+                .Include(r => r.user)
+                .Include(r => r.book)
+                .FirstOrDefaultAsync(r => r.ReviewId == id);
+
+            if (review == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(review);
+        }
     }
 }

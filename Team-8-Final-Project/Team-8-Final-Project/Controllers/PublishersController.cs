@@ -72,7 +72,7 @@ namespace Team_8_Final_Project.Controllers
             var newPublisher = await _context.Publishers.FindAsync(newPublisherId);
             if (oldPublisher == null || newPublisher == null) return NotFound();
 
-            var booksToReassign = await _context.books
+            var booksToReassign = await _context.Books
                 .Where(b => b.PublisherID == id)
                 .ToListAsync();
 

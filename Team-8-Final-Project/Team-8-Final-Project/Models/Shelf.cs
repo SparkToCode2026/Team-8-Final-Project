@@ -7,17 +7,12 @@ public class Shelf
 {
     [Key]
     [JsonIgnore]
-    public int ShelfID { get; set; }
-
-    public string ShelfCode { get; set; } = string.Empty;
-
-    public string Section { get; set; } = string.Empty;
-
-    public int FloorNumber { get; set; }
-}
+    public int ShelfId { get; set; }
+    [Required]
     public string ShelfCode { get; set; }
     public string Section { get; set; }
     public int FloorNumber { get; set; }
 
-    public List<BookCopy> bookCopies { get; set; }
+
+    public List<BookCopy> BookCopies { get; set; }
 }

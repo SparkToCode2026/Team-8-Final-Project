@@ -32,5 +32,24 @@ namespace Team_8_Final_Project.Controllers
 
             return Ok(review);
         }
+        // Case 2 - Edit Full Review
+        [HttpPut("{id}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateReview(int id, Review updatedReview)
+        {
+            var review = await _context.Reviews.FindAsync(id);
+
+            if (review == null)
+            {
+                return NotFound();
+            }
+
+            review.Rating = updatedReview.Rating;
+            review.Comment = updatedReview.Comment;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(review);
+        }
     }
 }

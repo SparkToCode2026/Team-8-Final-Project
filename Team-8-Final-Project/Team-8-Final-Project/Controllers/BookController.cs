@@ -19,7 +19,7 @@ namespace Team_8_Final_Project.Controllers
         [Authorize(Roles = "Librarian,Admin")]
         public IActionResult AddBook(Book b)
         {
-            context.books.Add(b);
+            context.Books.Add(b);
             context.SaveChanges();
 
             return Ok(b);
@@ -30,7 +30,7 @@ namespace Team_8_Final_Project.Controllers
         [Authorize(Roles = "Librarian,Admin")]
         public IActionResult UpdateBook(int id, Book newBook)
         {
-            Book b = context.books.FirstOrDefault(b => b.BookId == id);
+            Book b = context.Books.FirstOrDefault(b => b.BookId == id);
 
             if (b == null)
             {
@@ -58,7 +58,7 @@ namespace Team_8_Final_Project.Controllers
         [Authorize(Roles = "Librarian,Admin")]
         public IActionResult ReassignPublisher(int id, int newPublisherId)
         {
-            Book b = context.books.FirstOrDefault(b => b.BookId == id);
+            Book b = context.Books.FirstOrDefault(b => b.BookId == id);
 
             if (b == null)
             {
@@ -77,7 +77,7 @@ namespace Team_8_Final_Project.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult DeleteBook(int id)
         {
-            Book b = context.books.FirstOrDefault(b => b.BookId == id);
+            Book b = context.Books.FirstOrDefault(b => b.BookId == id);
 
             if (b == null)
             {
@@ -85,14 +85,14 @@ namespace Team_8_Final_Project.Controllers
             }
 
             // Check if the book has any copies
-            bool hasCopies = context.bookCopies.Any(bc => bc.BookId == id);
+            bool hasCopies = context.BookCopies.Any(bc => bc.BookId == id);
 
             if (hasCopies)
             {
                 return BadRequest("This book cannot be deleted because it has book copies.");
             }
 
-            context.books.Remove(b);
+            context.Books.Remove(b);
             context.SaveChanges();
 
             return Ok(b);
@@ -103,7 +103,7 @@ namespace Team_8_Final_Project.Controllers
         [Authorize]
         public IActionResult GetAllBooks()
         {
-            List<Book> books = context.books.Include(b => b.Authors)
+            List<Book> books = context.Books.Include(b => b.Authors)
                                             .Include(b => b.Category)
                                             .Include(b => b.Publisher)
                                             .ToList();
@@ -116,7 +116,7 @@ namespace Team_8_Final_Project.Controllers
         [Authorize]
         public IActionResult SearchBook(string title)
         {
-            List<Book> books = context.books.Include(b => b.Authors)
+            List<Book> books = context.Books.Include(b => b.Authors)
                                             .Include(b => b.Category)
                                             .Include(b => b.Publisher)
                                             .Where(b => b.BookTitle.Contains(title))
@@ -135,7 +135,7 @@ namespace Team_8_Final_Project.Controllers
         [Authorize]
         public IActionResult FilterBooks(int? categoryId, string? language, int? year)
         {
-            List<Book> books = context.books.Include(b => b.Authors)
+            List<Book> books = context.Books.Include(b => b.Authors)
                                             .Include(b => b.Category)
                                             .Include(b => b.Publisher)
                                             .Where(b =>

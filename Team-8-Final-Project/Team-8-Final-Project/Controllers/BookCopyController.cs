@@ -11,5 +11,19 @@ namespace Team_8_Final_Project.Controllers
         {
             context = _context;
         }
+
+        // Add a new book copy
+        [HttpPost("AddBookCopy")]
+        public IActionResult AddBookCopy(BookCopy bookCopy)
+        {
+            context.BookCopies.Add(bookCopy);
+            context.SaveChanges();
+
+            return Ok(bookCopy);
+        }
+
+
+
+
     }
 }

@@ -20,12 +20,12 @@ namespace Team_8_Final_Project.Models
         public int Year { get; set; }
 
         [ForeignKey("publisher")]
-        public int PublisherID { get; set; }
-        // public Publisher Publisher { get; set; }
+        public int PublisherId { get; set; }
+        public Publisher Publisher { get; set; }
 
         [ForeignKey("category")]
-        public int CategoryID { get; set; }
-        // public Category Category { get; set; }
+        public int CategoryId { get; set; }
+        public Category Category { get; set; }
 
         public List<BookCopy> BookCopies { get; set; }
 

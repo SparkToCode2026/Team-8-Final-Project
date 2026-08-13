@@ -98,7 +98,7 @@ public class ShelfController : ControllerBase
     public async Task<IActionResult> GetAllWithCopies()
     {
         var shelves = await _context.Shelves
-            .Include(s => s.bookCopies)
+            .Include(s => s.BookCopies)
             .ToListAsync();
 
         return Ok(shelves);

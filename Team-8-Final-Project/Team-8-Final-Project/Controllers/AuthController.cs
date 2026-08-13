@@ -28,6 +28,12 @@ namespace Team_8_Final_Project.Controllers
             public string UserEmail { get; set; }
 
             [Required]
+            public string UserPhoneNo { get; set; }
+
+            [Required]
+            public DateTime DOB { get; set; }
+
+            [Required]
             [MinLength(8, ErrorMessage = "Password must be at least 8 characters long.")]
             public string Password { get; set; }
         }
@@ -66,6 +72,8 @@ namespace Team_8_Final_Project.Controllers
 
             return Ok("User registered successfully.");
         }
+
+
 
     }
 

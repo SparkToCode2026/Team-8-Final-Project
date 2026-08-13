@@ -38,5 +38,36 @@ public class EventController
         await _context.SaveChangesAsync();
         return NoContent();
     }
+    [HttpGet("include")]
+    public async Task<IActionResult> GetAllEventsWithUsers()
+    {
+        var events = await _context.Events
+            .Include(e => e.Users)
+            .ToListAsync();
+        return Ok(events);
+    }
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetEventById(int id)
+    {
+        var eventItem = await _context.Events
+            .Include(e => e.Users)
+            .FirstOrDefaultAsync(e => e.Id == id);
+        if (eventItem == null) return 
+            NotFound();
+        return Ok(eventItem);
+}
+    [HttpGet("store")]
+    public async Task<IActionResult> GetSortedEvents([FromQuery] string sortBy = "Date")
+    {
+        var events = _context.Events.AsQueryable();
 
+        events = sortBy.ToLower() switch
+        {
+            "name" => events.OrderBy(e => e.Name),
+            "status" => events.OrderBy(e => e.Status),
+            _ => events.OrderBy(e => e.Date)
+        };
+
+        return Ok(await events.ToListAsync());
+    }
 }

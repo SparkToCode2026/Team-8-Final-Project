@@ -143,7 +143,7 @@ namespace Team_8_Final_Project.Controllers
                 issuer: configuration["Jwt:Issuer"],
                 audience: configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(2),
+                expires: DateTime.Now.AddHours(2),
                 signingCredentials: credentials
             );
 
@@ -188,7 +188,7 @@ namespace Team_8_Final_Project.Controllers
 
             // Save the token and expiration time
             user.PasswordResetToken = resetToken;
-            user.PasswordResetTokenExpiry = DateTime.UtcNow.AddMinutes(30);
+            user.PasswordResetTokenExpiry = DateTime.Now.AddMinutes(30);
 
             context.SaveChanges();
 
@@ -213,6 +213,59 @@ namespace Team_8_Final_Project.Controllers
             [Required]
             [MinLength(8, ErrorMessage = "Password must be at least 8 characters long.")]
             public string NewPassword { get; set; }
+        }
+
+        // Reset Password
+        [HttpPost("ResetPassword")]
+        public IActionResult ResetPassword(ResetPasswordDto resetPasswordDto)
+        {
+            // Find the user
+            User user = context.Users.FirstOrDefault(u => u.UserEmail == resetPasswordDto.UserEmail);
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            // Check reset request exists
+            if (string.IsNullOrEmpty(user.PasswordResetToken))
+            {
+                return BadRequest("No password reset request was found.");
+            }
+
+            // Check if token expired
+            if (user.PasswordResetTokenExpiry == null || user.PasswordResetTokenExpiry < DateTime.Now)
+            {
+                // Invalidate expired token
+                user.PasswordResetToken = null;
+                user.PasswordResetTokenExpiry = null;
+
+                context.SaveChanges();
+
+                return BadRequest("The password reset link has expired. Please request a new one.");
+            }
+
+            // Check that the token from the link matches the stored token
+            if (user.PasswordResetToken != resetPasswordDto.ResetToken)
+            {
+                return BadRequest("Invalid password reset link.");
+            }
+
+            // Hash the new password
+            PasswordHasher<User> hasher = new PasswordHasher<User>();
+
+            user.PasswordHash = hasher.HashPassword(
+                user,
+                resetPasswordDto.NewPassword
+            );
+
+            // Reset/Invalidate token after successful password reset
+            user.PasswordResetToken = null;
+            user.PasswordResetTokenExpiry = null;
+
+            context.SaveChanges();
+
+            return Ok("Password has been reset successfully.");
         }
 
     }

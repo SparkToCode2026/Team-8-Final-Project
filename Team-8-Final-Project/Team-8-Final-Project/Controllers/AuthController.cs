@@ -32,7 +32,40 @@ namespace Team_8_Final_Project.Controllers
             public string Password { get; set; }
         }
 
+        // Register a new user
+        [HttpPost("Register")]
+        public IActionResult Register(RegisterDto registerDto)
+        {
+            // Check if email already exists
+            User existingUser = context.Users.FirstOrDefault(u => u.UserEmail == registerDto.UserEmail);
 
+            if (existingUser != null)
+            {
+                return BadRequest("Email is already registered.");
+            }
+
+            // Create the User
+            User user = new User
+            {
+                FirstName = registerDto.FirstName,
+                LastName = registerDto.LastName,
+                UserEmail = registerDto.UserEmail,
+                Role = UserRole.Member
+            };
+
+            // Hash the password
+            PasswordHasher<User> hasher = new PasswordHasher<User>();
+
+            user.PasswordHash = hasher.HashPassword(
+                user,
+                registerDto.Password
+            );
+
+            context.Users.Add(user);
+            context.SaveChanges();
+
+            return Ok("User registered successfully.");
+        }
 
     }
 

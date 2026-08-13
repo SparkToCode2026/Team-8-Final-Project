@@ -79,17 +79,22 @@ namespace Team_8_Final_Project.Controllers
             return Ok(existingAuthor);
         }
 
-        // 3. PATCH/PUT: Distinct update case - Update Email only (Case 3)
-        [HttpPatch("{id}/email")]
-        public async Task<IActionResult> UpdateAuthorEmail(int id, [FromBody] string newEmail)
+        // Update only the email of an author
+        [HttpPatch("UpdateAuthorEmail")]
+        [Authorize(Roles = "Admin, Librarian")]
+        public IActionResult UpdateAuthorEmail(int id, string newEmail)
         {
-            var author = await _context.Authors.FindAsync(id);
-            if (author == null) return NotFound();
+            Author existingAuthor = context.Authors.FirstOrDefault(a => a.AuthorId == id);
 
-            author.Email = newEmail;
-            await _context.SaveChangesAsync();
+            if (existingAuthor == null)
+            {
+                return NotFound("Author not found.");
+            }
 
-            return Ok(author);
+            existingAuthor.Email = newEmail;
+            context.SaveChanges();
+
+            return Ok(existingAuthor);
         }
 
         // 4. DELETE: Delete an Author (Case 4)

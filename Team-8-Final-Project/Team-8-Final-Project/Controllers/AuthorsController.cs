@@ -4,15 +4,16 @@ using Team_8_Final_Project.Models;
 
 namespace Team_8_Final_Project.Controllers
 {
-    [Route("api/[controller]")]
+    
     [ApiController]
+    [Route("Author")]
     public class AuthorsController : ControllerBase
     {
-        private readonly ProjectContext _context;
+        private readonly ProjectContext context;
 
-        public AuthorsController(ProjectContext context)
+        public AuthorsController(ProjectContext _context)
         {
-            _context = context;
+            context = _context;
         }
 
         public class CreateAuthorDto
@@ -24,7 +25,14 @@ namespace Team_8_Final_Project.Controllers
             public string Nationality { get; set; }
         }
 
-
+        public class UpdateAuthorDto
+        {
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string Email { get; set; }
+            public string Biography { get; set; }
+            public string Nationality { get; set; }
+        }
 
 
         // 1. POST: Create a new Author (Case 1)

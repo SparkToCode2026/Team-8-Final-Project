@@ -97,17 +97,21 @@ namespace Team_8_Final_Project.Controllers
             return Ok(existingAuthor);
         }
 
-        // 4. DELETE: Delete an Author (Case 4)
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAuthor(int id)
+        // Delete an author
+        [HttpDelete("DeleteAuthor")]
+        [Authorize(Roles = "Admin, Librarian")]
+        public IActionResult DeleteAuthor(int id)
         {
-            var author = await _context.Authors.FindAsync(id);
-            if (author == null) return NotFound();
+            Author existingAuthor = context.Authors.FirstOrDefault(a => a.AuthorId == id);
+            if (existingAuthor == null)
+            {
+                return NotFound("Author not found.");
+            }
 
-            _context.Authors.Remove(author);
-            await _context.SaveChangesAsync();
+            context.Authors.Remove(existingAuthor);
+            context.SaveChanges();
 
-            return Ok(new { message = "Author deleted successfully" });
+            return Ok("Author with ID " + id + " has been deleted.");
         }
 
         // 5. GET List: Get all authors with their related books (Case 5 - Include)

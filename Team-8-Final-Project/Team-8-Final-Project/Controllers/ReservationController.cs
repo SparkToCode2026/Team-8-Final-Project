@@ -113,8 +113,8 @@ namespace Team_8_Final_Project.Controllers
             return Ok(reservations);
         }
 
-        [HttpGet("GetReservation")]
-        public IActionResult GetReservation(int id)
+        [HttpGet("GetReservationById")]
+        public IActionResult GetReservationById(int id)
         {
             Reservation r = context.Reservations.FirstOrDefault(r => r.ReservationId == id);
             if (r == null)

@@ -201,6 +201,20 @@ namespace Team_8_Final_Project.Controllers
             });
         }
 
+        public class ResetPasswordDto
+        {
+            [Required]
+            [EmailAddress]
+            public string UserEmail { get; set; }
+
+            [Required]
+            public string ResetToken { get; set; }
+
+            [Required]
+            [MinLength(8, ErrorMessage = "Password must be at least 8 characters long.")]
+            public string NewPassword { get; set; }
+        }
+
     }
 
 

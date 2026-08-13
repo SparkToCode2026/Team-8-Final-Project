@@ -106,7 +106,12 @@ namespace Team_8_Final_Project.Controllers
             return Ok("Reservation removed successfully");
         }
 
-
+        [HttpGet("GetAllReservation")]
+        public IActionResult GetAllReservation()
+        {
+            List<Reservation> reservations = context.Reservations.ToList();
+            return Ok(reservations);
+        }
 
 
 

@@ -114,13 +114,14 @@ namespace Team_8_Final_Project.Controllers
             return Ok("Author with ID " + id + " has been deleted.");
         }
 
-        // 5. GET List: Get all authors with their related books (Case 5 - Include)
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Author>>> GetAllAuthors()
+        // Get all authors, including the books they've written
+        [HttpGet("GetAllAuthors")]
+        [Authorize]
+        public IActionResult GetAllAuthors()
         {
-            return await _context.Authors
-                .Include(a => a.Books)
-                .ToListAsync();
+            List<Author> authors = context.Authors.Include(a => a.Books).ToList();
+
+            return Ok(authors);
         }
 
         // 6. GET Find: Get single Author by Id (Case 6)

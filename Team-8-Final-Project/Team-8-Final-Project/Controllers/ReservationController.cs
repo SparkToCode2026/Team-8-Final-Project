@@ -93,7 +93,18 @@ namespace Team_8_Final_Project.Controllers
             return Ok(reservation);
         }
 
-        
+        [HttpDelete("RemoveReservation")]
+        public IActionResult RemoveReservation(int id)
+        {
+            Reservation r = context.Reservations.FirstOrDefault(r => r.ReservationId == id);
+            if (r == null)
+            {
+                return NotFound("Reservation not found");
+            }
+            context.Reservations.Remove(r);
+            context.SaveChanges();
+            return Ok("Reservation removed successfully");
+        }
 
 
 

@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using Team_8_Final_Project.Models;
 namespace Team_8_Final_Project.Controllers
 {
@@ -9,10 +13,12 @@ namespace Team_8_Final_Project.Controllers
     public class AuthController : ControllerBase
     {
         private ProjectContext context;
+        private IConfiguration configuration;
 
-        public AuthController(ProjectContext _context)
+        public AuthController(ProjectContext _context, IConfiguration _configuration)
         {
             context = _context;
+            configuration = _configuration;
         }
 
         public class RegisterDto
@@ -84,6 +90,7 @@ namespace Team_8_Final_Project.Controllers
             [Required]
             public string Password { get; set; }
         }
+
 
 
     }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Team_8_Final_Project.Models;
@@ -14,11 +15,49 @@ namespace Team_8_Final_Project.Controllers
             context = _context;
         }
 
+        public class AddBookDto
+        {
+            [Required]
+            public string ISBN { get; set; }
+
+            [Required]
+            public string BookTitle { get; set; }
+
+            [Required]
+            public int? BookEdition { get; set; }
+
+            [Required]
+            public string BookLanguage { get; set; }
+
+            [Required]
+            public int? Year { get; set; }
+
+            [Required]
+            public int? PublisherId { get; set; }
+
+            [Required]
+            public int? CategoryId { get; set; }
+
+            [Required]
+            public List<int> AuthorIds { get; set; }
+        }
+
         // Add a new Book
         [HttpPost("AddBook")]
         [Authorize(Roles = "Librarian,Admin")]
-        public IActionResult AddBook(Book b)
+        public IActionResult AddBook(AddBookDto addBookDto)
         {
+            Book b = new Book
+            {
+                ISBN = addBookDto.ISBN,
+                BookTitle = addBookDto.BookTitle,
+                BookEdition = addBookDto.BookEdition,
+                BookLanguage = addBookDto.BookLanguage,
+                Year = addBookDto.Year,
+                PublisherId = addBookDto.PublisherId,
+                CategoryId = addBookDto.CategoryId
+            };
+
             context.Books.Add(b);
             context.SaveChanges();
 

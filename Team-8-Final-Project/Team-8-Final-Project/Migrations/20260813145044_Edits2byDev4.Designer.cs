@@ -12,28 +12,28 @@ using Team_8_Final_Project;
 namespace Team_8_Final_Project.Migrations
 {
     [DbContext(typeof(ProjectContext))]
-    [Migration("20260812111442_Edits")]
-    partial class Edits
+    [Migration("20260813145044_Edits2byDev4")]
+    partial class Edits2byDev4
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.10")
+                .HasAnnotation("ProductVersion", "10.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("AuthorBook", b =>
                 {
-                    b.Property<int>("AuthorsAuthorID")
+                    b.Property<int>("AuthorsAuthorId")
                         .HasColumnType("int");
 
                     b.Property<int>("BooksBookId")
                         .HasColumnType("int");
 
-                    b.HasKey("AuthorsAuthorID", "BooksBookId");
+                    b.HasKey("AuthorsAuthorId", "BooksBookId");
 
                     b.HasIndex("BooksBookId");
 
@@ -57,11 +57,11 @@ namespace Team_8_Final_Project.Migrations
 
             modelBuilder.Entity("Team_8_Final_Project.Models.Author", b =>
                 {
-                    b.Property<int>("AuthorID")
+                    b.Property<int>("AuthorId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AuthorID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AuthorId"));
 
                     b.Property<string>("Biography")
                         .IsRequired()
@@ -83,7 +83,7 @@ namespace Team_8_Final_Project.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("AuthorID");
+                    b.HasKey("AuthorId");
 
                     b.ToTable("Authors");
                 });
@@ -96,7 +96,7 @@ namespace Team_8_Final_Project.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookId"));
 
-                    b.Property<int>("BookEdition")
+                    b.Property<int?>("BookEdition")
                         .HasColumnType("int");
 
                     b.Property<string>("BookLanguage")
@@ -107,17 +107,17 @@ namespace Team_8_Final_Project.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("ISBN")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PublisherId")
+                    b.Property<int?>("PublisherId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Year")
+                    b.Property<int?>("Year")
                         .HasColumnType("int");
 
                     b.HasKey("BookId");
@@ -449,7 +449,7 @@ namespace Team_8_Final_Project.Migrations
                 {
                     b.HasOne("Team_8_Final_Project.Models.Author", null)
                         .WithMany()
-                        .HasForeignKey("AuthorsAuthorID")
+                        .HasForeignKey("AuthorsAuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -479,15 +479,11 @@ namespace Team_8_Final_Project.Migrations
                 {
                     b.HasOne("Team_8_Final_Project.Models.Category", "Category")
                         .WithMany("Books")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("Team_8_Final_Project.Models.Publisher", "Publisher")
                         .WithMany("Books")
-                        .HasForeignKey("PublisherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PublisherId");
 
                     b.Navigation("Category");
 

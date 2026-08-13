@@ -155,6 +155,13 @@ namespace Team_8_Final_Project.Controllers
             });
         }
 
+        public class ForgotPasswordDto
+        {
+            [Required]
+            [EmailAddress]
+            public string UserEmail { get; set; }
+        }
+
     }
 
 

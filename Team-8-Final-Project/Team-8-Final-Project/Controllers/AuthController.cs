@@ -5,7 +5,7 @@ using Team_8_Final_Project.Models;
 namespace Team_8_Final_Project.Controllers
 {
     [ApiController]
-    [Route("AuthController")]
+    [Route("Auth")]
     public class AuthController : ControllerBase
     {
         private ProjectContext context;

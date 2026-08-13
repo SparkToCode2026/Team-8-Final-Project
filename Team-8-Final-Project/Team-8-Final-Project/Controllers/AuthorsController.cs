@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Team_8_Final_Project.Models;
 
@@ -35,13 +36,24 @@ namespace Team_8_Final_Project.Controllers
         }
 
 
-        // 1. POST: Create a new Author (Case 1)
-        [HttpPost]
-        public async Task<ActionResult<Author>> CreateAuthor(Author author)
+        // Add a new author
+        [HttpPost("AddAuthor")]
+        [Authorize(Roles = "Admin, Librarian")]
+        public IActionResult AddAuthor(CreateAuthorDto dto)
         {
-            _context.Authors.Add(author);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetAuthorById), new { id = author.AuthorId }, author);
+            var author = new Author
+            {
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                Email = dto.Email,
+                Biography = dto.Biography,
+                Nationality = dto.Nationality
+            };
+
+            context.Authors.Add(author);
+            context.SaveChanges();
+
+            return Ok(author);
         }
 
         // 2. PUT: Update full Author details (Case 2)

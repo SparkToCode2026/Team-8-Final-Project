@@ -25,6 +25,11 @@ namespace Team_8_Final_Project.Controllers
         [Required]
         public string ReservationStatus { get; set; }
 
+        [Required]
+        public int BookId { get; set; }
+
+        [Required]
+        public int UserId { get; set; }
     }
 
 }

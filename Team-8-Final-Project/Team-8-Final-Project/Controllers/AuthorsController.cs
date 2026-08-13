@@ -124,17 +124,19 @@ namespace Team_8_Final_Project.Controllers
             return Ok(authors);
         }
 
-        // 6. GET Find: Get single Author by Id (Case 6)
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Author>> GetAuthorById(int id)
+        // Get a single author by Id
+        [HttpGet("GetAuthorById")]
+        [Authorize]
+        public IActionResult GetAuthorById(int id)
         {
-            var author = await _context.Authors
-                .Include(a => a.Books)
-                .FirstOrDefaultAsync(a => a.AuthorId == id);
+            Author author = context.Authors.Include(a => a.Books).FirstOrDefault(a => a.AuthorId == id);
 
-            if (author == null) return NotFound();
+            if (author == null)
+            {
+                return NotFound("Author not found.");
+            }
 
-            return author;
+            return Ok(author);
         }
 
         // 7. GET Filter: Filter authors by Nationality using LINQ (Case 7 - Where)

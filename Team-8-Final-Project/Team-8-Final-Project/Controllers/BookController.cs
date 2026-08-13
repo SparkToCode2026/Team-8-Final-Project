@@ -15,7 +15,7 @@ namespace Team_8_Final_Project.Controllers
             context = _context;
         }
 
-        public class AddBookDto
+        public class BookDto
         {
             [Required]
             public string ISBN { get; set; }
@@ -45,7 +45,7 @@ namespace Team_8_Final_Project.Controllers
         // Add a new Book
         [HttpPost("AddBook")]
         [Authorize(Roles = "Librarian,Admin")]
-        public IActionResult AddBook(AddBookDto addBookDto)
+        public IActionResult AddBook(BookDto addBookDto)
         {
             Book b = new Book
             {
@@ -67,7 +67,7 @@ namespace Team_8_Final_Project.Controllers
         // Full Update of a Book
         [HttpPut("UpdateBook/{id}")]
         [Authorize(Roles = "Librarian,Admin")]
-        public IActionResult UpdateBook(int id, Book newBook)
+        public IActionResult UpdateBook(int id, BookDto newBook)
         {
             Book b = context.Books.FirstOrDefault(b => b.BookId == id);
 
@@ -82,10 +82,12 @@ namespace Team_8_Final_Project.Controllers
 
             b.BookLanguage = newBook.BookLanguage;
             b.BookEdition = newBook.BookEdition;
-            b.Authors = newBook.Authors;
 
             b.PublisherId = newBook.PublisherId;
             b.CategoryId = newBook.CategoryId;
+
+            b.Authors = context.Authors.Where(a => newBook.AuthorIds.Contains(a.AuthorId))
+                                       .ToList();
 
             context.SaveChanges();
 

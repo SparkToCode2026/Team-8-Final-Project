@@ -7,7 +7,7 @@ namespace Team_8_Final_Project.Models
     {
         [Key]
         [JsonIgnore]
-        public int AuthorID { get; set; }
+        public int AuthorId { get; set; }
         [Required]
         public string FirstName { get; set; }
         [Required]

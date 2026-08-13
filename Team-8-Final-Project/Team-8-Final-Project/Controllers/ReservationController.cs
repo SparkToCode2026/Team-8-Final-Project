@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using Team_8_Final_Project.Models;
@@ -51,6 +52,7 @@ namespace Team_8_Final_Project.Controllers
         }
 
         [HttpPost("AddReservation")]
+        [Authorize]
         public IActionResult AddReservation(CreateReservationDto dto)
         {
             var reservation = new Reservation
@@ -67,6 +69,7 @@ namespace Team_8_Final_Project.Controllers
         }
 
         [HttpPut("UpdateReservation")]
+        [Authorize(Roles = "Librarian,Admin")]
         public IActionResult UpdateReservation(int id, UpdateReservationDto dto)
         {
             Reservation r = context.Reservations.FirstOrDefault(r => r.ReservationId == id);
@@ -81,6 +84,7 @@ namespace Team_8_Final_Project.Controllers
         }
 
         [HttpPatch("UpdateReservationStatus")]
+        [Authorize(Roles = "Librarian,Admin")]
         public IActionResult UpdateReservationStatus(int reservationId, UpdateReservationStatusDto newStatus)
         {
             var reservation = context.Reservations.Find(reservationId);
@@ -94,6 +98,7 @@ namespace Team_8_Final_Project.Controllers
         }
 
         [HttpDelete("RemoveReservation")]
+        [Authorize(Roles = "Librarian,Admin")]
         public IActionResult RemoveReservation(int id)
         {
             Reservation r = context.Reservations.FirstOrDefault(r => r.ReservationId == id);
@@ -107,6 +112,7 @@ namespace Team_8_Final_Project.Controllers
         }
 
         [HttpGet("GetAllReservation")]
+        [Authorize(Roles = "Librarian,Admin")]
         public IActionResult GetAllReservation()
         {
             List<Reservation> reservations = context.Reservations.ToList();
@@ -114,6 +120,7 @@ namespace Team_8_Final_Project.Controllers
         }
 
         [HttpGet("GetReservationById")]
+        [Authorize(Roles = "Librarian,Admin")]
         public IActionResult GetReservationById(int id)
         {
             Reservation r = context.Reservations.FirstOrDefault(r => r.ReservationId == id);
@@ -125,6 +132,7 @@ namespace Team_8_Final_Project.Controllers
         }
 
         [HttpGet("GetReservationsByUser")]
+        [Authorize]
         public IActionResult GetReservationsByUser(int userId)
         {
             List<Reservation> reservations = context.Reservations.Where(r => r.UserId == userId).ToList();
@@ -132,6 +140,7 @@ namespace Team_8_Final_Project.Controllers
         }
         
         [HttpGet("GetReservationsSortedByDate")]
+        [Authorize(Roles = "Librarian,Admin")]
         public IActionResult GetReservationsSortedByDate()
         {
             List<Reservation> reservations = context.Reservations.OrderBy(r => r.ReservationDate).ToList();

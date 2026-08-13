@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Team_8_Final_Project;
 
@@ -11,9 +12,11 @@ using Team_8_Final_Project;
 namespace Team_8_Final_Project.Migrations
 {
     [DbContext(typeof(ProjectContext))]
-    partial class ProjectContextModelSnapshot : ModelSnapshot
+    [Migration("20260812111442_Edits")]
+    partial class Edits
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -489,21 +492,6 @@ namespace Team_8_Final_Project.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Publisher");
-                });
-
-            modelBuilder.Entity("Team_8_Final_Project.Models.Book", b =>
-                {
-                    b.HasOne("Team_8_Final_Project.Models.Category", null)
-                        .WithMany("Books")
-                        .HasForeignKey("CategoryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Team_8_Final_Project.Models.Publisher", null)
-                        .WithMany("Books")
-                        .HasForeignKey("PublisherID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Team_8_Final_Project.Models.BookCopy", b =>

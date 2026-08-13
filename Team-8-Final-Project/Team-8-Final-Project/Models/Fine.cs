@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Team_8_Final_Project.Models
 {
@@ -25,8 +26,9 @@ namespace Team_8_Final_Project.Models
         public DateTime FineIssueDate { get; set; }
 
 
-        [ForeignKey("loan")]
+        [ForeignKey("Loan")]
         public int LoanId { get; set; }
-        public Loan loan { get; set; }
+        [JsonIgnore]
+        public Loan Loan { get; set; }
     }
 }

@@ -7,7 +7,7 @@ public class Event
 {
     [Key]
     [JsonIgnore]
-    public int EventID { get; set; }
+    public int EventId { get; set; }
     [Required]
     public string EventName { get; set; }
     [Required]
@@ -15,6 +15,7 @@ public class Event
     [Required]
     public string EventLocation { get; set; }
     public string EventDescription { get; set; }
+    public int EventMaxCap { get; set; }
     
     
 

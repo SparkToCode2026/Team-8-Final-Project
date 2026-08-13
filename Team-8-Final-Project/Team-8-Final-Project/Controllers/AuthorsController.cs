@@ -154,15 +154,15 @@ namespace Team_8_Final_Project.Controllers
             return Ok(authors);
         }
 
-        // 8. GET Aggregate/Sort: Get total authors count & sorted list (Case 8 - OrderBy & Count)
-        [HttpGet("stats")]
-        public async Task<IActionResult> GetAuthorStats()
+        // Get total author count, plus all authors sorted by last name
+        [HttpGet("GetAuthorStats")]
+        [Authorize(Roles = "Librarian,Admin")]
+        public IActionResult GetAuthorStats()
         {
-            var totalAuthors = await _context.Authors.CountAsync();
-            var sortedAuthors = await _context.Authors
-                .OrderBy(a => a.LastName)
-                .Select(a => new { a.AuthorId, FullName = a.FirstName + " " + a.LastName, a.Nationality })
-                .ToListAsync();
+            int totalAuthors = context.Authors.Count();
+            var sortedAuthors = context.Authors.OrderBy(a => a.LastName)
+                                               .Select(a => new { a.AuthorId, FullName = a.FirstName + " " + a.LastName, a.Nationality })
+                                               .ToList();
 
             return Ok(new
             {

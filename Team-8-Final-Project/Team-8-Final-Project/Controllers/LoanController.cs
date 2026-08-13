@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using Team_8_Final_Project.Models;
 
@@ -112,7 +113,9 @@ namespace Team_8_Final_Project.Controllers
         [Authorize(Roles = "Librarian,Admin")]
         public IActionResult GetAllLoans()
         {
-            List<Loan> loans = context.Loans.ToList();
+            List<Loan> loans = context.Loans.Include(l => l.BookCopy)
+                                            .Include(l => l.User)
+                                            .ToList();
             return Ok(loans);
         }
 

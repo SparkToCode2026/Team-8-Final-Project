@@ -139,7 +139,18 @@ namespace Team_8_Final_Project.Controllers
 
             return Ok(bookCopies);
         }
-        
+
+        // Count Book Copies by Availability Status (3 of them)
+        [HttpGet("GetCopyCountByStatus")]
+        [Authorize(Roles = "Librarian,Admin")]
+        public IActionResult GetCopyCountByStatus()
+        {
+            var copyCounts = context.BookCopies.GroupBy(bc => bc.AvailabilityStatus)
+                                               .Select(g => new { Status = g.Key, TotalCopies = g.Count() })
+                                               .ToList();
+
+            return Ok(copyCounts);
+        }
 
     }
 }

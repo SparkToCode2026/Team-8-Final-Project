@@ -56,6 +56,7 @@ namespace Team_8_Final_Project.Controllers
             return Ok(reservation);
         }
 
+        [HttpPatch("UpdateReservationStatus")]
         public IActionResult UpdateReservationStatus(int reservationId, ReservationStatus newStatus)
         {
             var reservation = context.Reservations.Find(reservationId);

@@ -21,14 +21,14 @@ namespace Team_8_Final_Project.Controllers
         {
             _context.Authors.Add(author);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetAuthorById), new { id = author.AuthorID }, author);
+            return CreatedAtAction(nameof(GetAuthorById), new { id = author.AuthorId }, author);
         }
 
         // 2. PUT: Update full Author details (Case 2)
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAuthor(int id, Author author)
         {
-            if (id != author.AuthorID) return BadRequest("ID Mismatch");
+            if (id != author.AuthorId) return BadRequest("ID Mismatch");
 
             _context.Entry(author).State = EntityState.Modified;
 
@@ -38,7 +38,7 @@ namespace Team_8_Final_Project.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_context.Authors.Any(e => e.AuthorID == id)) return NotFound();
+                if (!_context.Authors.Any(e => e.AuthorId == id)) return NotFound();
                 throw;
             }
 
@@ -86,7 +86,7 @@ namespace Team_8_Final_Project.Controllers
         {
             var author = await _context.Authors
                 .Include(a => a.Books)
-                .FirstOrDefaultAsync(a => a.AuthorID == id);
+                .FirstOrDefaultAsync(a => a.AuthorId == id);
 
             if (author == null) return NotFound();
 
@@ -109,7 +109,7 @@ namespace Team_8_Final_Project.Controllers
             var totalAuthors = await _context.Authors.CountAsync();
             var sortedAuthors = await _context.Authors
                 .OrderBy(a => a.LastName)
-                .Select(a => new { a.AuthorID, FullName = a.FirstName + " " + a.LastName, a.Nationality })
+                .Select(a => new { a.AuthorId, FullName = a.FirstName + " " + a.LastName, a.Nationality })
                 .ToListAsync();
 
             return Ok(new

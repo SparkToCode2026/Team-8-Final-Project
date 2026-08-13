@@ -93,8 +93,8 @@ namespace Team_8_Final_Project.Controllers
         public async Task<IActionResult> GetAllFines()
         {
             var fines = await _context.Fines
-                .Include(f => f.loan)
-               .ThenInclude(l => l.bookCopy)
+                .Include(f => f.Loan)
+               .ThenInclude(l => l.BookCopy)
                .ToListAsync();
 
             return Ok(fines);
@@ -114,8 +114,8 @@ namespace Team_8_Final_Project.Controllers
             int userId = int.Parse(userIdClaim.Value);
 
             var fines = await _context.Fines
-                .Include(f => f.loan)
-                .Where(f => f.loan.UserID == userId)
+                .Include(f => f.Loan)
+                .Where(f => f.Loan.UserID == userId)
                 .ToListAsync();
 
             return Ok(fines);

@@ -96,7 +96,7 @@ namespace Team_8_Final_Project.Controllers
         public async Task<IActionResult> GetReviewsByBook(int bookId)
         {
             var reviews = await _context.Reviews
-                .Include(r => r.user)
+                .Include(r => r.User)
                 .Where(r => r.BookId == bookId)
                 .ToListAsync();
 
@@ -107,8 +107,8 @@ namespace Team_8_Final_Project.Controllers
         public async Task<IActionResult> GetReviewById(int id)
         {
             var review = await _context.Reviews
-                .Include(r => r.user)
-                .Include(r => r.book)
+                .Include(r => r.User)
+                .Include(r => r.Book)
                 .FirstOrDefaultAsync(r => r.ReviewId == id);
 
             if (review == null)

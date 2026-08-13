@@ -21,14 +21,14 @@ namespace Team_8_Final_Project.Controllers
         {
             _db.Users.Add(newUser);
             await _db.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetUserById), new { id = newUser.UserID }, newUser);
+            return CreatedAtAction(nameof(GetUserById), new { id = newUser.UserId }, newUser);
         }
 
         // 2. PUT: Update full User
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, User updatedUser)
         {
-            if (id != updatedUser.UserID) return BadRequest("ID Mismatch");
+            if (id != updatedUser.UserId) return BadRequest("ID Mismatch");
 
             _db.Entry(updatedUser).State = EntityState.Modified;
 
@@ -38,7 +38,7 @@ namespace Team_8_Final_Project.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_db.Users.Any(u => u.UserID == id)) return NotFound();
+                if (!_db.Users.Any(u => u.UserId == id)) return NotFound();
                 throw;
             }
 
@@ -88,7 +88,7 @@ namespace Team_8_Final_Project.Controllers
             var user = await _db.Users
                 .Include(u => u.Loans)
                 .Include(u => u.Reservations)
-                .FirstOrDefaultAsync(u => u.UserID == id);
+                .FirstOrDefaultAsync(u => u.UserId == id);
 
             if (user == null) return NotFound();
 
@@ -113,7 +113,7 @@ namespace Team_8_Final_Project.Controllers
                 .OrderBy(u => u.LastName)
                 .Select(u => new
                 {
-                    u.UserID,
+                    u.UserId,
                     FullName = u.FirstName + " " + u.LastName,
                     u.UserEmail,
                     u.Role

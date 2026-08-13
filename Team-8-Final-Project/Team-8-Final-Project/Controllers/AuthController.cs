@@ -56,6 +56,8 @@ namespace Team_8_Final_Project.Controllers
                 FirstName = registerDto.FirstName,
                 LastName = registerDto.LastName,
                 UserEmail = registerDto.UserEmail,
+                UserPhoneNo = registerDto.UserPhoneNo,
+                DOB = registerDto.DOB,
                 Role = UserRole.Member
             };
 

@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Team_8_Final_Project.Models;
 namespace Team_8_Final_Project.Controllers
@@ -160,6 +162,43 @@ namespace Team_8_Final_Project.Controllers
             [Required]
             [EmailAddress]
             public string UserEmail { get; set; }
+        }
+
+        // Forgot Password
+        [HttpPost("ForgotPassword")]
+        public IActionResult ForgotPassword(ForgotPasswordDto forgotPasswordDto)
+        {
+            // Find the user by email
+            User user = context.Users.FirstOrDefault(u => u.UserEmail == forgotPasswordDto.UserEmail);
+
+            if (user == null)
+            {
+                return NotFound("No account was found with this email.");
+            }
+
+            // Generate a secure random reset token
+            byte[] tokenBytes = new byte[32];
+
+            using (RandomNumberGenerator random = RandomNumberGenerator.Create())
+            {
+                random.GetBytes(tokenBytes);
+            }
+
+            string resetToken = Convert.ToBase64String(tokenBytes);
+
+            // Save the token and expiration time
+            user.PasswordResetToken = resetToken;
+            user.PasswordResetTokenExpiry = DateTime.UtcNow.AddMinutes(30);
+
+            context.SaveChanges();
+
+            // Temp. for testing till email service works
+            return Ok(new
+            {
+                Message = "Password reset request successful.",
+                ResetToken = resetToken,
+                ExpiresAt = user.PasswordResetTokenExpiry
+            });
         }
 
     }

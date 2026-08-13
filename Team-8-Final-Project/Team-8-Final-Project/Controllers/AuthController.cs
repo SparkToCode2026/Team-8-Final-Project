@@ -75,6 +75,15 @@ namespace Team_8_Final_Project.Controllers
             return Ok("User registered successfully.");
         }
 
+        public class LoginDto
+        {
+            [Required]
+            [EmailAddress]
+            public string UserEmail { get; set; }
+
+            [Required]
+            public string Password { get; set; }
+        }
 
 
     }

@@ -171,5 +171,13 @@ namespace Team_8_Final_Project.Controllers
             context.SaveChanges();
             return Ok(l);
         }
+
+        [HttpGet("GetLoansSortedByDueDate")]
+        [Authorize(Roles = "Librarian,Admin")]
+        public IActionResult GetLoansSortedByDueDate()
+        {
+            List<Loan> loans = context.Loans.OrderBy(l => l.LoanDueDate).ToList();
+            return Ok(loans);
+        }
     }
 }

@@ -89,6 +89,7 @@ namespace Team_8_Final_Project
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Team_8_Final_Project.Models;
@@ -14,11 +15,49 @@ namespace Team_8_Final_Project.Controllers
             context = _context;
         }
 
+        public class BookDto
+        {
+            [Required]
+            public string ISBN { get; set; }
+
+            [Required]
+            public string BookTitle { get; set; }
+
+            [Required]
+            public int? BookEdition { get; set; }
+
+            [Required]
+            public string BookLanguage { get; set; }
+
+            [Required]
+            public int? Year { get; set; }
+
+            [Required]
+            public int? PublisherId { get; set; }
+
+            [Required]
+            public int? CategoryId { get; set; }
+
+            [Required]
+            public List<int> AuthorIds { get; set; }
+        }
+
         // Add a new Book
         [HttpPost("AddBook")]
         [Authorize(Roles = "Librarian,Admin")]
-        public IActionResult AddBook(Book b)
+        public IActionResult AddBook(BookDto addBookDto)
         {
+            Book b = new Book
+            {
+                ISBN = addBookDto.ISBN,
+                BookTitle = addBookDto.BookTitle,
+                BookEdition = addBookDto.BookEdition,
+                BookLanguage = addBookDto.BookLanguage,
+                Year = addBookDto.Year,
+                PublisherId = addBookDto.PublisherId,
+                CategoryId = addBookDto.CategoryId
+            };
+
             context.Books.Add(b);
             context.SaveChanges();
 
@@ -28,7 +67,7 @@ namespace Team_8_Final_Project.Controllers
         // Full Update of a Book
         [HttpPut("UpdateBook/{id}")]
         [Authorize(Roles = "Librarian,Admin")]
-        public IActionResult UpdateBook(int id, Book newBook)
+        public IActionResult UpdateBook(int id, BookDto newBook)
         {
             Book b = context.Books.FirstOrDefault(b => b.BookId == id);
 
@@ -43,10 +82,12 @@ namespace Team_8_Final_Project.Controllers
 
             b.BookLanguage = newBook.BookLanguage;
             b.BookEdition = newBook.BookEdition;
-            b.Authors = newBook.Authors;
 
             b.PublisherId = newBook.PublisherId;
             b.CategoryId = newBook.CategoryId;
+
+            b.Authors = context.Authors.Where(a => newBook.AuthorIds.Contains(a.AuthorId))
+                                       .ToList();
 
             context.SaveChanges();
 
@@ -111,7 +152,7 @@ namespace Team_8_Final_Project.Controllers
 
         }
 
-        // Search Book by Title
+        // Search Book by Title and show available book copies
         [HttpGet("SearchBook")]
         [Authorize]
         public IActionResult SearchBook(string title)
@@ -119,6 +160,7 @@ namespace Team_8_Final_Project.Controllers
             List<Book> books = context.Books.Include(b => b.Authors)
                                             .Include(b => b.Category)
                                             .Include(b => b.Publisher)
+                                            .Include(b => b.BookCopies)
                                             .Where(b => b.BookTitle.Contains(title))
                                             .ToList();
 
@@ -127,7 +169,16 @@ namespace Team_8_Final_Project.Controllers
                 return NotFound("No books found with that title.");
             }
 
-            return Ok(books);
+            List<object> results = new List<object>();
+
+            foreach (Book book in books)
+            {
+                int availableCopies = book.BookCopies.Count(bc => bc.AvailabilityStatus == AvailabilityStatus.Available);
+
+                results.Add(new{ Book = book, AvailableCopies = availableCopies });
+            }
+
+            return Ok(results);
         }
 
         // Filter Books by Category, Language, and Year

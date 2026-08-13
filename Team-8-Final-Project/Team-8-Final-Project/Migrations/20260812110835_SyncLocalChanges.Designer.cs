@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Team_8_Final_Project;
 
@@ -11,9 +12,11 @@ using Team_8_Final_Project;
 namespace Team_8_Final_Project.Migrations
 {
     [DbContext(typeof(ProjectContext))]
-    partial class ProjectContextModelSnapshot : ModelSnapshot
+    [Migration("20260812110835_SyncLocalChanges")]
+    partial class SyncLocalChanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,15 +42,15 @@ namespace Team_8_Final_Project.Migrations
 
             modelBuilder.Entity("EventUser", b =>
                 {
-                    b.Property<int>("EventsEventId")
+                    b.Property<int>("EventsEventID")
                         .HasColumnType("int");
 
-                    b.Property<int>("UsersUserId")
+                    b.Property<int>("UsersUserID")
                         .HasColumnType("int");
 
-                    b.HasKey("EventsEventId", "UsersUserId");
+                    b.HasKey("EventsEventID", "UsersUserID");
 
-                    b.HasIndex("UsersUserId");
+                    b.HasIndex("UsersUserID");
 
                     b.ToTable("EventUser");
                 });
@@ -104,14 +107,14 @@ namespace Team_8_Final_Project.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int>("CategoryID")
                         .HasColumnType("int");
 
                     b.Property<string>("ISBN")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PublisherId")
+                    b.Property<int>("PublisherID")
                         .HasColumnType("int");
 
                     b.Property<int>("Year")
@@ -119,9 +122,9 @@ namespace Team_8_Final_Project.Migrations
 
                     b.HasKey("BookId");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("CategoryID");
 
-                    b.HasIndex("PublisherId");
+                    b.HasIndex("PublisherID");
 
                     b.ToTable("Books");
                 });
@@ -164,11 +167,11 @@ namespace Team_8_Final_Project.Migrations
 
             modelBuilder.Entity("Team_8_Final_Project.Models.Category", b =>
                 {
-                    b.Property<int>("CategoryId")
+                    b.Property<int>("CategoryID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryID"));
 
                     b.Property<string>("CategoryDescription")
                         .IsRequired()
@@ -180,18 +183,18 @@ namespace Team_8_Final_Project.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("CategoryId");
+                    b.HasKey("CategoryID");
 
                     b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Team_8_Final_Project.Models.Event", b =>
                 {
-                    b.Property<int>("EventId")
+                    b.Property<int>("EventID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EventId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EventID"));
 
                     b.Property<DateTime>("EventDate")
                         .HasColumnType("datetime2");
@@ -211,7 +214,7 @@ namespace Team_8_Final_Project.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("EventId");
+                    b.HasKey("EventID");
 
                     b.ToTable("Events");
                 });
@@ -281,11 +284,11 @@ namespace Team_8_Final_Project.Migrations
 
             modelBuilder.Entity("Team_8_Final_Project.Models.Publisher", b =>
                 {
-                    b.Property<int>("PublisherId")
+                    b.Property<int>("PublisherID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PublisherId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PublisherID"));
 
                     b.Property<string>("PublisherAddress")
                         .IsRequired()
@@ -312,7 +315,7 @@ namespace Team_8_Final_Project.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.HasKey("PublisherId");
+                    b.HasKey("PublisherID");
 
                     b.ToTable("Publishers");
                 });
@@ -405,11 +408,11 @@ namespace Team_8_Final_Project.Migrations
 
             modelBuilder.Entity("Team_8_Final_Project.Models.User", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("UserID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserID"));
 
                     b.Property<DateTime>("DOB")
                         .HasColumnType("datetime2");
@@ -437,7 +440,7 @@ namespace Team_8_Final_Project.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserId");
+                    b.HasKey("UserID");
 
                     b.ToTable("Users");
                 });
@@ -461,34 +464,15 @@ namespace Team_8_Final_Project.Migrations
                 {
                     b.HasOne("Team_8_Final_Project.Models.Event", null)
                         .WithMany()
-                        .HasForeignKey("EventsEventId")
+                        .HasForeignKey("EventsEventID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Team_8_Final_Project.Models.User", null)
                         .WithMany()
-                        .HasForeignKey("UsersUserId")
+                        .HasForeignKey("UsersUserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Team_8_Final_Project.Models.Book", b =>
-                {
-                    b.HasOne("Team_8_Final_Project.Models.Category", "Category")
-                        .WithMany("Books")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Team_8_Final_Project.Models.Publisher", "Publisher")
-                        .WithMany("Books")
-                        .HasForeignKey("PublisherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Publisher");
                 });
 
             modelBuilder.Entity("Team_8_Final_Project.Models.Book", b =>

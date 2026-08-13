@@ -31,10 +31,20 @@ namespace Team_8_Final_Project.Controllers
             public int UserId { get; set; }
         }
 
-        public class UpdateReservationStatusDto
+        public class UpdateReservationDto
         {
             [Required]
-            public int ReservationId { get; set; }
+            public DateTime ReservationDate { get; set; }
+
+            [Required]
+            public int BookId { get; set; }
+
+            [Required]
+            public int UserId { get; set; }
+        }
+
+        public class UpdateReservationStatusDto
+        {
 
             [Required]
             public ReservationStatus NewStatus { get; set; }
@@ -56,20 +66,34 @@ namespace Team_8_Final_Project.Controllers
             return Ok(reservation);
         }
 
+        [HttpPut("UpdateReservation")]
+        public IActionResult UpdateReservation(int id, UpdateReservationDto dto)
+        {
+            Reservation r = context.Reservations.FirstOrDefault(r => r.ReservationId == id);
+            if (r == null) return NotFound("Reservation not found");
+
+            r.ReservationDate = dto.ReservationDate;
+            r.BookId = dto.BookId;
+            r.UserId = dto.UserId;
+
+            context.SaveChanges();
+            return Ok(r);
+        }
+
         [HttpPatch("UpdateReservationStatus")]
-        public IActionResult UpdateReservationStatus(int reservationId, ReservationStatus newStatus)
+        public IActionResult UpdateReservationStatus(int reservationId, UpdateReservationStatusDto newStatus)
         {
             var reservation = context.Reservations.Find(reservationId);
             if (reservation == null)
             {
                 return NotFound();
             }
-            reservation.Status = newStatus;
+            reservation.Status = newStatus.NewStatus;
             context.SaveChanges();
             return Ok(reservation);
         }
 
-
+        
 
 
 

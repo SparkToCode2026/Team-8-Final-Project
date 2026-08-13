@@ -56,25 +56,27 @@ namespace Team_8_Final_Project.Controllers
             return Ok(author);
         }
 
-        // 2. PUT: Update full Author details (Case 2)
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAuthor(int id, Author author)
+        // Update an existing author (full update)
+        [HttpPut("UpdateAuthor")]
+        [Authorize(Roles = "Admin, Librarian")]
+        public IActionResult UpdateAuthor(int id, UpdateAuthorDto dto)
         {
-            if (id != author.AuthorId) return BadRequest("ID Mismatch");
+            Author existingAuthor = context.Authors.FirstOrDefault(a => a.AuthorId == id);
 
-            _context.Entry(author).State = EntityState.Modified;
-
-            try
+            if (existingAuthor == null)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!_context.Authors.Any(e => e.AuthorId == id)) return NotFound();
-                throw;
+                return NotFound("Author not found.");
             }
 
-            return NoContent();
+            existingAuthor.FirstName = dto.FirstName;
+            existingAuthor.LastName = dto.LastName;
+            existingAuthor.Email = dto.Email;
+            existingAuthor.Biography = dto.Biography;
+            existingAuthor.Nationality = dto.Nationality;
+
+            context.SaveChanges();
+
+            return Ok(existingAuthor);
         }
 
         // 3. PATCH/PUT: Distinct update case - Update Email only (Case 3)

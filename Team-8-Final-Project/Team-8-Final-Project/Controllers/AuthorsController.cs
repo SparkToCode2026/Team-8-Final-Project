@@ -139,13 +139,19 @@ namespace Team_8_Final_Project.Controllers
             return Ok(author);
         }
 
-        // 7. GET Filter: Filter authors by Nationality using LINQ (Case 7 - Where)
-        [HttpGet("filter-by-nationality/{nationality}")]
-        public async Task<ActionResult<IEnumerable<Author>>> GetAuthorsByNationality(string nationality)
+        // Filter authors by nationality
+        [HttpGet("FilterAuthorsByNationality")]
+        [Authorize]
+        public IActionResult FilterAuthorsByNationality(string nationality)
         {
-            return await _context.Authors
-                .Where(a => a.Nationality.ToLower() == nationality.ToLower())
-                .ToListAsync();
+            List<Author> authors = context.Authors.Where(a => a.Nationality.ToLower() == nationality.ToLower()).ToList();
+
+            if (authors.Count == 0)
+            {
+                return NotFound("No authors found for that nationality.");
+            }
+
+            return Ok(authors);
         }
 
         // 8. GET Aggregate/Sort: Get total authors count & sorted list (Case 8 - OrderBy & Count)

@@ -124,7 +124,12 @@ namespace Team_8_Final_Project.Controllers
             return Ok(r);
         }
 
-
+        [HttpGet("GetReservationsByUser")]
+        public IActionResult GetReservationsByUser(int userId)
+        {
+            List<Reservation> reservations = context.Reservations.Where(r => r.UserId == userId).ToList();
+            return Ok(reservations);
+        }
 
 
     }

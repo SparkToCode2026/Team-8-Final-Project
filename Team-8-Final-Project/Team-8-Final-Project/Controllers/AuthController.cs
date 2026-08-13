@@ -14,7 +14,14 @@ namespace Team_8_Final_Project.Controllers
             context = _context;
         }
 
-       
+        // A test 
+        [HttpGet("TestPasswordHasher")]
+        public IActionResult TestPasswordHasher()
+        {
+            PasswordHasher<User> hasher = new PasswordHasher<User>();
+
+            return Ok("PasswordHasher is working!");
+        }
     }
 
 

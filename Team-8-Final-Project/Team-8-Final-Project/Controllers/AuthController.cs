@@ -91,7 +91,69 @@ namespace Team_8_Final_Project.Controllers
             public string Password { get; set; }
         }
 
+        // Login
+        [HttpPost("Login")]
+        public IActionResult Login(LoginDto loginDto)
+        {
+            // Find the user by email
+            User user = context.Users.FirstOrDefault(u => u.UserEmail == loginDto.UserEmail);
 
+            if (user == null)
+            {
+                return Unauthorized("Invalid email or password.");
+            }
+
+            // Verify the password
+            PasswordHasher<User> hasher = new PasswordHasher<User>();
+
+            PasswordVerificationResult result = hasher.VerifyHashedPassword(
+                user,
+                user.PasswordHash,
+                loginDto.Password
+            );
+
+            if (result == PasswordVerificationResult.Failed)
+            {
+                return Unauthorized("Invalid email or password.");
+            }
+
+            // Create claims
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim(ClaimTypes.Email, user.UserEmail),
+                new Claim(ClaimTypes.Role, user.Role.ToString())
+            };
+
+            // Get JWT key from appsettings.json
+            SymmetricSecurityKey key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!)
+            );
+
+            // Create the signing credentials
+            SigningCredentials credentials = new SigningCredentials(
+                key,
+                SecurityAlgorithms.HmacSha256
+            );
+
+            // Generate the JWT
+            JwtSecurityToken token = new JwtSecurityToken(
+                issuer: configuration["Jwt:Issuer"],
+                audience: configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(2),
+                signingCredentials: credentials
+            );
+
+            // Convert the token to string
+            string tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return Ok(new
+            {
+                Message = "Login successful.",
+                Token = tokenString
+            });
+        }
 
     }
 

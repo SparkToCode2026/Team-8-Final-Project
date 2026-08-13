@@ -97,7 +97,15 @@ namespace Team_8_Final_Project.Controllers
         public IActionResult GetLoan(int id)
         {
             Loan l = context.Loans.FirstOrDefault(l => l.LoanId == id);
-            return Ok(l);
+            if (l == null)
+            {
+                return NotFound("Loan Id not found");
+            }
+            else
+            {
+                return Ok(l);
+            }
+            
         }
 
         [HttpGet("GetAllLoans")]

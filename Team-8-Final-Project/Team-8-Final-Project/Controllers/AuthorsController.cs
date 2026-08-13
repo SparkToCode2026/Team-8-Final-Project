@@ -15,6 +15,18 @@ namespace Team_8_Final_Project.Controllers
             _context = context;
         }
 
+        public class CreateAuthorDto
+        {
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string Email { get; set; }
+            public string Biography { get; set; }
+            public string Nationality { get; set; }
+        }
+
+
+
+
         // 1. POST: Create a new Author (Case 1)
         [HttpPost]
         public async Task<ActionResult<Author>> CreateAuthor(Author author)

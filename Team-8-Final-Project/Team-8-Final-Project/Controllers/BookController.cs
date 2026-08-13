@@ -111,7 +111,7 @@ namespace Team_8_Final_Project.Controllers
 
         }
 
-        // Search Book by Title
+        // Search Book by Title and show available book copies
         [HttpGet("SearchBook")]
         [Authorize]
         public IActionResult SearchBook(string title)
@@ -119,6 +119,7 @@ namespace Team_8_Final_Project.Controllers
             List<Book> books = context.Books.Include(b => b.Authors)
                                             .Include(b => b.Category)
                                             .Include(b => b.Publisher)
+                                            .Include(b => b.BookCopies)
                                             .Where(b => b.BookTitle.Contains(title))
                                             .ToList();
 
@@ -127,7 +128,16 @@ namespace Team_8_Final_Project.Controllers
                 return NotFound("No books found with that title.");
             }
 
-            return Ok(books);
+            List<object> results = new List<object>();
+
+            foreach (Book book in books)
+            {
+                int availableCopies = book.BookCopies.Count(bc => bc.AvailabilityStatus == AvailabilityStatus.Available);
+
+                results.Add(new{ Book = book, AvailableCopies = availableCopies });
+            }
+
+            return Ok(results);
         }
 
         // Filter Books by Category, Language, and Year

@@ -130,7 +130,13 @@ namespace Team_8_Final_Project.Controllers
             List<Reservation> reservations = context.Reservations.Where(r => r.UserId == userId).ToList();
             return Ok(reservations);
         }
-
+        
+        [HttpGet("GetReservationsSortedByDate")]
+        public IActionResult GetReservationsSortedByDate()
+        {
+            List<Reservation> reservations = context.Reservations.OrderBy(r => r.ReservationDate).ToList();
+            return Ok(reservations);
+        }
 
     }
 }

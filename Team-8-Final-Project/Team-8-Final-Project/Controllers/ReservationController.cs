@@ -31,6 +31,15 @@ namespace Team_8_Final_Project.Controllers
             public int UserId { get; set; }
         }
 
+        public class UpdateReservationStatusDto
+        {
+            [Required]
+            public int ReservationId { get; set; }
+
+            [Required]
+            public ReservationStatus NewStatus { get; set; }
+        }
+
         [HttpPost("AddReservation")]
         public IActionResult AddReservation(CreateReservationDto dto)
         {
@@ -46,6 +55,27 @@ namespace Team_8_Final_Project.Controllers
             context.SaveChanges();
             return Ok(reservation);
         }
+
+        public IActionResult UpdateReservationStatus(int reservationId, ReservationStatus newStatus)
+        {
+            var reservation = context.Reservations.Find(reservationId);
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+            reservation.Status = newStatus;
+            context.SaveChanges();
+            return Ok(reservation);
+        }
+
+
+
+
+
+
+
+
+
 
     }
 }

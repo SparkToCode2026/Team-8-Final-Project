@@ -25,9 +25,6 @@ namespace Team_8_Final_Project.Controllers
             public DateTime ReservationDate { get; set; }
 
             [Required]
-            public string ReservationStatus { get; set; }
-
-            [Required]
             public int BookId { get; set; }
 
             [Required]

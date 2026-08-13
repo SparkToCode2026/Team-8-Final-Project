@@ -1,14 +1,37 @@
-﻿namespace Team_8_Final_Project.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+
+namespace Team_8_Final_Project.Models
 {
+    public enum UserRole
+    {
+        Member,
+        Librarian,
+        Admin
+    }
     public class User
     {
-        public int UserID { get; set; }
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-        public string UserEmail { get; set; } = string.Empty;
-        public string UserPhoneNo { get; set; } = string.Empty;
+        [Key]
+        [JsonIgnore]
+        public int UserId { get; set; }
+        [Required]
+        public string FirstName { get; set; }
+        [Required]
+        public string LastName { get; set; }
+        [Required]
+        public string UserEmail { get; set; }
+        [Required]
+        public string UserPhoneNo { get; set; }
         public DateTime DOB { get; set; }
-        public string Role { get; set; } = "Member";
-        public string PasswordHash { get; set; } = string.Empty;
+        public UserRole Role { get; set; } = UserRole.Member;
+        [Required]
+        public string PasswordHash { get; set; }
+
+
+        public List<Loan> Loans { get; set; }
+
+        public List<Reservation> Reservations { get; set; }
+
+        public List<Event> Events { get; set; }
     }
 }

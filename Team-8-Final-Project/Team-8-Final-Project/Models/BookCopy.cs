@@ -24,14 +24,23 @@ namespace Team_8_Final_Project.Models
         [Key]
         [JsonIgnore]
         public int BookCopyId { get; set; }
+        [Required]
         public string Barcode { get; set; }
         public ConditionStatus Condition { get; set; }
         public AvailabilityStatus AvailabilityStatus { get; set; }
+        [Required]
+        public decimal CopyPrice { get; set; }
 
 
-        [ForeignKey("book")]
+        [ForeignKey("Book")]
         public int BookId { get; set; }
-        public Book book { get; set; }
+        public Book Book { get; set; }
+
+        public List<Loan> Loans { get; set; }
+
+        [ForeignKey("Shelf")]
+        public int ShelfId { get; set; }
+        public Shelf Shelf { get; set; }
 
     }
 }

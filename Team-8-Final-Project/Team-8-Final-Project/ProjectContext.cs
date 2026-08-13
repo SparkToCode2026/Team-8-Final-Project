@@ -10,23 +10,33 @@ namespace Team_8_Final_Project
     {
         // 1 - register models
 
-        // public DbSet<Employee> employees { get; set; } // change name to model name
-        // public DbSet<Department> departments { get; set; } // change name to model name
+        public DbSet<User> Users { get; set; }
+        public DbSet<Author> Authors { get; set; }
 
-        public DbSet<Loan> Loans { get; set; }
 
-        public DbSet<Reservation> Reservations { get; set; }
+        public DbSet<Book> Books { get; set; }
+        public DbSet<BookCopy> BookCopies { get; set; }
+
+
         
-        public DbSet<Book> books { get; set; }
-        public DbSet<BookCopy> bookCopies { get; set; }
+        public DbSet<Publisher> Publishers { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Loan> Loans { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
+
+
+        public DbSet<Fine> Fines { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+     
+        
+        public DbSet<Shelf> Shelves { get; set; }
+        public DbSet<Event> Events { get; set; }
 
         // 2 - connect to database
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
+        public ProjectContext(DbContextOptions<ProjectContext> options) : base(options)
         {
-            options.UseSqlServer(
-            "Server=;Database=CompanyProjectDB;Trusted_Connection=True;TrustServerCertificate=True;" // change server name to your server name when testing 
-            );
+
         }
     }
 }

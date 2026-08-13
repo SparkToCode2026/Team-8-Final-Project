@@ -1,32 +1,41 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Team_8_Final_Project.Models
 {
     public enum LoanStatus
     {
         Active,
-        Returned,
-        Overdue
+        Overdue,
+        Returned
     }
-
     public class Loan
     {
         [Key]
         [JsonIgnore]
         public int LoanId { get; set; }
-        public string LoanStartDate { get; set; }
-        public string LoanEndDate { get; set; }
-        public string LoanReturnDate { get; set; }
-        public string LoanStatus { get; set; }
 
+        [Required]
+        public DateTime LoanStartDate { get; set; }
+                
+        [Required]
+        public DateTime LoanDueDate { get; set; }
+        public DateTime LoanReturnDate { get; set; }
+        [Required]
+        public LoanStatus  loanStatus { get; set; }
 
-        [ForeignKey("BookCopyId")]
+        // Foreign Key - BookCopy
+        [ForeignKey("bookCopy")]
         public int BookCopyId { get; set; }
         public BookCopy BookCopy { get; set; }
 
-        [ForeignKey("UserId")]
+        // Foreign Key - User
+        [ForeignKey("user")]
         public int UserID { get; set; }
-        public User user { get; set; }
+        public User User { get; set; }
 
+        public Fine? Fine { get; set; } // Navigation property for the associated Fine 
     }
 }

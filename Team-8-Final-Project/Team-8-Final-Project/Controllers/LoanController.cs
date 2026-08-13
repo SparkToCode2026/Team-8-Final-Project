@@ -97,7 +97,9 @@ namespace Team_8_Final_Project.Controllers
         [Authorize(Roles = "Librarian,Admin")]
         public IActionResult GetLoan(int id)
         {
-            Loan l = context.Loans.FirstOrDefault(l => l.LoanId == id);
+            Loan l = context.Loans.Include(l => l.BookCopy)
+                                  .Include(l => l.User)
+                                  .FirstOrDefault(l => l.LoanId == id);
             if (l == null)
             {
                 return NotFound("Loan Id not found");

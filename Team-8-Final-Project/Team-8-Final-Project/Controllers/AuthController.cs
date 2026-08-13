@@ -24,9 +24,11 @@ namespace Team_8_Final_Project.Controllers
             public string LastName { get; set; }
 
             [Required]
+            [EmailAddress]
             public string UserEmail { get; set; }
 
             [Required]
+            [MinLength(8, ErrorMessage = "Password must be at least 8 characters long.")]
             public string Password { get; set; }
         }
 

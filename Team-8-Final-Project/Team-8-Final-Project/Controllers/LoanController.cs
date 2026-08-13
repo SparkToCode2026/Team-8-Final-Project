@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using Team_8_Final_Project.Models;
 
@@ -46,12 +48,13 @@ namespace Team_8_Final_Project.Controllers
 
         // Request URL => http://localhost:5240/Loan/AddLoan
         // Request method => POST
-        // Request body => { "LoanStartDate": "2024-06-01T00:00:00", "LoanAmount": 100.0,
+        // Request body => { "LoanStartDate": "2024-06-01T00:00:00",
         // "LoanDueDate": "2024-06-15T00:00:00", "LoanReturnDate": null,
         // "loanStatus": 0, "BookCopyId": 1, "UserID": 1 }
         // Send request => Call function
 
         [HttpPost("AddLoan")]
+        [Authorize(Roles = "Librarian,Admin")]
         public IActionResult AddLoan(CreateLoanDto dto)
         {
             var loan = new Loan
@@ -73,6 +76,7 @@ namespace Team_8_Final_Project.Controllers
         // Send request => Call function
 
         [HttpDelete("RemoveLoan")]
+        [Authorize(Roles = "Admin")]
         public IActionResult RemoveLoan(int id)
         {
             Loan l = context.Loans.FirstOrDefault(l => l.LoanId == id);
@@ -90,31 +94,54 @@ namespace Team_8_Final_Project.Controllers
         }
 
         [HttpGet("GetLoan")]
+        [Authorize(Roles = "Librarian,Admin")]
         public IActionResult GetLoan(int id)
         {
-            Loan l = context.Loans.FirstOrDefault(l => l.LoanId == id);
-            return Ok(l);
+            Loan l = context.Loans.Include(l => l.BookCopy)
+                                  .Include(l => l.User)
+                                  .FirstOrDefault(l => l.LoanId == id);
+            if (l == null)
+            {
+                return NotFound("Loan Id not found");
+            }
+            else
+            {
+                return Ok(l);
+            }
+            
         }
 
         [HttpGet("GetAllLoans")]
+        [Authorize(Roles = "Librarian,Admin")]
         public IActionResult GetAllLoans()
         {
-            List<Loan> loans = context.Loans.ToList();
+            List<Loan> loans = context.Loans.Include(l => l.BookCopy)
+                                            .Include(l => l.User)
+                                            .ToList();
             return Ok(loans);
         }
 
         
 
         [HttpPatch("UpdateLoanStatus")]
+        [Authorize(Roles = "Librarian,Admin")]
         public IActionResult UpdateLoanStatus(int id, LoanStatus newStatus)
         {
             Loan l = context.Loans.FirstOrDefault(l => l.LoanId == id);
-            l.loanStatus = newStatus;
-            context.SaveChanges();
-            return Ok();
+            if (l == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                l.loanStatus = newStatus;
+                context.SaveChanges();
+                return Ok();
+            }
         }
 
         [HttpGet("GetLoansByUser")]
+        [Authorize]
         public IActionResult GetLoansByUser(int userId)
         {
             List<Loan> loans = context.Loans.Where(l => l.UserID == userId).ToList();
@@ -122,6 +149,7 @@ namespace Team_8_Final_Project.Controllers
         }
 
         [HttpGet("GetLoansByBookCopy")]
+        [Authorize(Roles = "Librarian,Admin")]
         public IActionResult GetLoansByBookCopy(int bookCopyId)
         {
             List<Loan> loans = context.Loans.Where(l => l.BookCopyId == bookCopyId).ToList();
@@ -129,6 +157,7 @@ namespace Team_8_Final_Project.Controllers
         }
 
         [HttpPut("UpdateLoan")]
+        [Authorize(Roles = "Librarian,Admin")]
         public IActionResult UpdateLoan(int id, UpdateLoanDto dto)
         {
             Loan l = context.Loans.FirstOrDefault(l => l.LoanId == id);
@@ -141,6 +170,14 @@ namespace Team_8_Final_Project.Controllers
 
             context.SaveChanges();
             return Ok(l);
+        }
+
+        [HttpGet("GetLoansSortedByDueDate")]
+        [Authorize(Roles = "Librarian,Admin")]
+        public IActionResult GetLoansSortedByDueDate()
+        {
+            List<Loan> loans = context.Loans.OrderBy(l => l.LoanDueDate).ToList();
+            return Ok(loans);
         }
     }
 }

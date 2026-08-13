@@ -5,7 +5,7 @@ namespace Team_8_Final_Project.Models
     public class Category
     {
         [Key]
-        public int CategoryID { get; set; }
+        public int CategoryId { get; set; }
 
         [Required]
         [MaxLength(100)]
@@ -14,6 +14,6 @@ namespace Team_8_Final_Project.Models
         [MaxLength(500)]
         public string CategoryDescription { get; set; }
 
-        public ICollection<Book> Books { get; set; } = new List<Book>();
+        public List<Book> Books { get; set; }
     }
 }

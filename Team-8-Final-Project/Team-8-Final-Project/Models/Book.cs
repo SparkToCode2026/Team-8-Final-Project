@@ -9,23 +9,23 @@ namespace Team_8_Final_Project.Models
     {
         [Key]
         [JsonIgnore]
-        public int BookId {  get; set; }
+        public int? BookId {  get; set; }
         [Required]
         public string ISBN { get; set; }
         [Required]
         public string BookTitle { get; set; }
-        public int BookEdition { get; set; }
+        public int? BookEdition { get; set; }
         [Required]
         public string BookLanguage { get; set; }
-        public int Year { get; set; }
+        public int? Year { get; set; }
 
-        [ForeignKey("publisher")]
-        public int PublisherID { get; set; }
-        // public Publisher Publisher { get; set; }
+        [ForeignKey("Publisher")]
+        public int? PublisherId { get; set; }
+        public Publisher Publisher { get; set; }
 
-        [ForeignKey("category")]
-        public int CategoryID { get; set; }
-        // public Category Category { get; set; }
+        [ForeignKey("Category")]
+        public int? CategoryId { get; set; }
+        public Category Category { get; set; }
 
         public List<BookCopy> BookCopies { get; set; }
 

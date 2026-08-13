@@ -7,7 +7,7 @@ public class Event
 {
     [Key]
     [JsonIgnore]
-    public int EventID { get; set; }
+    public int EventId { get; set; }
     [Required]
     public string EventName { get; set; }
     [Required]

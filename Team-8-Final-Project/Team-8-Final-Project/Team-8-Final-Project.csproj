@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Team_8_Final_Project</RootNamespace>
+    <UserSecretsId>74a2c023-fe68-450d-b0f9-1b99acaee839</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

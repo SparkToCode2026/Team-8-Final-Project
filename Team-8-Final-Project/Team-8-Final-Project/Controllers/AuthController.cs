@@ -168,7 +168,7 @@ namespace Team_8_Final_Project.Controllers
 
         // Forgot Password
         [HttpPost("ForgotPassword")]
-        public IActionResult ForgotPassword(ForgotPasswordDto forgotPasswordDto)
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto forgotPasswordDto)
         {
             // Find the user by email
             User user = context.Users.FirstOrDefault(u => u.UserEmail == forgotPasswordDto.UserEmail);
@@ -206,6 +206,10 @@ namespace Team_8_Final_Project.Controllers
              "This link will expire in 30 minutes.\n\n" +
              "If you did not request a password reset, you can ignore this email.\n\n" +
              "Library Management System";
+
+            await emailService.SendEmailAsync( user.UserEmail,
+                                               "Password Reset - Library Management System",
+                                               body );
 
         }
 

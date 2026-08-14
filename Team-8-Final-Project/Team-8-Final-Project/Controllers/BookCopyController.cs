@@ -24,7 +24,14 @@ namespace Team_8_Final_Project.Controllers
             public int ShelfId { get; set; }
         }
 
-
+        public class UpdateBookCopyDto
+        {
+            public string Barcode { get; set; }
+            public ConditionStatus Condition { get; set; }
+            public AvailabilityStatus AvailabilityStatus { get; set; }
+            public decimal CopyPrice { get; set; }
+            public int ShelfId { get; set; }
+        }
 
         // Add a new book copy
         [HttpPost("AddBookCopy")]

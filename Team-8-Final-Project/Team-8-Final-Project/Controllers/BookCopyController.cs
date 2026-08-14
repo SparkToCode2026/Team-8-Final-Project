@@ -58,7 +58,7 @@ namespace Team_8_Final_Project.Controllers
         // Update an existing book copy
         [HttpPut("UpdateBookCopy")]
         [Authorize(Roles = "Admin, Librarian")]
-        public IActionResult UpdateBookCopy(int id, BookCopy bookCopy)
+        public IActionResult UpdateBookCopy(int id, UpdateBookCopyDto dto)
         {
             BookCopy existingBookCopy = context.BookCopies.FirstOrDefault(bc => bc.BookCopyId == id);
 
@@ -67,11 +67,11 @@ namespace Team_8_Final_Project.Controllers
                 return NotFound("Book copy not found.");
             }
 
-            existingBookCopy.Barcode = bookCopy.Barcode;
-            existingBookCopy.Condition = bookCopy.Condition;
-            existingBookCopy.AvailabilityStatus = bookCopy.AvailabilityStatus;
-            existingBookCopy.CopyPrice = bookCopy.CopyPrice;
-            existingBookCopy.ShelfId = bookCopy.ShelfId;
+            existingBookCopy.Barcode = dto.Barcode;
+            existingBookCopy.Condition = dto.Condition;
+            existingBookCopy.AvailabilityStatus = dto.AvailabilityStatus;
+            existingBookCopy.CopyPrice = dto.CopyPrice;
+            existingBookCopy.ShelfId = dto.ShelfId;
 
             context.SaveChanges();
 

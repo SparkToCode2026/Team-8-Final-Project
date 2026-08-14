@@ -14,6 +14,7 @@ namespace Team_8_Final_Project.Models
     public class Fine
     {
         [Key]
+        [JsonIgnore]
         public int FineId { get; set; }
 
         [Required]

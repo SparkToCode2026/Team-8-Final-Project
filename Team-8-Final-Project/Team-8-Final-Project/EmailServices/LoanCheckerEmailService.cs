@@ -14,5 +14,13 @@ namespace Team_8_Final_Project.EmailServices
             scopeFactory = _scopeFactory;
             emailService = _emailService;
         }
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            while (!stoppingToken.IsCancellationRequested)
+            {
+
+            }
+        }
     }
 }

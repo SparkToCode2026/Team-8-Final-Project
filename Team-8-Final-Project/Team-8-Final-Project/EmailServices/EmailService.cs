@@ -14,6 +14,17 @@ namespace Team_8_Final_Project.EmailServices
 
         public async Task SendEmailAsync( string recipientEmail, string subject, string body)
         {
+            MimeMessage email = new MimeMessage();
+
+            email.From.Add(new MailboxAddress(configuration["EmailSettings:SenderName"],
+                                              configuration["EmailSettings:SenderEmail"] ));
+
+            email.To.Add(MailboxAddress.Parse(recipientEmail));
+            email.Subject = subject;
+            email.Body = new TextPart("html") 
+            {
+                Text = body 
+            };
         }
     }
 }

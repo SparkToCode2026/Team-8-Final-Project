@@ -180,7 +180,7 @@ namespace Team_8_Final_Project.Controllers
             return Ok(reviews);
         }
 
-        // Get the average rating for a book
+        // Get the average rating for a book using LINQ's Average() method which is the average mean
         [HttpGet("GetAverageRating")]
         [Authorize]
         public IActionResult GetAverageRating(int bookId)

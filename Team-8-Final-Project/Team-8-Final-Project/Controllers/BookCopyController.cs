@@ -14,6 +14,18 @@ namespace Team_8_Final_Project.Controllers
             context = _context;
         }
 
+        public class CreateBookCopyDto
+        {
+            public string Barcode { get; set; }
+            public ConditionStatus Condition { get; set; }
+            public AvailabilityStatus AvailabilityStatus { get; set; }
+            public decimal CopyPrice { get; set; }
+            public int BookId { get; set; }
+            public int ShelfId { get; set; }
+        }
+
+
+
         // Add a new book copy
         [HttpPost("AddBookCopy")]
         [Authorize(Roles = "Admin, Librarian")]

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
@@ -7,6 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Team_8_Final_Project.EmailServices;
 using Team_8_Final_Project.Models;
 namespace Team_8_Final_Project.Controllers
 {
@@ -16,11 +16,13 @@ namespace Team_8_Final_Project.Controllers
     {
         private ProjectContext context;
         private IConfiguration configuration;
+        private EmailService emailService;
 
-        public AuthController(ProjectContext _context, IConfiguration _configuration)
+        public AuthController(ProjectContext _context, IConfiguration _configuration, EmailService _emailService)
         {
             context = _context;
             configuration = _configuration;
+            emailService = _emailService;
         }
 
         public class RegisterDto

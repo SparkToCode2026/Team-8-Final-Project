@@ -36,6 +36,8 @@ namespace Team_8_Final_Project.EmailServices
                                               configuration["EmailSettings:Password"] );
 
                 await smtp.SendAsync(email);
+
+                await smtp.DisconnectAsync(true);
             }
         }
     }

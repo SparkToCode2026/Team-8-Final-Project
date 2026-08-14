@@ -33,11 +33,22 @@ namespace Team_8_Final_Project.Controllers
             public int ShelfId { get; set; }
         }
 
+        
         // Add a new book copy
         [HttpPost("AddBookCopy")]
         [Authorize(Roles = "Admin, Librarian")]
-        public IActionResult AddBookCopy(BookCopy bookCopy)
+        public IActionResult AddBookCopy(CreateBookCopyDto dto)
         {
+            var bookCopy = new BookCopy
+            {
+                Barcode = dto.Barcode,
+                Condition = dto.Condition,
+                AvailabilityStatus = dto.AvailabilityStatus,
+                CopyPrice = dto.CopyPrice,
+                BookId = dto.BookId,
+                ShelfId = dto.ShelfId
+            };
+
             context.BookCopies.Add(bookCopy);
             context.SaveChanges();
 

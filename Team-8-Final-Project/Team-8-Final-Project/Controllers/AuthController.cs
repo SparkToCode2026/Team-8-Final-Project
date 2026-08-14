@@ -194,13 +194,9 @@ namespace Team_8_Final_Project.Controllers
 
             context.SaveChanges();
 
-            // Temp. for testing till email service works
-            return Ok(new
-            {
-                Message = "Password reset request successful.",
-                ResetToken = resetToken,
-                ExpiresAt = user.PasswordResetTokenExpiry
-            });
+            string resetLink = configuration["EmailSettings:ResetPasswordUrl"]
+                           + "?email=" + Uri.EscapeDataString(user.UserEmail)
+                           + "&token="  + Uri.EscapeDataString(resetToken);
         }
 
         public class ResetPasswordDto

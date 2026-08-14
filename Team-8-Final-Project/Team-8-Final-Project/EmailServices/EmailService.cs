@@ -11,5 +11,9 @@ namespace Team_8_Final_Project.EmailServices
         {
             configuration = _configuration;
         }
+
+        public async Task SendEmailAsync( string recipientEmail, string subject, string body)
+        {
+        }
     }
 }

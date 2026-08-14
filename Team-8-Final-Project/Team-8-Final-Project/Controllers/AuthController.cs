@@ -197,6 +197,16 @@ namespace Team_8_Final_Project.Controllers
             string resetLink = configuration["EmailSettings:ResetPasswordUrl"]
                            + "?email=" + Uri.EscapeDataString(user.UserEmail)
                            + "&token="  + Uri.EscapeDataString(resetToken);
+
+            string body =
+             "Hello " + user.FirstName + ",\n\n" +
+             "We received a request to reset your password for the Library Management System.\n\n" +
+             "Please use the following link to reset your password:\n" +
+              resetLink + "\n\n" +
+             "This link will expire in 30 minutes.\n\n" +
+             "If you did not request a password reset, you can ignore this email.\n\n" +
+             "Library Management System";
+
         }
 
         public class ResetPasswordDto

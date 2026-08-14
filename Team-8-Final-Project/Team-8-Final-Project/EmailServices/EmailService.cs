@@ -31,6 +31,9 @@ namespace Team_8_Final_Project.EmailServices
                 await smtp.ConnectAsync( configuration["EmailSettings:SmtpServer"],
                                          int.Parse(configuration["EmailSettings:Port"]!),
                                          SecureSocketOptions.StartTls );
+
+                await smtp.AuthenticateAsync( configuration["EmailSettings:SenderEmail"],
+                                              configuration["EmailSettings:Password"] );
             }
         }
     }

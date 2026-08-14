@@ -14,11 +14,41 @@ namespace Team_8_Final_Project.Controllers
             context = _context;
         }
 
+        public class CreateBookCopyDto
+        {
+            public string Barcode { get; set; }
+            public ConditionStatus Condition { get; set; }
+            public AvailabilityStatus AvailabilityStatus { get; set; }
+            public decimal CopyPrice { get; set; }
+            public int BookId { get; set; }
+            public int ShelfId { get; set; }
+        }
+
+        public class UpdateBookCopyDto
+        {
+            public string Barcode { get; set; }
+            public ConditionStatus Condition { get; set; }
+            public AvailabilityStatus AvailabilityStatus { get; set; }
+            public decimal CopyPrice { get; set; }
+            public int ShelfId { get; set; }
+        }
+
+        
         // Add a new book copy
         [HttpPost("AddBookCopy")]
         [Authorize(Roles = "Admin, Librarian")]
-        public IActionResult AddBookCopy(BookCopy bookCopy)
+        public IActionResult AddBookCopy(CreateBookCopyDto dto)
         {
+            var bookCopy = new BookCopy
+            {
+                Barcode = dto.Barcode,
+                Condition = dto.Condition,
+                AvailabilityStatus = dto.AvailabilityStatus,
+                CopyPrice = dto.CopyPrice,
+                BookId = dto.BookId,
+                ShelfId = dto.ShelfId
+            };
+
             context.BookCopies.Add(bookCopy);
             context.SaveChanges();
 
@@ -28,7 +58,7 @@ namespace Team_8_Final_Project.Controllers
         // Update an existing book copy
         [HttpPut("UpdateBookCopy")]
         [Authorize(Roles = "Admin, Librarian")]
-        public IActionResult UpdateBookCopy(int id, BookCopy bookCopy)
+        public IActionResult UpdateBookCopy(int id, UpdateBookCopyDto dto)
         {
             BookCopy existingBookCopy = context.BookCopies.FirstOrDefault(bc => bc.BookCopyId == id);
 
@@ -37,11 +67,11 @@ namespace Team_8_Final_Project.Controllers
                 return NotFound("Book copy not found.");
             }
 
-            existingBookCopy.Barcode = bookCopy.Barcode;
-            existingBookCopy.Condition = bookCopy.Condition;
-            existingBookCopy.AvailabilityStatus = bookCopy.AvailabilityStatus;
-            existingBookCopy.CopyPrice = bookCopy.CopyPrice;
-            existingBookCopy.ShelfId = bookCopy.ShelfId;
+            existingBookCopy.Barcode = dto.Barcode;
+            existingBookCopy.Condition = dto.Condition;
+            existingBookCopy.AvailabilityStatus = dto.AvailabilityStatus;
+            existingBookCopy.CopyPrice = dto.CopyPrice;
+            existingBookCopy.ShelfId = dto.ShelfId;
 
             context.SaveChanges();
 

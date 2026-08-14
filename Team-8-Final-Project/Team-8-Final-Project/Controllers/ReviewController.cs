@@ -1,147 +1,198 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using Team_8_Final_Project.Models;
 
 namespace Team_8_Final_Project.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("Review")]
     public class ReviewController : ControllerBase
     {
-        private readonly ProjectContext _context;
+        private ProjectContext context;
 
-        public ReviewController(ProjectContext context)
+        public ReviewController(ProjectContext _context)
         {
-            _context = context;
+            context = _context;
         }
-        // Case 1 - Submit Book Review
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> CreateReview(Review review)
+
+        public class CreateReviewDto
         {
-            if (!ModelState.IsValid)
+            public int Rating { get; set; }
+            public string Comment { get; set; }
+            public int BookId { get; set; }
+        }
+
+        public class UpdateReviewDto
+        {
+            public int Rating { get; set; }
+            public string Comment { get; set; }
+        }
+
+        // Reads the logged-in user's Id out of the JWT token attached to this request
+        private int GetCurrentUserId()
+        {
+            string userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.Parse(userIdClaim);
+        }
+
+        // Submit a new book review - always saved under whoever is currently logged in
+        [HttpPost("AddReview")]
+        [Authorize]
+        public IActionResult AddReview(CreateReviewDto dto)
+        {
+            var review = new Review
             {
-                return BadRequest(ModelState);
-            }
+                ReviewDate = DateTime.Now,
+                Rating = dto.Rating,
+                Comment = dto.Comment,
+                BookId = dto.BookId,
+                UserId = GetCurrentUserId()
+            };
 
-            review.ReviewDate = DateTime.Now;
-
-            _context.Reviews.Add(review);
-            await _context.SaveChangesAsync();
+            context.Reviews.Add(review);
+            context.SaveChanges();
 
             return Ok(review);
         }
-        // Case 2 - Edit Full Review
-        [HttpPut("{id}")]
+
+        // Update an existing review (full update - rating and comment)
+        // Only the review's original author, a Librarian, or an Admin may do this
+        [HttpPut("UpdateReview")]
         [Authorize]
-        public async Task<IActionResult> UpdateReview(int id, Review updatedReview)
+        public IActionResult UpdateReview(int id, UpdateReviewDto dto)
         {
-            if (!ModelState.IsValid)
+            Review existingReview = context.Reviews.FirstOrDefault(r => r.ReviewId == id);
+
+            if (existingReview == null)
             {
-                return BadRequest(ModelState);
+                return NotFound("Review not found.");
             }
 
-            var review = await _context.Reviews.FindAsync(id);
+            bool isOwner = existingReview.UserId == GetCurrentUserId();
+            bool isStaff = User.IsInRole("Librarian") || User.IsInRole("Admin");
 
-            if (review == null)
+            if (!isOwner && !isStaff)
             {
-                return NotFound();
+                return Forbid();
             }
 
-            review.Rating = updatedReview.Rating;
-            review.Comment = updatedReview.Comment;
+            existingReview.Rating = dto.Rating;
+            existingReview.Comment = dto.Comment;
 
-            await _context.SaveChangesAsync();
+            context.SaveChanges();
 
-            return Ok(review);
+            return Ok(existingReview);
         }
-        // Case 3 - Update Review Comment Only
-        [HttpPatch("{id}/comment")]
-        [Authorize]
-        public async Task<IActionResult> UpdateReviewComment(int id, string comment)
-        {
-            var review = await _context.Reviews.FindAsync(id);
 
-            if (review == null)
+        // Update only the comment of a review
+        // Only the review's original author, a Librarian, or an Admin may do this
+        [HttpPatch("UpdateReviewComment")]
+        [Authorize]
+        public IActionResult UpdateReviewComment(int id, string comment)
+        {
+            Review existingReview = context.Reviews.FirstOrDefault(r => r.ReviewId == id);
+
+            if (existingReview == null)
             {
-                return NotFound();
+                return NotFound("Review not found.");
             }
 
-            review.Comment = comment;
+            bool isOwner = existingReview.UserId == GetCurrentUserId();
+            bool isStaff = User.IsInRole("Librarian") || User.IsInRole("Admin");
 
-            await _context.SaveChangesAsync();
+            if (!isOwner && !isStaff)
+            {
+                return Forbid();
+            }
 
-            return Ok(review);
+            existingReview.Comment = comment;
+
+            context.SaveChanges();
+
+            return Ok(existingReview);
         }
-        // Case 4 - Delete Review
-        [HttpDelete("{id}")]
-        [Authorize]
-        public async Task<IActionResult> DeleteReview(int id)
-        {
-            var review = await _context.Reviews.FindAsync(id);
 
-            if (review == null)
+        // Delete a review
+        // Only the review's original author, a Librarian, or an Admin may do this
+        [HttpDelete("DeleteReview")]
+        [Authorize]
+        public IActionResult DeleteReview(int id)
+        {
+            Review existingReview = context.Reviews.FirstOrDefault(r => r.ReviewId == id);
+
+            if (existingReview == null)
             {
-                return NotFound();
+                return NotFound("Review not found.");
             }
 
-            _context.Reviews.Remove(review);
-            await _context.SaveChangesAsync();
+            bool isOwner = existingReview.UserId == GetCurrentUserId();
+            bool isStaff = User.IsInRole("Librarian") || User.IsInRole("Admin");
+
+            if (!isOwner && !isStaff)
+            {
+                return Forbid();
+            }
+
+            context.Reviews.Remove(existingReview);
+            context.SaveChanges();
 
             return Ok("Review deleted successfully.");
         }
-        // Case 5 - Get Reviews for a Specific Book with User Details
-        [HttpGet("book/{bookId}")]
-        public async Task<IActionResult> GetReviewsByBook(int bookId)
+
+        // Get all reviews for a specific book, including the reviewer's details
+        [HttpGet("GetReviewsByBook")]
+        [Authorize]
+        public IActionResult GetReviewsByBook(int bookId)
         {
-            var reviews = await _context.Reviews
-                .Include(r => r.User)
-                .Where(r => r.BookId == bookId)
-                .ToListAsync();
+            List<Review> reviews = context.Reviews.Include(r => r.User)
+                                                   .Where(r => r.BookId == bookId)
+                                                   .ToList();
 
             return Ok(reviews);
         }
-        // Case 6 - Get Review by ID
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetReviewById(int id)
+
+        // Get a single review by Id
+        [HttpGet("GetReviewById")]
+        [Authorize]
+        public IActionResult GetReviewById(int id)
         {
-            var review = await _context.Reviews
-                .Include(r => r.User)
-                .Include(r => r.Book)
-                .FirstOrDefaultAsync(r => r.ReviewId == id);
+            Review review = context.Reviews.Include(r => r.User)
+                                            .Include(r => r.Book)
+                                            .FirstOrDefault(r => r.ReviewId == id);
 
             if (review == null)
             {
-                return NotFound();
+                return NotFound("Review not found.");
             }
 
             return Ok(review);
         }
-        // Case 7 - Filter High Rating Reviews
-        [HttpGet("filter")]
-        public async Task<IActionResult> FilterHighRatings(int bookId)
+
+        // Filter a book's reviews down to high ratings (4 and up)
+        [HttpGet("FilterHighRatingReviews")]
+        [Authorize]
+        public IActionResult FilterHighRatingReviews(int bookId)
         {
-            var reviews = await _context.Reviews
-                .Where(r => r.BookId == bookId && r.Rating >= 4)
-                .ToListAsync();
+            List<Review> reviews = context.Reviews.Where(r => r.BookId == bookId && r.Rating >= 4).ToList();
 
             return Ok(reviews);
         }
-        // Case 8 - Get Average Rating for a Book
-        [HttpGet("average/{bookId}")]
-        public async Task<IActionResult> GetAverageRating(int bookId)
-        {
-            var reviews = _context.Reviews
-                .Where(r => r.BookId == bookId);
 
-            if (!await reviews.AnyAsync())
+        // Get the average rating for a book using LINQ's Average() method which is the average mean
+        [HttpGet("GetAverageRating")]
+        [Authorize]
+        public IActionResult GetAverageRating(int bookId)
+        {
+            var reviews = context.Reviews.Where(r => r.BookId == bookId);
+
+            if (!reviews.Any())
             {
                 return NotFound("No reviews found for this book.");
             }
 
-            var averageRating = await reviews
-                .AverageAsync(r => r.Rating);
+            double averageRating = reviews.Average(r => r.Rating);
 
             return Ok(new
             {

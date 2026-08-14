@@ -1,116 +1,168 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Team_8_Final_Project.Models;
 
 namespace Team_8_Final_Project.Controllers
 {
-    [Route("api/[controller]")]
+    
     [ApiController]
+    [Route("Author")]
     public class AuthorsController : ControllerBase
     {
-        private readonly ProjectContext _context;
+        private readonly ProjectContext context;
 
-        public AuthorsController(ProjectContext context)
+        public AuthorsController(ProjectContext _context)
         {
-            _context = context;
+            context = _context;
         }
 
-        // 1. POST: Create a new Author (Case 1)
-        [HttpPost]
-        public async Task<ActionResult<Author>> CreateAuthor(Author author)
+        public class CreateAuthorDto
         {
-            _context.Authors.Add(author);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetAuthorById), new { id = author.AuthorId }, author);
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string Email { get; set; }
+            public string Biography { get; set; }
+            public string Nationality { get; set; }
         }
 
-        // 2. PUT: Update full Author details (Case 2)
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAuthor(int id, Author author)
+        public class UpdateAuthorDto
         {
-            if (id != author.AuthorId) return BadRequest("ID Mismatch");
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string Email { get; set; }
+            public string Biography { get; set; }
+            public string Nationality { get; set; }
+        }
 
-            _context.Entry(author).State = EntityState.Modified;
 
-            try
+        // Add a new author
+        [HttpPost("AddAuthor")]
+        [Authorize(Roles = "Admin, Librarian")]
+        public IActionResult AddAuthor(CreateAuthorDto dto)
+        {
+            var author = new Author
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!_context.Authors.Any(e => e.AuthorId == id)) return NotFound();
-                throw;
-            }
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                Email = dto.Email,
+                Biography = dto.Biography,
+                Nationality = dto.Nationality
+            };
 
-            return NoContent();
-        }
-
-        // 3. PATCH/PUT: Distinct update case - Update Email only (Case 3)
-        [HttpPatch("{id}/email")]
-        public async Task<IActionResult> UpdateAuthorEmail(int id, [FromBody] string newEmail)
-        {
-            var author = await _context.Authors.FindAsync(id);
-            if (author == null) return NotFound();
-
-            author.Email = newEmail;
-            await _context.SaveChangesAsync();
+            context.Authors.Add(author);
+            context.SaveChanges();
 
             return Ok(author);
         }
 
-        // 4. DELETE: Delete an Author (Case 4)
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAuthor(int id)
+        // Update an existing author (full update)
+        [HttpPut("UpdateAuthor")]
+        [Authorize(Roles = "Admin, Librarian")]
+        public IActionResult UpdateAuthor(int id, UpdateAuthorDto dto)
         {
-            var author = await _context.Authors.FindAsync(id);
-            if (author == null) return NotFound();
+            Author existingAuthor = context.Authors.FirstOrDefault(a => a.AuthorId == id);
 
-            _context.Authors.Remove(author);
-            await _context.SaveChangesAsync();
+            if (existingAuthor == null)
+            {
+                return NotFound("Author not found.");
+            }
 
-            return Ok(new { message = "Author deleted successfully" });
+            existingAuthor.FirstName = dto.FirstName;
+            existingAuthor.LastName = dto.LastName;
+            existingAuthor.Email = dto.Email;
+            existingAuthor.Biography = dto.Biography;
+            existingAuthor.Nationality = dto.Nationality;
+
+            context.SaveChanges();
+
+            return Ok(existingAuthor);
         }
 
-        // 5. GET List: Get all authors with their related books (Case 5 - Include)
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Author>>> GetAllAuthors()
+        // Update only the email of an author
+        [HttpPatch("UpdateAuthorEmail")]
+        [Authorize(Roles = "Admin, Librarian")]
+        public IActionResult UpdateAuthorEmail(int id, string newEmail)
         {
-            return await _context.Authors
-                .Include(a => a.Books)
-                .ToListAsync();
+            Author existingAuthor = context.Authors.FirstOrDefault(a => a.AuthorId == id);
+
+            if (existingAuthor == null)
+            {
+                return NotFound("Author not found.");
+            }
+
+            existingAuthor.Email = newEmail;
+            context.SaveChanges();
+
+            return Ok(existingAuthor);
         }
 
-        // 6. GET Find: Get single Author by Id (Case 6)
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Author>> GetAuthorById(int id)
+        // Delete an author
+        [HttpDelete("DeleteAuthor")]
+        [Authorize(Roles = "Admin, Librarian")]
+        public IActionResult DeleteAuthor(int id)
         {
-            var author = await _context.Authors
-                .Include(a => a.Books)
-                .FirstOrDefaultAsync(a => a.AuthorId == id);
+            Author existingAuthor = context.Authors.FirstOrDefault(a => a.AuthorId == id);
+            if (existingAuthor == null)
+            {
+                return NotFound("Author not found.");
+            }
 
-            if (author == null) return NotFound();
+            context.Authors.Remove(existingAuthor);
+            context.SaveChanges();
 
-            return author;
+            return Ok("Author with ID " + id + " has been deleted.");
         }
 
-        // 7. GET Filter: Filter authors by Nationality using LINQ (Case 7 - Where)
-        [HttpGet("filter-by-nationality/{nationality}")]
-        public async Task<ActionResult<IEnumerable<Author>>> GetAuthorsByNationality(string nationality)
+        // Get all authors, including the books they've written
+        [HttpGet("GetAllAuthors")]
+        [Authorize]
+        public IActionResult GetAllAuthors()
         {
-            return await _context.Authors
-                .Where(a => a.Nationality.ToLower() == nationality.ToLower())
-                .ToListAsync();
+            List<Author> authors = context.Authors.Include(a => a.Books).ToList();
+
+            return Ok(authors);
         }
 
-        // 8. GET Aggregate/Sort: Get total authors count & sorted list (Case 8 - OrderBy & Count)
-        [HttpGet("stats")]
-        public async Task<IActionResult> GetAuthorStats()
+        // Get a single author by Id
+        [HttpGet("GetAuthorById")]
+        [Authorize]
+        public IActionResult GetAuthorById(int id)
         {
-            var totalAuthors = await _context.Authors.CountAsync();
-            var sortedAuthors = await _context.Authors
-                .OrderBy(a => a.LastName)
-                .Select(a => new { a.AuthorId, FullName = a.FirstName + " " + a.LastName, a.Nationality })
-                .ToListAsync();
+            Author author = context.Authors.Include(a => a.Books).FirstOrDefault(a => a.AuthorId == id);
+
+            if (author == null)
+            {
+                return NotFound("Author not found.");
+            }
+
+            return Ok(author);
+        }
+
+        // Filter authors by nationality
+        [HttpGet("FilterAuthorsByNationality")]
+        [Authorize]
+        public IActionResult FilterAuthorsByNationality(string nationality)
+        {
+            List<Author> authors = context.Authors.Where(a => a.Nationality.ToLower() == nationality.ToLower()).ToList();
+
+            if (authors.Count == 0)
+            {
+                return NotFound("No authors found for that nationality.");
+            }
+
+            return Ok(authors);
+        }
+
+        // Get total author count, plus all authors sorted by last name
+        [HttpGet("GetAuthorStats")]
+        [Authorize(Roles = "Librarian,Admin")]
+        public IActionResult GetAuthorStats()
+        {
+            int totalAuthors = context.Authors.Count();
+            var sortedAuthors = context.Authors.OrderBy(a => a.LastName)
+                                               .Select(a => new { a.AuthorId, FullName = a.FirstName + " " + a.LastName, a.Nationality })
+                                               .ToList();
 
             return Ok(new
             {

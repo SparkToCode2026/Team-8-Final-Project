@@ -14,11 +14,29 @@ namespace Team_8_Final_Project.Controllers
             context = _context;
         }
 
+        public class CreateCategoryDto
+        {
+            public string CategoryName { get; set; }
+            public string CategoryDescription { get; set; }
+        }
+
+        public class UpdateCategoryDto
+        {
+            public string CategoryName { get; set; }
+            public string CategoryDescription { get; set; }
+        }
+
         // Add a new category
         [HttpPost("AddCategory")]
         [Authorize(Roles = "Admin, Librarian")]
-        public IActionResult AddCategory(Category category)
+        public IActionResult AddCategory(CreateCategoryDto dto)
         {
+            var category = new Category
+            {
+                CategoryName = dto.CategoryName,
+                CategoryDescription = dto.CategoryDescription
+            };
+
             context.Categories.Add(category);
             context.SaveChanges();
 
@@ -28,7 +46,7 @@ namespace Team_8_Final_Project.Controllers
         // Update an existing category (full update)
         [HttpPut("UpdateCategory")]
         [Authorize(Roles = "Admin, Librarian")]
-        public IActionResult UpdateCategory(int id, Category category)
+        public IActionResult UpdateCategory(int id, UpdateCategoryDto dto)
         {
             Category existingCategory = context.Categories.FirstOrDefault(c => c.CategoryId == id);
 
@@ -37,8 +55,8 @@ namespace Team_8_Final_Project.Controllers
                 return NotFound("Category not found.");
             }
 
-            existingCategory.CategoryName = category.CategoryName;
-            existingCategory.CategoryDescription = category.CategoryDescription;
+            existingCategory.CategoryName = dto.CategoryName;
+            existingCategory.CategoryDescription = dto.CategoryDescription;
 
             context.SaveChanges();
 

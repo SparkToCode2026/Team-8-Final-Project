@@ -1,124 +1,144 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Team_8_Final_Project.Models;
 
 namespace Team_8_Final_Project.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("User")]
     public class UsersController : ControllerBase
     {
-        private readonly ProjectContext _db;
+        private ProjectContext context;
 
-        public UsersController(ProjectContext db)
+        public UsersController(ProjectContext _context)
         {
-            _db = db;
+            context = _context;
         }
 
-        // 1. POST: Add new User
-        [HttpPost]
-        public async Task<ActionResult<User>> AddUser(User newUser)
+        public class UpdateUserDto
         {
-            _db.Users.Add(newUser);
-            await _db.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetUserById), new { id = newUser.UserId }, newUser);
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string UserEmail { get; set; }
+            public string UserPhoneNo { get; set; }
+            public DateTime DOB { get; set; }
         }
 
-        // 2. PUT: Update full User
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, User updatedUser)
+        // Update a user's profile details (name, email, phone, date of birth)
+        // Does not touch Role or PasswordHash - those are handled separately
+        [HttpPut("UpdateUser")]
+        [Authorize(Roles = "Admin, Librarian")]
+        public IActionResult UpdateUser(int id, UpdateUserDto dto)
         {
-            if (id != updatedUser.UserId) return BadRequest("ID Mismatch");
+            User existingUser = context.Users.FirstOrDefault(u => u.UserId == id);
 
-            _db.Entry(updatedUser).State = EntityState.Modified;
-
-            try
+            if (existingUser == null)
             {
-                await _db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!_db.Users.Any(u => u.UserId == id)) return NotFound();
-                throw;
+                return NotFound("User not found.");
             }
 
-            return NoContent();
+            existingUser.FirstName = dto.FirstName;
+            existingUser.LastName = dto.LastName;
+            existingUser.UserEmail = dto.UserEmail;
+            existingUser.UserPhoneNo = dto.UserPhoneNo;
+            existingUser.DOB = dto.DOB;
+
+            context.SaveChanges();
+
+            return Ok(existingUser);
         }
 
-        // 3. PATCH: Update User Role
-        [HttpPatch("{id}/role")]
-        public async Task<IActionResult> ChangeUserRole(int id, [FromBody] UserRole newRole)
+        // Change a user's role - Admin only, since this controls system access level
+        [HttpPatch("ChangeUserRole")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult ChangeUserRole(int id, UserRole newRole)
         {
-            var user = await _db.Users.FindAsync(id);
-            if (user == null) return NotFound();
+            User existingUser = context.Users.FirstOrDefault(u => u.UserId == id);
 
-            user.Role = newRole;
-            await _db.SaveChangesAsync();
+            if (existingUser == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            existingUser.Role = newRole;
+            context.SaveChanges();
+
+            return Ok(existingUser);
+        }
+
+        // Remove a user account
+        [HttpDelete("RemoveUser")]
+        [Authorize(Roles = "Admin")]
+        public IActionResult RemoveUser(int id)
+        {
+            User existingUser = context.Users.FirstOrDefault(u => u.UserId == id);
+
+            if (existingUser == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            context.Users.Remove(existingUser);
+            context.SaveChanges();
+
+            return Ok("User account removed.");
+        }
+
+        // Get all users, including their loans and reservations
+        [HttpGet("FetchAllUsers")]
+        [Authorize(Roles = "Admin, Librarian")]
+        public IActionResult FetchAllUsers()
+        {
+            List<User> users = context.Users.Include(u => u.Loans)
+                                            .Include(u => u.Reservations)
+                                            .ToList();
+
+            return Ok(users);
+        }
+
+        // Get a single user by Id
+        [HttpGet("GetUserById")]
+        [Authorize(Roles = "Admin, Librarian")]
+        public IActionResult GetUserById(int id)
+        {
+            User user = context.Users.Include(u => u.Loans)
+                                     .Include(u => u.Reservations)
+                                     .FirstOrDefault(u => u.UserId == id);
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
 
             return Ok(user);
         }
 
-        // 4. DELETE: Remove User
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> RemoveUser(int id)
+        // Filter users by Role
+        [HttpGet("FilterUsersByRole")]
+        [Authorize(Roles = "Admin, Librarian")]
+        public IActionResult GetUsersByRole(UserRole role)
         {
-            var user = await _db.Users.FindAsync(id);
-            if (user == null) return NotFound();
+            List<User> users = context.Users.Where(u => u.Role == role).ToList();
 
-            _db.Users.Remove(user);
-            await _db.SaveChangesAsync();
-
-            return Ok(new { Message = "User account removed." });
+            return Ok(users);
         }
 
-        // 5. GET List: Fetch all users with related Loans and Reservations
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> FetchAllUsers()
+        // Get total user count, plus a sorted summary list
+        [HttpGet("GetUsersSummary")]
+        [Authorize(Roles = "Admin, Librarian")]
+        public IActionResult GetUsersSummary()
         {
-            return await _db.Users
-                .Include(u => u.Loans)
-                .Include(u => u.Reservations)
-                .ToListAsync();
-        }
-
-        // 6. GET Find: Get user by ID
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUserById(int id)
-        {
-            var user = await _db.Users
-                .Include(u => u.Loans)
-                .Include(u => u.Reservations)
-                .FirstOrDefaultAsync(u => u.UserId == id);
-
-            if (user == null) return NotFound();
-
-            return user;
-        }
-
-        // 7. GET Filter: Filter users by Role (Enum)
-        [HttpGet("filter-by-role/{role}")]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsersByRole(UserRole role)
-        {
-            return await _db.Users
-                .Where(u => u.Role == role)
-                .ToListAsync();
-        }
-
-        // 8. GET Aggregate/Sort: Get total count and sorted users
-        [HttpGet("summary")]
-        public async Task<IActionResult> GetUsersSummary()
-        {
-            var totalCount = await _db.Users.CountAsync();
-            var sortedList = await _db.Users
-                .OrderBy(u => u.LastName)
-                .Select(u => new
-                {
-                    u.UserId,
-                    FullName = u.FirstName + " " + u.LastName,
-                    u.UserEmail,
-                    u.Role
-                })
-                .ToListAsync();
+            int totalCount = context.Users.Count();
+            var sortedList = context.Users.OrderBy(u => u.LastName)
+                                          .Select(u => new
+                                          {
+                                              u.UserId,
+                                              FullName = u.FirstName + " " + u.LastName,
+                                              u.UserEmail,
+                                              u.Role
+                                          })
+                                          .ToList();
 
             return Ok(new
             {

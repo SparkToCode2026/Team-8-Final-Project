@@ -14,11 +14,38 @@ namespace Team_8_Final_Project.Controllers
             context = _context;
         }
 
+        public class CreateEventDto
+        {
+            public string EventName { get; set; }
+            public DateTime EventDate { get; set; }
+            public string EventLocation { get; set; }
+            public string EventDescription { get; set; }
+            public int EventMaxCap { get; set; }
+        }
+
+        public class UpdateEventDto
+        {
+            public string EventName { get; set; }
+            public DateTime EventDate { get; set; }
+            public string EventLocation { get; set; }
+            public string EventDescription { get; set; }
+            public int EventMaxCap { get; set; }
+        }
+
         // Add a new event
         [HttpPost("AddEvent")]
         [Authorize(Roles = "Admin, Librarian")]
-        public IActionResult AddEvent(Event newEvent)
+        public IActionResult AddEvent(CreateEventDto dto)
         {
+            var newEvent = new Event
+            {
+                EventName = dto.EventName,
+                EventDate = dto.EventDate,
+                EventLocation = dto.EventLocation,
+                EventDescription = dto.EventDescription,
+                EventMaxCap = dto.EventMaxCap
+            };
+
             context.Events.Add(newEvent);
             context.SaveChanges();
 
@@ -28,7 +55,7 @@ namespace Team_8_Final_Project.Controllers
         // Update an existing event (full update)
         [HttpPut("UpdateEvent")]
         [Authorize(Roles = "Admin, Librarian")]
-        public IActionResult UpdateEvent(int id, Event updatedEvent)
+        public IActionResult UpdateEvent(int id, UpdateEventDto dto)
         {
             Event existingEvent = context.Events.FirstOrDefault(e => e.EventId == id);
 
@@ -37,11 +64,11 @@ namespace Team_8_Final_Project.Controllers
                 return NotFound("Event not found.");
             }
 
-            existingEvent.EventName = updatedEvent.EventName;
-            existingEvent.EventDate = updatedEvent.EventDate;
-            existingEvent.EventLocation = updatedEvent.EventLocation;
-            existingEvent.EventDescription = updatedEvent.EventDescription;
-            existingEvent.EventMaxCap = updatedEvent.EventMaxCap;
+            existingEvent.EventName = dto.EventName;
+            existingEvent.EventDate = dto.EventDate;
+            existingEvent.EventLocation = dto.EventLocation;
+            existingEvent.EventDescription = dto.EventDescription;
+            existingEvent.EventMaxCap = dto.EventMaxCap;
 
             context.SaveChanges();
 

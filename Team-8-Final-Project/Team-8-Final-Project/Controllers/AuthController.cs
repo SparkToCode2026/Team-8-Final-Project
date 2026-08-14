@@ -211,6 +211,7 @@ namespace Team_8_Final_Project.Controllers
                                                "Password Reset - Library Management System",
                                                body );
 
+            return Ok("Password reset email has been sent.");
         }
 
         public class ResetPasswordDto

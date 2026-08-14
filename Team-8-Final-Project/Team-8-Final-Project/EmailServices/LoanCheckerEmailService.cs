@@ -8,5 +8,11 @@ namespace Team_8_Final_Project.EmailServices
     {
         private readonly IServiceScopeFactory scopeFactory;
         private readonly EmailService emailService;
+
+        public LoanCheckerEmailService( IServiceScopeFactory _scopeFactory, EmailService _emailService)
+        {
+            scopeFactory = _scopeFactory;
+            emailService = _emailService;
+        }
     }
 }

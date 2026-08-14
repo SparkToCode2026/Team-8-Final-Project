@@ -22,6 +22,11 @@ namespace Team_8_Final_Project.EmailServices
             int intervalMinutes = int.Parse( configuration["LoanCheckerSettings:CheckIntervalMinutes"]! );
             while (!stoppingToken.IsCancellationRequested)
             {
+                using (IServiceScope scope = scopeFactory.CreateScope())
+                {
+                    ProjectContext context = scope.ServiceProvider.GetRequiredService<ProjectContext>();
+                }
+
                 await Task.Delay( TimeSpan.FromMinutes(intervalMinutes), stoppingToken );
             }
         }

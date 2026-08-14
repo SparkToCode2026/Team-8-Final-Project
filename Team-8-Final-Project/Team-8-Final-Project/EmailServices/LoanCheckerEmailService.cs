@@ -8,18 +8,21 @@ namespace Team_8_Final_Project.EmailServices
     {
         private readonly IServiceScopeFactory scopeFactory;
         private readonly EmailService emailService;
+        private readonly IConfiguration configuration;
 
-        public LoanCheckerEmailService( IServiceScopeFactory _scopeFactory, EmailService _emailService)
+        public LoanCheckerEmailService( IServiceScopeFactory _scopeFactory, EmailService _emailService, IConfiguration _configuration)
         {
             scopeFactory = _scopeFactory;
             emailService = _emailService;
+            configuration = _configuration;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            int intervalMinutes = int.Parse( configuration["LoanCheckerSettings:CheckIntervalMinutes"]! );
             while (!stoppingToken.IsCancellationRequested)
             {
-
+                await Task.Delay( TimeSpan.FromMinutes(intervalMinutes), stoppingToken );
             }
         }
     }

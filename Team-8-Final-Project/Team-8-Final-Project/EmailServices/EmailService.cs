@@ -25,6 +25,13 @@ namespace Team_8_Final_Project.EmailServices
             {
                 Text = body 
             };
+
+            using (SmtpClient smtp = new SmtpClient())
+            {
+                await smtp.ConnectAsync( configuration["EmailSettings:SmtpServer"],
+                                         int.Parse(configuration["EmailSettings:Port"]!),
+                                         SecureSocketOptions.StartTls );
+            }
         }
     }
 }

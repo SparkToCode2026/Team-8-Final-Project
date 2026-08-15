@@ -28,6 +28,8 @@ namespace Team_8_Final_Project.EmailServices
                     ProjectContext context = scope.ServiceProvider.GetRequiredService<ProjectContext>();
 
                     List<Loan> activeLoans = context.Loans.Include(l => l.User)
+                                                          .Include(l => l.BookCopy)
+                                                             .ThenInclude(bc => bc.Book)
                                                           .Where(l => l.loanStatus == LoanStatus.Active)
                                                           .ToList();
 
@@ -41,12 +43,13 @@ namespace Team_8_Final_Project.EmailServices
                         }
                         else if (loan.LoanDueDate.Date == DateTime.Now.Date.AddDays(1))
                         {
-                             string body =
-                             "Hello " + loan.User.FirstName + ",\n\n" +
-                             "This is a reminder that your borrowed book is due tomorrow.\n\n" +
-                             "Due date: " + loan.LoanDueDate.ToShortDateString() + "\n\n" +
-                             "Please return the book on time to avoid an overdue fine.\n\n" +
-                             "Library Management System";
+                            string body =
+                              "Hello " + loan.User.FirstName + ",\n\n" +
+                              "This is a reminder that your borrowed book is due tomorrow.\n\n" +
+                              "Book: " + loan.BookCopy.Book.BookTitle + "\n" +
+                              "Due date: " + loan.LoanDueDate.ToShortDateString() + "\n\n" +
+                              "Please return the book on time to avoid an overdue fine.\n\n" +
+                              "Library Management System";
 
                             await emailService.SendEmailAsync( loan.User.UserEmail,
                              "Library Loan Reminder",

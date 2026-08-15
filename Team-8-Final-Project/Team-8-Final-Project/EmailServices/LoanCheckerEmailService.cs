@@ -40,6 +40,13 @@ namespace Team_8_Final_Project.EmailServices
                         if (loan.LoanDueDate < DateTime.Now)
                         {
                             loan.loanStatus = LoanStatus.Overdue;
+
+                            Fine existingFine = context.Fines.FirstOrDefault(f => f.LoanId == loan.LoanId);
+
+                            if (existingFine == null)
+                            {
+                                Fine fine = new Fine { LoanId = loan.LoanId, Status = FinePaymentStatus.Unpaid, FineIssueDate = DateTime.Now };
+                            }
                         }
                         else if (loan.LoanDueDate.Date == DateTime.Now.Date.AddDays(1))
                         {

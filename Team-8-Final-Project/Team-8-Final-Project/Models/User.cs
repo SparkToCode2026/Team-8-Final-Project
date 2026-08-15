@@ -27,6 +27,10 @@ namespace Team_8_Final_Project.Models
         public UserRole Role { get; set; } = UserRole.Member;
         [Required]
         public string PasswordHash { get; set; }
+        // For Forget Password
+        public string? PasswordResetToken { get; set; }
+        public DateTime? PasswordResetTokenExpiry { get; set; }
+
 
 
         public List<Loan> Loans { get; set; }

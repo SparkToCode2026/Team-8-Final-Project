@@ -4,7 +4,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
+using Team_8_Final_Project.EmailServices;
 using Team_8_Final_Project.Models;
 namespace Team_8_Final_Project.Controllers
 {
@@ -14,11 +16,13 @@ namespace Team_8_Final_Project.Controllers
     {
         private ProjectContext context;
         private IConfiguration configuration;
+        private EmailService emailService;
 
-        public AuthController(ProjectContext _context, IConfiguration _configuration)
+        public AuthController(ProjectContext _context, IConfiguration _configuration, EmailService _emailService)
         {
             context = _context;
             configuration = _configuration;
+            emailService = _emailService;
         }
 
         public class RegisterDto
@@ -141,7 +145,7 @@ namespace Team_8_Final_Project.Controllers
                 issuer: configuration["Jwt:Issuer"],
                 audience: configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(2),
+                expires: DateTime.Now.AddHours(2),
                 signingCredentials: credentials
             );
 
@@ -153,6 +157,128 @@ namespace Team_8_Final_Project.Controllers
                 Message = "Login successful.",
                 Token = tokenString
             });
+        }
+
+        public class ForgotPasswordDto
+        {
+            [Required]
+            [EmailAddress]
+            public string UserEmail { get; set; }
+        }
+
+        // Forgot Password
+        [HttpPost("ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto forgotPasswordDto)
+        {
+            // Find the user by email
+            User user = context.Users.FirstOrDefault(u => u.UserEmail == forgotPasswordDto.UserEmail);
+
+            if (user == null)
+            {
+                return NotFound("No account was found with this email.");
+            }
+
+            // Generate a secure random reset token
+            byte[] tokenBytes = new byte[32];
+
+            using (RandomNumberGenerator random = RandomNumberGenerator.Create())
+            {
+                random.GetBytes(tokenBytes);
+            }
+
+            string resetToken = Convert.ToBase64String(tokenBytes);
+
+            // Save the token and expiration time
+            user.PasswordResetToken = resetToken;
+            user.PasswordResetTokenExpiry = DateTime.Now.AddMinutes(30);
+
+            context.SaveChanges();
+
+            string resetLink = configuration["EmailSettings:ResetPasswordUrl"]
+                           + "?email=" + Uri.EscapeDataString(user.UserEmail)
+                           + "&token="  + Uri.EscapeDataString(resetToken);
+
+            string body =
+             "Hello " + user.FirstName + ",\n\n" +
+             "We received a request to reset your password for the Library Management System.\n\n" +
+             "Please use the following link to reset your password:\n" +
+              resetLink + "\n\n" +
+             "This link will expire in 30 minutes.\n\n" +
+             "If you did not request a password reset, you can ignore this email.\n\n" +
+             "Library Management System";
+
+            await emailService.SendEmailAsync( user.UserEmail,
+                                               "Password Reset - Library Management System",
+                                               body );
+
+            return Ok("Password reset email has been sent.");
+        }
+
+        public class ResetPasswordDto
+        {
+            [Required]
+            [EmailAddress]
+            public string UserEmail { get; set; }
+
+            [Required]
+            public string ResetToken { get; set; }
+
+            [Required]
+            [MinLength(8, ErrorMessage = "Password must be at least 8 characters long.")]
+            public string NewPassword { get; set; }
+        }
+
+        // Reset Password
+        [HttpPost("ResetPassword")]
+        public IActionResult ResetPassword(ResetPasswordDto resetPasswordDto)
+        {
+            // Find the user
+            User user = context.Users.FirstOrDefault(u => u.UserEmail == resetPasswordDto.UserEmail);
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            // Check reset request exists
+            if (string.IsNullOrEmpty(user.PasswordResetToken))
+            {
+                return BadRequest("No password reset request was found.");
+            }
+
+            // Check if token expired
+            if (user.PasswordResetTokenExpiry == null || user.PasswordResetTokenExpiry < DateTime.Now)
+            {
+                // Invalidate expired token
+                user.PasswordResetToken = null;
+                user.PasswordResetTokenExpiry = null;
+
+                context.SaveChanges();
+
+                return BadRequest("The password reset link has expired. Please request a new one.");
+            }
+
+            // Check that the token from the link matches the stored token
+            if (user.PasswordResetToken != resetPasswordDto.ResetToken)
+            {
+                return BadRequest("Invalid password reset link.");
+            }
+
+            // Hash the new password
+            PasswordHasher<User> hasher = new PasswordHasher<User>();
+
+            user.PasswordHash = hasher.HashPassword(
+                user,
+                resetPasswordDto.NewPassword
+            );
+
+            // Reset/Invalidate token after successful password reset
+            user.PasswordResetToken = null;
+            user.PasswordResetTokenExpiry = null;
+
+            context.SaveChanges();
+
+            return Ok("Password has been reset successfully.");
         }
 
     }

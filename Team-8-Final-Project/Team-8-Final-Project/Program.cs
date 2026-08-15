@@ -1,8 +1,9 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
+using Team_8_Final_Project.EmailServices;
 
 namespace Team_8_Final_Project
 {
@@ -16,6 +17,13 @@ namespace Team_8_Final_Project
             //DbContext
             builder.Services.AddDbContext<ProjectContext>(options =>
                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            // For Email Service
+            builder.Services.AddTransient<EmailService>();
+
+            // Loan checker background service
+            builder.Services.AddHostedService<LoanCheckerEmailService>();
+
             //////////////////////
 
             //builder.Services.AddControllers();

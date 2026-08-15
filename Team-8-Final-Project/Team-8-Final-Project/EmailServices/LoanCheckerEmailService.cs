@@ -21,7 +21,7 @@ namespace Team_8_Final_Project.EmailServices
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             int intervalMinutes = int.Parse( configuration["LoanCheckerSettings:CheckIntervalMinutes"]! );
-            decimal fineAmount = decimal.Parse( configuration["LoanCheckerSettings:FineAmountPerLoan"]! );
+            decimal fineAmountPerDay = decimal.Parse( configuration["LoanCheckerSettings:FineAmountPerDay"]! );
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -37,17 +37,31 @@ namespace Team_8_Final_Project.EmailServices
 
                     foreach (Loan loan in activeLoans)
                     {
-                        TimeSpan timeUntilDue = loan.LoanDueDate - DateTime.Now;
-
                         if (loan.LoanDueDate < DateTime.Now)
                         {
                             loan.loanStatus = LoanStatus.Overdue;
 
                             Fine existingFine = context.Fines.FirstOrDefault(f => f.LoanId == loan.LoanId);
 
+                            int overdueDays = (DateTime.Now.Date - loan.LoanDueDate.Date).Days;
+
+                            decimal totalFine = overdueDays * fineAmountPerDay;
+
                             if (existingFine == null)
                             {
-                                Fine fine = new Fine { LoanId = loan.LoanId, Status = FinePaymentStatus.Unpaid, FineIssueDate = DateTime.Now };
+                                Fine fine = new Fine
+                                {
+                                    LoanId = loan.LoanId,
+                                    FineAmount = totalFine,
+                                    Status = FinePaymentStatus.Unpaid,
+                                    FineIssueDate = DateTime.Now
+                                };
+
+                                context.Fines.Add(fine);
+                            }
+                            else
+                            {
+                                existingFine.FineAmount = totalFine;
                             }
                         }
                         else if (loan.LoanDueDate.Date == DateTime.Now.Date.AddDays(1))

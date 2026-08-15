@@ -20,6 +20,10 @@ namespace Team_8_Final_Project
 
             // For Email Service
             builder.Services.AddTransient<EmailService>();
+
+            // Loan checker background service
+            builder.Services.AddHostedService<LoanCheckerEmailService>();
+
             //////////////////////
 
             //builder.Services.AddControllers();

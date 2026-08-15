@@ -58,6 +58,24 @@ namespace Team_8_Final_Project.EmailServices
                                 };
 
                                 context.Fines.Add(fine);
+
+                                string body =
+                                    "Hello " + loan.User.FirstName + ",\n\n" +
+                                    "Your borrowed book is now overdue.\n\n" +
+                                    "Book: " + loan.BookCopy.Book.BookTitle + "\n" +
+                                    "Due date: " + loan.LoanDueDate.ToShortDateString() + "\n" +
+                                    "Current fine: " + totalFine.ToString("0.00") + " OMR\n" +
+                                    "Please note that the fine will increase by " +
+                                    fineAmountPerDay.ToString("0.00") +
+                                    " OMR for each additional overdue day until the book is returned.\n\n" +
+                                    "Please return the book as soon as possible.\n\n" +
+                                    "Library Management System";
+
+                                await emailService.SendEmailAsync(
+                                    loan.User.UserEmail,
+                                    "Library Book Overdue",
+                                    body
+                                );
                             }
                             else
                             {

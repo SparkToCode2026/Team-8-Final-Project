@@ -21,6 +21,8 @@ namespace Team_8_Final_Project.EmailServices
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             int intervalMinutes = int.Parse( configuration["LoanCheckerSettings:CheckIntervalMinutes"]! );
+            decimal fineAmount = decimal.Parse( configuration["LoanCheckerSettings:FineAmountPerLoan"]! );
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 using (IServiceScope scope = scopeFactory.CreateScope())

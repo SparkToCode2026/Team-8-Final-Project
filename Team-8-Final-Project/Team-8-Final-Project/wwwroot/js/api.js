@@ -4,7 +4,7 @@
 // JWT gets attached automatically instead of repeating it everywhere.
 // ============================================================
  
-const API_BASE_URL = "https://localhost:7146"; // change if your port differs
+const API_BASE_URL = "http://localhost:5240"; // must match whatever "Now listening on" prints in your terminal
  
 async function apiFetch(path, options = {}) {
   const token = localStorage.getItem("token");

@@ -109,12 +109,9 @@ namespace Team_8_Final_Project
 
             app.UseHttpsRedirection();
 
-app.UseCors("AllowFrontend");
+            app.UseCors("AllowFrontend");
 
-app.UseAuthentication();
-app.UseAuthorization();
 
-app.MapControllers();
 
             app.UseAuthentication();
             app.UseAuthorization();

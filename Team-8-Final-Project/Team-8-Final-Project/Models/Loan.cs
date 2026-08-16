@@ -14,7 +14,6 @@ namespace Team_8_Final_Project.Models
     public class Loan
     {
         [Key]
-        [JsonIgnore]
         public int LoanId { get; set; }
 
         [Required]

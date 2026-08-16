@@ -6,7 +6,26 @@
 // reservation here yet - only view it.
 // ============================================================
 
-document.addEventListener("DOMContentLoaded", loadMyReservations);
+document.addEventListener("DOMContentLoaded", () => {
+  showReservationBannerIfNeeded();
+  loadMyReservations();
+});
+
+// book-details.js redirects here (instead of showing an alert() popup) right
+// after a successful reservation, adding ?justReserved=1 to the URL. This
+// shows a one-time confirmation banner and then cleans the URL up so a page
+// refresh doesn't show it again.
+function showReservationBannerIfNeeded() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("justReserved") !== "1") return;
+
+  const banner = document.createElement("div");
+  banner.className = "alert alert-success";
+  banner.textContent = "Your reservation was placed. Staff will check the book out to you when it's available.";
+  document.querySelector(".container").insertBefore(banner, document.getElementById("reservationsContainer"));
+
+  history.replaceState(null, "", window.location.pathname);
+}
 
 async function loadMyReservations() {
   const container = document.getElementById("reservationsContainer");

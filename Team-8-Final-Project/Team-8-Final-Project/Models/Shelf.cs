@@ -15,6 +15,6 @@ public class Shelf
     public string Section { get; set; }
 
     public int FloorNumber { get; set; }
-
+    [JsonIgnore]
     public List<BookCopy> BookCopies { get; set; }
 }

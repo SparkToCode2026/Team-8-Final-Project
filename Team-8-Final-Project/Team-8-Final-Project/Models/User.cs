@@ -32,11 +32,11 @@ namespace Team_8_Final_Project.Models
         public DateTime? PasswordResetTokenExpiry { get; set; }
 
 
-
+        [JsonIgnore]
         public List<Loan> Loans { get; set; }
-
+        [JsonIgnore]
         public List<Reservation> Reservations { get; set; }
-
+        [JsonIgnore]
         public List<Event> Events { get; set; }
     }
 }

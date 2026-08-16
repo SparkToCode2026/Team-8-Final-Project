@@ -29,18 +29,61 @@ async function loadBookDetails(id) {
   const container = document.getElementById("bookDetails");
 
   try {
-    const book = await getBook(id);
+    // Fetched together: there's no "get copies for this one book" endpoint,
+    // so this pulls every book copy in the library and filters down to this
+    // book's, same simplification used in my-loans.js/my-fines.js.
+    const [book, allCopies] = await Promise.all([getBook(id), getAllBookCopies()]);
     const role = getUserRole();
     const isStaff = role === "Librarian" || role === "Admin";
+
+    const copiesForThisBook = allCopies.filter(c => String(c.bookId) === String(book.bookId));
+    const availableCount = copiesForThisBook.filter(c => c.availabilityStatus === "Available").length;
+    const totalCount = copiesForThisBook.length;
+
+    const availabilityHtml = totalCount === 0
+      ? `<span class="badge bg-secondary">No copies in the system yet</span>`
+      : availableCount > 0
+        ? `<span class="badge bg-success">${availableCount} of ${totalCount} ${totalCount === 1 ? "copy" : "copies"} available</span>`
+        : `<span class="badge bg-danger">All ${totalCount} ${totalCount === 1 ? "copy is" : "copies are"} currently checked out or reserved</span>`;
 
     container.innerHTML = `
       <h1>${book.bookTitle}</h1>
       <p class="text-muted">ISBN: ${book.isbn} | Edition: ${book.bookEdition ?? "N/A"} | ${book.bookLanguage}</p>
+      <p>${availabilityHtml}</p>
+      <button type="button" class="btn btn-success me-2" id="reserveBtn">Reserve this book</button>
       ${isStaff ? `
         <a href="book-form.html?id=${book.bookId}" class="btn btn-outline-primary me-2">Edit</a>
         <button type="button" class="btn btn-outline-danger" id="deleteBtn">Delete</button>
       ` : ""}
+      ${availableCount === 0 && totalCount > 0 ? `
+        <p class="text-muted mt-2 mb-0">
+          This book is reservable as a waitlist request even while unavailable, but there's currently
+          no way to show exactly when a copy frees up - that needs LoanController's GetLoansByBookCopy
+          endpoint opened up to members (it's Librarian/Admin-only right now), or a due-date lookup
+          added specifically for this. Ask a staff member in the meantime.
+        </p>
+      ` : ""}
     `;
+
+    // Reserving is open to any logged-in user (Member or staff) - actually
+    // checking a book out to a loan is Librarian/Admin-only on the backend
+    // (AddLoan), so there's no self-checkout button here on purpose. This
+    // just places a hold; staff turns it into a loan via staff/circulation.html.
+    document.getElementById("reserveBtn").addEventListener("click", async () => {
+      try {
+        await createReservation({
+          bookId: book.bookId,
+          userId: getUserId(),
+          reservationDate: new Date().toISOString()
+        });
+        // Redirect to the reservations list instead of an alert() popup, so
+        // there's an actual page confirming it - my-reservations.js shows a
+        // banner up top when it sees ?justReserved=1.
+        window.location.href = "my-reservations.html?justReserved=1";
+      } catch (err) {
+        alert("Could not reserve this book: " + err.message);
+      }
+    });
 
     if (isStaff) {
       document.getElementById("deleteBtn").addEventListener("click", async () => {

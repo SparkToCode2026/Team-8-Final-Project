@@ -15,7 +15,7 @@ namespace Team_8_Final_Project.Models
 
         [MaxLength(500)]
         public string CategoryDescription { get; set; }
-
+        [JsonIgnore]
         public List<Book> Books { get; set; }
     }
 }

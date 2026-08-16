@@ -26,7 +26,7 @@ namespace Team_8_Final_Project.Models
         [ForeignKey("Category")]
         public int? CategoryId { get; set; }
         public Category Category { get; set; }
-
+        [JsonIgnore]
         public List<BookCopy> BookCopies { get; set; }
 
         public List<Author> Authors { get; set; }

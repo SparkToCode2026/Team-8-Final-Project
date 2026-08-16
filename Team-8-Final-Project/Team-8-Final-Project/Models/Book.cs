@@ -8,7 +8,7 @@ namespace Team_8_Final_Project.Models
     public class Book
     {
         [Key]
-        [JsonIgnore]
+        
         public int? BookId {  get; set; }
         [Required]
         public string ISBN { get; set; }

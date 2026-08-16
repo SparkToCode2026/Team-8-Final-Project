@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-        <title>Catalog Management</title>
-    </head>
 
-    <body>
-        <header>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalog Management</title>
+</head>
 
-             <nav>
+<body>
+
+    <!-- Navigation -->
+    <header>
+        <nav>
             <h1>Library Management System</h1>
 
             <ul>
@@ -27,42 +28,42 @@
                 <button type="button">Logout</button>
             </div>
         </nav>
+    </header>
 
-        </header>
+    <main>
 
-        <main>
+        <section>
+            <h2>Catalog Management</h2>
+            <p>Manage books, copies, authors, publishers, categories, and shelves.</p>
+        </section>
 
-            <section>
-              <h2>Catalog Management</h2>
-              <p>Manage books, copies, authors, publishers, categories, and shelves.</p>
-            </section>
-            
-             <!-- Catalog Navigation -->
-            <nav>
-              <ul>
+
+        <!-- Catalog Navigation -->
+        <nav>
+            <ul>
                 <li><a href="#books">Books</a></li>
                 <li><a href="#book-copies">Book Copies</a></li>
                 <li><a href="#authors">Authors</a></li>
                 <li><a href="#publishers">Publishers</a></li>
                 <li><a href="#categories">Categories</a></li>
                 <li><a href="#shelves">Shelves</a></li>
-              </ul>
-            </nav>
+            </ul>
+        </nav>
 
-            <section id="books">
+        <section id="books">
 
-              <h2>Books</h2>
+            <h2>Books</h2>
 
-              <button type="button">Add Book</button>
+            <button type="button">Add Book</button>
 
-              <div>
-                 <label for="book-search">Search Books:</label>
-                 <input type="text" id="book-search" placeholder="Search by title or ISBN">
-                 <button type="button">Search</button>
-              </div>
+            <div>
+                <label for="book-search">Search Books:</label>
+                <input type="text" id="book-search" placeholder="Search by title or ISBN">
+                <button type="button">Search</button>
+            </div>
 
-              <table>
-                 <thead>
+            <table>
+                <thead>
                     <tr>
                         <th>ISBN</th>
                         <th>Title</th>
@@ -73,9 +74,9 @@
                         <th>Category</th>
                         <th>Actions</th>
                     </tr>
-                 </thead>
+                </thead>
 
-                 <tbody>
+                <tbody>
                     <tr>
                         <td>--</td>
                         <td>--</td>
@@ -92,22 +93,22 @@
                 </tbody>
             </table>
 
-          </section>
+        </section>
 
-           <section id="book-copies">
+        <section id="book-copies">
 
-              <h2>Book Copies</h2>
+            <h2>Book Copies</h2>
 
-              <button type="button">Add Book Copy</button>
+            <button type="button">Add Book Copy</button>
 
-              <div>
+            <div>
                 <label for="copy-search">Search Copies:</label>
                 <input type="text" id="copy-search" placeholder="Search by barcode">
                 <button type="button">Search</button>
-              </div>
+            </div>
 
-              <table>
-                  <thead>
+            <table>
+                <thead>
                     <tr>
                         <th>Barcode</th>
                         <th>Book</th>
@@ -117,9 +118,9 @@
                         <th>Shelf</th>
                         <th>Actions</th>
                     </tr>
-                  </thead>
+                </thead>
 
-                  <tbody>
+                <tbody>
                     <tr>
                         <td>--</td>
                         <td>--</td>
@@ -132,12 +133,12 @@
                             <button type="button">Delete</button>
                         </td>
                     </tr>
-                  </tbody>
-              </table>
+                </tbody>
+            </table>
 
-          </section>
+        </section>
 
-            <section id="authors">
+        <section id="authors">
 
             <h2>Authors</h2>
 
@@ -279,13 +280,13 @@
 
         </section>
 
-         <footer>
-            <p>&copy; 2026 Library Management System</p>
-            <p>Developed by <strong>Team CodeStorm</strong></p>
-         </footer>
+    </main>
 
-        </main>
-    </body>
+    <footer>
+        <p>&copy; 2026 Library Management System</p>
+        <p>Developed by <strong>Team CodeStorm</strong></p>
+    </footer>
 
+</body>
 
 </html>

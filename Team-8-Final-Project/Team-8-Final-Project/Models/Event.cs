@@ -16,7 +16,6 @@ public enum EventStatus
 public class Event
 {
     [Key]
-    [JsonIgnore]
     public int EventId { get; set; }
     [Required]
     public string EventName { get; set; }

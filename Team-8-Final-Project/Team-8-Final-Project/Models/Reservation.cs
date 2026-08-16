@@ -13,7 +13,6 @@ namespace Team_8_Final_Project.Models
     public class Reservation
     {
         [Key]
-        [JsonIgnore]
         public int ReservationId { get; set; }
         public DateTime ReservationDate { get; set; }
         [Required]

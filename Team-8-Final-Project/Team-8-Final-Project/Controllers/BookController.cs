@@ -152,6 +152,24 @@ namespace Team_8_Final_Project.Controllers
 
         }
 
+        // Get a single Book by Id
+        [HttpGet("GetBookById")]
+        [Authorize]
+        public IActionResult GetBookById(int id)
+        {
+            Book b = context.Books.Include(b => b.Authors)
+                                   .Include(b => b.Category)
+                                   .Include(b => b.Publisher)
+                                   .FirstOrDefault(b => b.BookId == id);
+
+            if (b == null)
+            {
+                return NotFound("Book not found.");
+            }
+
+            return Ok(b);
+        }
+
         // Search Book by Title and show available book copies
         [HttpGet("SearchBook")]
         [Authorize]

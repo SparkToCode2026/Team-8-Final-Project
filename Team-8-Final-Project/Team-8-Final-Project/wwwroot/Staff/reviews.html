@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <title>Review Management</title>
+    </head>
+
+    <body>
+        <header>
+            <nav>
+                <h1>Library Management System</h1>
+
+                <ul>
+                    <li><a href="dashboard.html">Dashboard</a></li>
+                    <li><a href="catalog.html">Catalog</a></li>
+                    <li><a href="circulation.html">Circulation</a></li>
+                    <li><a href="fines.html">Fines</a></li>
+                    <li><a href="reviews.html">Reviews</a></li>
+                    <li><a href="events.html">Events</a></li>
+                </ul>
+
+                <div>
+                    <span>Welcome, Staff</span>
+                    <button type="button">Logout</button>
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            <section>
+                <h2>Review Management</h2>
+                <p>View and manage reviews submitted by library members.</p>
+            </section>
+
+            <section>
+
+                <h2>Review Overview</h2>
+
+                <div>
+
+                    <article>
+                        <h3>Total Reviews</h3>
+                        <p>0</p>
+                    </article>
+
+                    <article>
+                        <h3>Average Rating</h3>
+                        <p>0.0</p>
+                    </article>
+
+                </div>
+
+            </section>
+            
+            <section>
+
+                <h2>Search and Filter</h2>
+
+                <div>
+                    <label for="review-search">
+                        Search Reviews:
+                    </label>
+
+                    <input
+                        type="text"
+                        id="review-search"
+                        placeholder="Search by member or book">
+
+                    <button type="button">Search</button>
+                </div>
+
+
+                <div>
+                    <label for="rating-filter">
+                        Filter by Rating:
+                    </label>
+
+                    <select id="rating-filter">
+                        <option value="">All Ratings</option>
+                        <option value="5">5 Stars</option>
+                        <option value="4">4 Stars</option>
+                        <option value="3">3 Stars</option>
+                        <option value="2">2 Stars</option>
+                        <option value="1">1 Star</option>
+                    </select>
+
+                    <button type="button">Filter</button>
+                </div>
+
+            </section>
+
+            <section>
+
+                <h2>Reviews</h2>
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Review ID</th>
+                            <th>Member</th>
+                            <th>Book</th>
+                            <th>Rating</th>
+                            <th>Comment</th>
+                            <th>Review Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>
+                                <button type="button">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </section>
+
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Library Management System</p>
+            <p>Developed by <strong>Team CodeStorm</strong></p>
+        </footer>
+    </body>
+</html>

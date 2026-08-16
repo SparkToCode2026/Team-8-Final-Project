@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circulation Management</title>
+</head>
+
+<body>
+
+    <header>
+        <nav>
+            <h1>Library Management System</h1>
+
+            <ul>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="catalog.html">Catalog</a></li>
+                <li><a href="circulation.html">Circulation</a></li>
+                <li><a href="fines.html">Fines</a></li>
+                <li><a href="reviews.html">Reviews</a></li>
+                <li><a href="events.html">Events</a></li>
+            </ul>
+
+            <div>
+                <span>Welcome, Staff</span>
+                <button type="button">Logout</button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+
+        <section>
+            <h2>Circulation Management</h2>
+            <p>Manage book loans and reservations.</p>
+        </section>
+
+        <nav>
+            <ul>
+                <li><a href="#loans">Loans</a></li>
+                <li><a href="#reservations">Reservations</a></li>
+            </ul>
+        </nav>
+
+        <section id="loans">
+
+            <h2>Loans</h2>
+
+            <button type="button">Create Loan</button>
+
+            <div>
+                <label for="loan-search">Search Loans:</label>
+                <input
+                    type="text"
+                    id="loan-search"
+                    placeholder="Search by member or book">
+                <button type="button">Search</button>
+            </div>
+
+            <div>
+                <label for="loan-status-filter">Filter by Status:</label>
+
+                <select id="loan-status-filter">
+                    <option value="">All Statuses</option>
+                    <option value="Active">Active</option>
+                    <option value="Overdue">Overdue</option>
+                    <option value="Returned">Returned</option>
+                </select>
+
+                <button type="button">Filter</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Member</th>
+                        <th>Book</th>
+                        <th>Copy</th>
+                        <th>Loan Start Date</th>
+                        <th>Due Date</th>
+                        <th>Return Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>--</td>
+                        <td>--</td>
+                        <td>--</td>
+                        <td>--</td>
+                        <td>--</td>
+                        <td>--</td>
+                        <td>--</td>
+                        <td>
+                            <button type="button">View</button>
+                            <button type="button">Edit</button>
+                            <button type="button">Change Status</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </section>
+
+        <section id="reservations">
+
+            <h2>Reservations</h2>
+
+            <button type="button">Create Reservation</button>
+
+            <div>
+                <label for="reservation-search">Search Reservations:</label>
+                <input
+                    type="text"
+                    id="reservation-search"
+                    placeholder="Search by member or book">
+                <button type="button">Search</button>
+            </div>
+
+            <div>
+                <label for="reservation-status-filter">
+                    Filter by Status:
+                </label>
+
+                <select id="reservation-status-filter">
+                    <option value="">All Statuses</option>
+                    <option value="Active">Active</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+
+                <button type="button">Filter</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Member</th>
+                        <th>Book</th>
+                        <th>Reservation Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>--</td>
+                        <td>--</td>
+                        <td>--</td>
+                        <td>--</td>
+                        <td>
+                            <button type="button">View</button>
+                            <button type="button">Edit</button>
+                            <button type="button">Change Status</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Library Management System</p>
+        <p>Developed by <strong>Team CodeStorm</strong></p>
+    </footer>
+
+</body>
+
+</html>

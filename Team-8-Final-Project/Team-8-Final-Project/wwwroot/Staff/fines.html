@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>Fine Management</title>
+    </head>
+
+    <body>
+        <header>
+            <nav>
+                <h1>Library Management System</h1>
+
+                <ul>
+                   <li><a href="dashboard.html">Dashboard</a></li>
+                   <li><a href="catalog.html">Catalog</a></li>
+                   <li><a href="circulation.html">Circulation</a></li>
+                   <li><a href="fines.html">Fines</a></li>
+                   <li><a href="reviews.html">Reviews</a></li>
+                   <li><a href="events.html">Events</a></li>
+                </ul>
+
+                <div>
+                   <span>Welcome, Staff</span>
+                   <button type="button">Logout</button>
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            <section>
+               <h2>Fine Management</h2>
+               <p>View and manage fines associated with library loans.</p>
+            </section>
+
+             <section>
+                <h2>Fine Overview</h2>
+
+                <div>
+                    <article>
+                        <h3>Total Fines</h3>
+                        <p>0</p>
+                    </article>
+
+                    <article>
+                        <h3>Unpaid Fines</h3>
+                        <p>0</p>
+                    </article>
+
+                    <article>
+                        <h3>Paid Fines</h3>
+                        <p>0</p>
+                    </article>
+
+                    <article>
+                        <h3>Total Amount</h3>
+                        <p>0.00</p>
+                    </article>
+                </div>
+            </section>
+
+            <section>
+
+                <h2>Search and Filter</h2>
+
+                <div>
+                    <label for="fine-search">Search Fines:</label>
+
+                    <input
+                        type="text"
+                        id="fine-search"
+                        placeholder="Search by member or loan ID">
+
+                    <button type="button">Search</button>
+                </div>
+
+                <div>
+                    <label for="fine-status-filter">
+                        Filter by Status:
+                    </label>
+
+                    <select id="fine-status-filter">
+                        <option value="">All Statuses</option>
+                        <option value="Paid">Paid</option>
+                        <option value="Unpaid">Unpaid</option>
+                        <option value="Dismissed">Dismissed</option>
+                    </select>
+
+                    <button type="button">Filter</button>
+                </div>
+
+            </section>
+
+            <section>
+
+                <h2>Fines</h2>
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Fine ID</th>
+                            <th>Loan ID</th>
+                            <th>Member</th>
+                            <th>Book</th>
+                            <th>Fine Amount</th>
+                            <th>Issue Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+
+                            <td>
+                                <button type="button">Edit</button>
+                                <button type="button">Change Status</button>
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </section>
+
+
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Library Management System</p>
+            <p>Developed by <strong>Team CodeStorm</strong></p>
+        </footer>
+
+    </body>
+</html>

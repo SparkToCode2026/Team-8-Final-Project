@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+        <title>Event Management</title>
+    </head>
+    <body>
+        <header>
+            <nav>
+                <h1>Library Management System</h1>
+
+                <ul>
+                    <li><a href="dashboard.html">Dashboard</a></li>
+                    <li><a href="catalog.html">Catalog</a></li>
+                    <li><a href="circulation.html">Circulation</a></li>
+                    <li><a href="fines.html">Fines</a></li>
+                    <li><a href="reviews.html">Reviews</a></li>
+                    <li><a href="events.html">Events</a></li>
+                </ul>
+
+                <div>
+                    <span>Welcome, Staff</span>
+                    <button type="button">Logout</button>
+                </div>
+             </nav>
+        </header>
+
+        <main>
+            <section>
+                <h2>Event Management</h2>
+                <p>Manage library events and activities.</p>
+            </section>
+
+            <section>
+
+                <h2>Events</h2>
+
+                <button type="button">Add Event</button>
+
+                <div>
+                    <label for="event-search">
+                        Search Events:
+                    </label>
+
+                    <input
+                        type="text"
+                        id="event-search"
+                        placeholder="Search by event name">
+
+                    <button type="button">Search</button>
+                </div>
+
+            </section>
+
+            <section>
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Event ID</th>
+                            <th>Event Name</th>
+                            <th>Date</th>
+                            <th>Location</th>
+                            <th>Description</th>
+                            <th>Maximum Capacity</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+                            <td>--</td>
+
+                            <td>
+                                <button type="button">Edit</button>
+                                <button type="button">Delete</button>
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </section>
+
+        </main>
+
+        <footer>
+            <p>&copy; 2026 Library Management System</p>
+            <p>Developed by <strong>Team CodeStorm</strong></p>
+        </footer>
+
+    </body>
+</html>

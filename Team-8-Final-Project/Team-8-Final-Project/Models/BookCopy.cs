@@ -22,7 +22,7 @@ namespace Team_8_Final_Project.Models
     public class BookCopy
     {
         [Key]
-        [JsonIgnore]
+        
         public int BookCopyId { get; set; }
         [Required]
         public string Barcode { get; set; }

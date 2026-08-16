@@ -176,6 +176,38 @@ function getTotalUnpaidFines() {
   return apiFetch("/api/Fine/total-unpaid");
 }
  
+// ---- Review endpoints ---- (confirmed against the real ReviewController.cs)
+function addReview(review) {
+  // review must include: rating, comment, bookId - userId is set server-side from the JWT, not sent
+  return apiFetch("/Review/AddReview", { method: "POST", body: JSON.stringify(review) });
+}
+ 
+function updateReview(id, review) {
+  // review must include: rating, comment
+  return apiFetch(`/Review/UpdateReview?id=${id}`, { method: "PUT", body: JSON.stringify(review) });
+}
+ 
+function updateReviewComment(id, comment) {
+  return apiFetch(`/Review/UpdateReviewComment?id=${id}&comment=${encodeURIComponent(comment)}`, { method: "PATCH" });
+}
+ 
+function deleteReview(id) {
+  return apiFetch(`/Review/DeleteReview?id=${id}`, { method: "DELETE" });
+}
+ 
+function getReviewsByBook(bookId) {
+  return apiFetch(`/Review/GetReviewsByBook?bookId=${bookId}`);
+}
+ 
+function getAverageRating(bookId) {
+  return apiFetch(`/Review/GetAverageRating?bookId=${bookId}`);
+}
+ 
+// ---- Event endpoints ---- (confirmed against the real EventController.cs)
+function getEventsSortedByDate() {
+  return apiFetch("/Event/GetEventsSortedByDate");
+}
+ 
 // Reads the user id claim out of the JWT payload - use this (never a typed-in value)
 // whenever a "my loans / my reservations" style page needs the current user's id,
 // since GetLoansByUser/GetReservationsByUser aren't scoped server-side.

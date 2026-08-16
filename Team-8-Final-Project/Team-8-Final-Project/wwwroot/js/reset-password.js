@@ -24,8 +24,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       await resetPassword(userEmail, resetToken, newPassword);
-      alert("Password reset! You can log in with your new password now.");
-      window.location.href = "login.html";
+      // Redirect to login instead of alert()-ing here - login.html/auth.js
+      // shows a banner when it sees ?passwordReset=1, same pattern as the
+      // ?justReserved=1 banner on my-reservations.html.
+      window.location.href = "login.html?passwordReset=1";
     } catch (err) {
       alert("Could not reset password: " + err.message);
     }

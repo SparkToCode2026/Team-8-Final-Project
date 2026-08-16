@@ -4,6 +4,8 @@
 // ============================================================
 
 document.addEventListener("DOMContentLoaded", () => {
+  showPasswordResetBannerIfNeeded();
+
   const form = document.getElementById("loginForm");
   if (!form) return; // this script is safe to include on pages without a login form
 
@@ -41,3 +43,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+// reset-password.js redirects here (instead of an alert() popup) right after
+// a successful password reset, adding ?passwordReset=1 to the URL - shows a
+// one-time confirmation banner, then cleans the URL so a refresh won't
+// re-show it. Same pattern as showReservationBannerIfNeeded() in
+// my-reservations.js.
+function showPasswordResetBannerIfNeeded() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("passwordReset") !== "1") return;
+
+  const banner = document.getElementById("loginBanner");
+  banner.innerHTML = '<div class="alert alert-success">Password reset! You can log in with your new password now.</div>';
+
+  history.replaceState(null, "", window.location.pathname);
+}

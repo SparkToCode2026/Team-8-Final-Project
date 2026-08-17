@@ -24,7 +24,7 @@ function renderUserRow(user) {
   // string, so the old r === user.role check never matched anything and
   // every row silently fell back to showing "Member". These fallbacks
   // handle either shape without needing the backend changed.
-  const id = user.userId ?? user.id ?? user.Id;
+  const id = user.userId ?? user.userID ?? user.UserId ?? user.UserID ?? user.id ?? user.Id ?? user.ID;
   const currentRole = typeof user.role === "number" ? roles[user.role] : user.role;
 
   return `

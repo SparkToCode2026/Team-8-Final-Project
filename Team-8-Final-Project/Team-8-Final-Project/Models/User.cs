@@ -12,7 +12,6 @@ namespace Team_8_Final_Project.Models
     public class User
     {
         [Key]
-        [JsonIgnore]
         public int UserId { get; set; }
         [Required]
         public string FirstName { get; set; }

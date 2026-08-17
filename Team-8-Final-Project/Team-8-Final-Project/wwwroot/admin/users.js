@@ -51,7 +51,12 @@ function attachUserHandlers() {
     btn.addEventListener("click", async () => {
       const card = btn.closest("[data-user-id]");
       const newRole = card.querySelector(".role-select").value;
-      try { await changeUserRole(card.dataset.userId, newRole); loadUsers(); }
+      const name = card.querySelector("strong").textContent;
+      try {
+        await changeUserRole(card.dataset.userId, newRole);
+        loadUsers();
+        showUsersBanner(`${name}'s role was updated to ${newRole}.`);
+      }
       catch (err) { alert("Could not update role: " + err.message); }
     });
   });
@@ -59,9 +64,24 @@ function attachUserHandlers() {
   document.querySelectorAll(".delete-user-btn").forEach(btn => {
     btn.addEventListener("click", async () => {
       const card = btn.closest("[data-user-id]");
+      const name = card.querySelector("strong").textContent;
       if (!confirm("Remove this user account? This can't be undone.")) return;
-      try { await removeUser(card.dataset.userId); loadUsers(); }
+      try {
+        await removeUser(card.dataset.userId);
+        loadUsers();
+        showUsersBanner(`${name}'s account was removed.`);
+      }
       catch (err) { alert("Could not remove user: " + err.message); }
     });
   });
+}
+
+// Success confirmations for actions that used to leave the admin guessing
+// whether anything happened. Fades out on its own so it doesn't need a
+// dismiss button, but loadUsers() re-rendering usersContainer won't touch
+// this since it's a separate element outside that container.
+function showUsersBanner(message) {
+  const banner = document.getElementById("usersBanner");
+  banner.innerHTML = `<div class="alert alert-success">${message}</div>`;
+  setTimeout(() => { banner.innerHTML = ""; }, 4000);
 }

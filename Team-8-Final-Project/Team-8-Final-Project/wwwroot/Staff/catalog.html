@@ -18,6 +18,8 @@
         <a href="dashboard.html" class="btn btn-link ps-0">&larr; Back to staff dashboard</a>
         <h1>Catalog Management</h1>
 
+        <div id="catalogBanner"></div>
+
         <ul class="nav nav-tabs mt-3" id="catalogTabs" role="tablist">
             <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#books-pane">Books</button></li>
             <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#copies-pane">Book Copies</button></li>
@@ -54,9 +56,14 @@
             <div class="tab-pane fade" id="copies-pane">
                 <div class="card mb-4">
                     <div class="card-body">
-                        <h5 class="card-title">Add a book copy</h5>
+                        <h5 class="card-title">Add book copies</h5>
+                        <p class="text-muted small mb-2">
+                            Leave Barcode blank to auto-generate placeholder barcodes (handy if you don't have a
+                            barcode scanner) - set Quantity above 1 to add several copies of the same book/edition
+                            at once, e.g. when a shipment of the same title comes in.
+                        </p>
                         <form id="addCopyForm" class="row g-2">
-                            <div class="col-md-3"><input type="text" class="form-control" id="copyBarcode" placeholder="Barcode" required></div>
+                            <div class="col-md-3"><input type="text" class="form-control" id="copyBarcode" placeholder="Barcode (optional - auto-generated if blank)"></div>
                             <div class="col-md-2">
                                 <select class="form-select" id="copyCondition">
                                     <option value="New">New</option>
@@ -75,6 +82,7 @@
                             <div class="col-md-2"><input type="number" step="0.01" class="form-control" id="copyPrice" placeholder="Price" required></div>
                             <div class="col-md-2"><input type="number" class="form-control" id="copyBookId" placeholder="Book Id" required></div>
                             <div class="col-md-1"><input type="number" class="form-control" id="copyShelfId" placeholder="Shelf Id" required></div>
+                            <div class="col-md-2"><input type="number" min="1" class="form-control" id="copyQuantity" placeholder="Quantity" value="1"></div>
                             <div class="col-md-2"><button type="submit" class="btn btn-primary w-100">Add</button></div>
                         </form>
                     </div>

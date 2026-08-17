@@ -54,7 +54,12 @@ function attachEventHandlers() {
     btn.addEventListener("click", async () => {
       const card = btn.closest("[data-event-id]");
       const newStatus = card.querySelector(".event-status-select").value;
-      try { await updateEventStatus(card.dataset.eventId, newStatus); loadEvents(); }
+      const name = card.querySelector("strong").textContent;
+      try {
+        await updateEventStatus(card.dataset.eventId, newStatus);
+        loadEvents();
+        showEventsBanner(`"${name}" was updated to ${newStatus}.`);
+      }
       catch (err) { alert("Could not update event: " + err.message); }
     });
   });
@@ -62,11 +67,25 @@ function attachEventHandlers() {
   document.querySelectorAll(".delete-event-btn").forEach(btn => {
     btn.addEventListener("click", async () => {
       const card = btn.closest("[data-event-id]");
+      const name = card.querySelector("strong").textContent;
       if (!confirm("Delete this event?")) return;
-      try { await deleteEvent(card.dataset.eventId); loadEvents(); }
+      try {
+        await deleteEvent(card.dataset.eventId);
+        loadEvents();
+        showEventsBanner(`"${name}" was deleted.`);
+      }
       catch (err) { alert("Could not delete event: " + err.message); }
     });
   });
+}
+
+// Success confirmations, same pattern as admin/users.js's showUsersBanner -
+// these actions used to succeed silently with nothing on screen to confirm
+// it. Fades out on its own after a few seconds.
+function showEventsBanner(message) {
+  const banner = document.getElementById("eventsBanner");
+  banner.innerHTML = `<div class="alert alert-success">${message}</div>`;
+  setTimeout(() => { banner.innerHTML = ""; }, 4000);
 }
 
 function setupAddEventForm() {
@@ -85,6 +104,7 @@ function setupAddEventForm() {
       await addEvent(newEvent);
       event.target.reset();
       loadEvents();
+      showEventsBanner(`"${newEvent.eventName}" was added.`);
     } catch (err) {
       alert("Could not add event: " + err.message);
     }

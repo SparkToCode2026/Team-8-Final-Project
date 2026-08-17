@@ -25,6 +25,7 @@ namespace Team_8_Final_Project.Models
         public DateTime DOB { get; set; }
         public UserRole Role { get; set; } = UserRole.Member;
         [Required]
+        [JsonIgnore]
         public string PasswordHash { get; set; }
         // For Forget Password
         public string? PasswordResetToken { get; set; }

@@ -18,8 +18,17 @@ async function loadUsers() {
 function renderUserRow(user) {
   const roles = ["Member", "Librarian", "Admin"];
 
+  // The API's field names for these two turned out not to match the rest of
+  // the app's usual camelCase convention - id came back undefined under
+  // "userId", and role came back as a raw number (0/1/2) instead of a
+  // string, so the old r === user.role check never matched anything and
+  // every row silently fell back to showing "Member". These fallbacks
+  // handle either shape without needing the backend changed.
+  const id = user.userId ?? user.id ?? user.Id;
+  const currentRole = typeof user.role === "number" ? roles[user.role] : user.role;
+
   return `
-    <div class="card mb-2" data-user-id="${user.userId}">
+    <div class="card mb-2" data-user-id="${id}">
       <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
         <div>
           <strong>${user.firstName} ${user.lastName}</strong>
@@ -27,7 +36,7 @@ function renderUserRow(user) {
         </div>
         <div class="d-flex gap-2">
           <select class="form-select form-select-sm role-select">
-            ${roles.map(r => `<option value="${r}" ${r === user.role ? "selected" : ""}>${r}</option>`).join("")}
+            ${roles.map(r => `<option value="${r}" ${r === currentRole ? "selected" : ""}>${r}</option>`).join("")}
           </select>
           <button class="btn btn-sm btn-outline-primary update-role-btn">Update role</button>
           <button class="btn btn-sm btn-outline-danger delete-user-btn">Remove</button>

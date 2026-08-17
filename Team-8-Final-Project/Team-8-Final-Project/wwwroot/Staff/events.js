@@ -22,8 +22,16 @@ async function loadEvents() {
 function renderEventRow(event) {
   const statuses = ["Upcoming", "Ongoing", "Completed", "Cancelled"];
 
+  // Same fix as admin/users.js's role dropdown: the API can return status as
+  // a raw enum number (0/1/2/3) instead of its string name, which broke the
+  // s === event.status check below and made every row default to showing
+  // the first option ("Upcoming") regardless of the real status. Also
+  // guarding eventId against alternate casings, same reasoning as userId.
+  const id = event.eventId ?? event.eventID ?? event.EventId ?? event.EventID ?? event.id ?? event.Id ?? event.ID;
+  const currentStatus = typeof event.status === "number" ? statuses[event.status] : event.status;
+
   return `
-    <div class="card mb-2" data-event-id="${event.eventId}">
+    <div class="card mb-2" data-event-id="${id}">
       <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
         <div>
           <strong>${event.eventName}</strong>
@@ -31,7 +39,7 @@ function renderEventRow(event) {
         </div>
         <div class="d-flex gap-2">
           <select class="form-select form-select-sm event-status-select">
-            ${statuses.map(s => `<option value="${s}" ${s === event.status ? "selected" : ""}>${s}</option>`).join("")}
+            ${statuses.map(s => `<option value="${s}" ${s === currentStatus ? "selected" : ""}>${s}</option>`).join("")}
           </select>
           <button class="btn btn-sm btn-outline-primary update-event-btn">Update</button>
           <button class="btn btn-sm btn-outline-danger delete-event-btn">Delete</button>

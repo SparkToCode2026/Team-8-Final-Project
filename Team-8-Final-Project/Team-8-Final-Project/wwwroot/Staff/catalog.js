@@ -33,6 +33,35 @@ function showCatalogBanner(message) {
   setTimeout(() => { banner.innerHTML = ""; }, 4000);
 }
 
+// Fills the Add Book form's Publisher/Category/Author dropdowns from
+// whatever's currently loaded in publishersData/categoriesData/authorsData.
+// Called at the end of loadPublishers/loadCategories/loadAuthors so it stays
+// in sync no matter which of the three finishes loading last, and so a newly
+// added publisher/category/author shows up here without a page refresh.
+function populateBookDropdowns() {
+  const publisherSelect = document.getElementById("bookPublisherId");
+  const categorySelect = document.getElementById("bookCategoryId");
+  const authorSelect = document.getElementById("bookAuthorIds");
+
+  if (publisherSelect) {
+    const current = publisherSelect.value;
+    publisherSelect.innerHTML = '<option value="">Select publisher...</option>' +
+      publishersData.map(p => `<option value="${p.publisherId}">${p.publisherName}</option>`).join("");
+    publisherSelect.value = current;
+  }
+  if (categorySelect) {
+    const current = categorySelect.value;
+    categorySelect.innerHTML = '<option value="">Select category...</option>' +
+      categoriesData.map(c => `<option value="${c.categoryId}">${c.categoryName}</option>`).join("");
+    categorySelect.value = current;
+  }
+  if (authorSelect) {
+    const selected = Array.from(authorSelect.selectedOptions).map(o => o.value);
+    authorSelect.innerHTML = authorsData.map(a => `<option value="${a.authorId}">${a.firstName} ${a.lastName}</option>`).join("");
+    Array.from(authorSelect.options).forEach(o => { o.selected = selected.includes(o.value); });
+  }
+}
+
 // ---- Books ----
 
 let booksData = [];
@@ -87,9 +116,15 @@ function attachBookHandlers() {
 function startEditBook(id) {
   const book = booksData.find(b => String(b.bookId) === String(id));
   const card = document.querySelector(`#booksContainer [data-id="${id}"]`);
-  const authorIds = (book.authors || []).map(a => a.authorId).join(", ");
+  const currentAuthorIds = (book.authors || []).map(a => String(a.authorId));
   const publisherId = book.publisherId ?? book.publisher?.publisherId ?? "";
   const categoryId = book.categoryId ?? book.category?.categoryId ?? "";
+
+  const publisherOptions = '<option value="">Select publisher...</option>' +
+    publishersData.map(p => `<option value="${p.publisherId}" ${String(p.publisherId) === String(publisherId) ? "selected" : ""}>${p.publisherName}</option>`).join("");
+  const categoryOptions = '<option value="">Select category...</option>' +
+    categoriesData.map(c => `<option value="${c.categoryId}" ${String(c.categoryId) === String(categoryId) ? "selected" : ""}>${c.categoryName}</option>`).join("");
+  const authorOptions = authorsData.map(a => `<option value="${a.authorId}" ${currentAuthorIds.includes(String(a.authorId)) ? "selected" : ""}>${a.firstName} ${a.lastName}</option>`).join("");
 
   card.innerHTML = `
     <div class="card-body">
@@ -100,9 +135,12 @@ function startEditBook(id) {
         <div class="col-md-2"><input type="number" class="form-control" id="editBookEdition-${id}" placeholder="Edition" value="${book.bookEdition ?? ""}"></div>
         <div class="col-md-2"><input type="text" class="form-control" id="editBookLanguage-${id}" placeholder="Language" value="${book.bookLanguage ?? ""}"></div>
         <div class="col-md-2"><input type="number" class="form-control" id="editBookYear-${id}" placeholder="Year" value="${book.year ?? ""}"></div>
-        <div class="col-md-3"><input type="number" class="form-control" id="editBookPublisherId-${id}" placeholder="Publisher Id" value="${publisherId}"></div>
-        <div class="col-md-3"><input type="number" class="form-control" id="editBookCategoryId-${id}" placeholder="Category Id" value="${categoryId}"></div>
-        <div class="col-md-4"><input type="text" class="form-control" id="editBookAuthorIds-${id}" placeholder="Author Ids, comma separated" value="${authorIds}"></div>
+        <div class="col-md-3"><select class="form-select" id="editBookPublisherId-${id}">${publisherOptions}</select></div>
+        <div class="col-md-3"><select class="form-select" id="editBookCategoryId-${id}">${categoryOptions}</select></div>
+        <div class="col-md-4">
+          <select class="form-select" id="editBookAuthorIds-${id}" multiple size="3">${authorOptions}</select>
+          <div class="form-text">Ctrl/Cmd+click to select multiple authors.</div>
+        </div>
         <div class="col-md-2 d-flex gap-2">
           <button class="btn btn-sm btn-success save-book-btn" data-id="${id}">Save</button>
           <button class="btn btn-sm btn-secondary cancel-book-btn" data-id="${id}">Cancel</button>
@@ -120,7 +158,7 @@ function startEditBook(id) {
       year: Number(document.getElementById(`editBookYear-${id}`).value),
       publisherId: Number(document.getElementById(`editBookPublisherId-${id}`).value),
       categoryId: Number(document.getElementById(`editBookCategoryId-${id}`).value),
-      authorIds: document.getElementById(`editBookAuthorIds-${id}`).value.split(",").map(s => s.trim()).filter(Boolean).map(Number)
+      authorIds: Array.from(document.getElementById(`editBookAuthorIds-${id}`).selectedOptions).map(o => Number(o.value))
     };
 
     try {
@@ -139,8 +177,7 @@ function setupAddBookForm() {
   document.getElementById("addBookForm").addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    const authorIds = document.getElementById("bookAuthorIds").value
-      .split(",").map(s => s.trim()).filter(Boolean).map(Number);
+    const authorIds = Array.from(document.getElementById("bookAuthorIds").selectedOptions).map(o => Number(o.value));
 
     const book = {
       isbn: document.getElementById("bookIsbn").value,
@@ -240,7 +277,11 @@ function startEditCopy(id) {
           </select>
         </div>
         <div class="col-md-2"><input type="number" step="0.01" class="form-control" id="editCopyPrice-${id}" placeholder="Price" value="${copy.copyPrice ?? ""}"></div>
-        <div class="col-md-1"><input type="number" class="form-control" id="editCopyShelfId-${id}" placeholder="Shelf Id" value="${copy.shelfId ?? copy.shelf?.shelfId ?? ""}"></div>
+        <div class="col-md-2">
+          <select class="form-select" id="editCopyShelfId-${id}">
+            ${shelvesData.map(s => `<option value="${s.shelfId}" ${String(s.shelfId) === String(copy.shelfId ?? copy.shelf?.shelfId) ? "selected" : ""}>${s.shelfCode} - ${s.section ?? ""}</option>`).join("")}
+          </select>
+        </div>
         <div class="col-md-2 d-flex gap-2">
           <button class="btn btn-sm btn-success save-copy-btn" data-id="${id}">Save</button>
           <button class="btn btn-sm btn-secondary cancel-copy-btn" data-id="${id}">Cancel</button>
@@ -314,8 +355,52 @@ function setupBookSearchPicker() {
   });
 }
 
+// Same idea as setupBookSearchPicker, but for shelves - search by code or
+// section instead of typing a numeric Shelf Id. Filters shelvesData, which
+// the Shelves tab already loads.
+function setupShelfSearchPicker() {
+  const searchInput = document.getElementById("copyShelfSearch");
+  const hiddenId = document.getElementById("copyShelfId");
+  const resultsBox = document.getElementById("copyShelfResults");
+
+  searchInput.addEventListener("input", () => {
+    hiddenId.value = "";
+    const query = searchInput.value.trim().toLowerCase();
+
+    if (!query) {
+      resultsBox.innerHTML = "";
+      return;
+    }
+
+    const matches = shelvesData
+      .filter(s => (s.shelfCode && s.shelfCode.toLowerCase().includes(query)) || (s.section && s.section.toLowerCase().includes(query)))
+      .slice(0, 8);
+
+    resultsBox.innerHTML = matches.map(s => `
+      <button type="button" class="list-group-item list-group-item-action shelf-result" data-id="${s.shelfId}" data-label="${s.shelfCode} - ${(s.section ?? "").replace(/"/g, "&quot;")}">
+        ${s.shelfCode} <span class="text-muted">(${s.section ?? "N/A"}, Floor ${s.floorNumber ?? "N/A"})</span>
+      </button>
+    `).join("");
+
+    resultsBox.querySelectorAll(".shelf-result").forEach(btn => {
+      btn.addEventListener("click", () => {
+        searchInput.value = btn.dataset.label;
+        hiddenId.value = btn.dataset.id;
+        resultsBox.innerHTML = "";
+      });
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest("#copyShelfSearch") && !event.target.closest("#copyShelfResults")) {
+      resultsBox.innerHTML = "";
+    }
+  });
+}
+
 function setupAddCopyForm() {
   setupBookSearchPicker();
+  setupShelfSearchPicker();
 
   document.getElementById("addCopyForm").addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -326,12 +411,18 @@ function setupAddCopyForm() {
       return;
     }
 
+    const shelfIdValue = document.getElementById("copyShelfId").value;
+    if (!shelfIdValue) {
+      alert("Search for the shelf and select it from the list before adding a copy.");
+      return;
+    }
+
     const barcodeInput = document.getElementById("copyBarcode").value.trim();
     const condition = document.getElementById("copyCondition").value;
     const availabilityStatus = document.getElementById("copyAvailability").value;
     const copyPrice = Number(document.getElementById("copyPrice").value);
     const bookId = Number(bookIdValue);
-    const shelfId = Number(document.getElementById("copyShelfId").value);
+    const shelfId = Number(shelfIdValue);
     const quantity = Math.max(1, Number(document.getElementById("copyQuantity").value) || 1);
 
     // Barcode is required by the backend, but there's no scanner for the demo,
@@ -384,6 +475,7 @@ async function loadAuthors() {
     authorsData = await getAuthors();
     container.innerHTML = authorsData.length ? authorsData.map(renderAuthorRow).join("") : '<p class="text-muted">No authors yet.</p>';
     attachAuthorHandlers();
+    populateBookDropdowns();
   } catch (err) {
     container.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
   }
@@ -436,12 +528,12 @@ function startEditAuthor(id) {
         <div class="col-md-2"><input type="text" class="form-control" id="editAuthorFirstName-${id}" placeholder="First name" value="${author.firstName ?? ""}"></div>
         <div class="col-md-2"><input type="text" class="form-control" id="editAuthorLastName-${id}" placeholder="Last name" value="${author.lastName ?? ""}"></div>
         <div class="col-md-3"><input type="email" class="form-control" id="editAuthorEmail-${id}" placeholder="Email" value="${author.email ?? ""}"></div>
-        <div class="col-md-2"><input type="text" class="form-control" id="editAuthorNationality-${id}" placeholder="Nationality" value="${author.nationality ?? ""}"></div>
-        <div class="col-md-3"><input type="text" class="form-control" id="editAuthorBio-${id}" placeholder="Biography" value="${author.biography ?? ""}"></div>
+        <div class="col-md-3"><input type="text" class="form-control" id="editAuthorNationality-${id}" placeholder="Nationality" value="${author.nationality ?? ""}"></div>
         <div class="col-md-2 d-flex gap-2">
           <button class="btn btn-sm btn-success save-author-btn" data-id="${id}">Save</button>
           <button class="btn btn-sm btn-secondary cancel-author-btn" data-id="${id}">Cancel</button>
         </div>
+        <div class="col-12"><textarea class="form-control" id="editAuthorBio-${id}" placeholder="Biography" rows="4">${author.biography ?? ""}</textarea></div>
       </div>
     </div>
   `;
@@ -500,6 +592,7 @@ async function loadPublishers() {
     publishersData = await getPublishers();
     container.innerHTML = publishersData.length ? publishersData.map(renderPublisherRow).join("") : '<p class="text-muted">No publishers yet.</p>';
     attachPublisherHandlers();
+    populateBookDropdowns();
   } catch (err) {
     container.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
   }
@@ -617,6 +710,7 @@ async function loadCategories() {
     categoriesData = await getCategories();
     container.innerHTML = categoriesData.length ? categoriesData.map(renderCategoryRow).join("") : '<p class="text-muted">No categories yet.</p>';
     attachCategoryHandlers();
+    populateBookDropdowns();
   } catch (err) {
     container.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
   }

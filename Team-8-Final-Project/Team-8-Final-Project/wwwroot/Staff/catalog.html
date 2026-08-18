@@ -42,9 +42,20 @@
                             <div class="col-md-2"><input type="number" class="form-control" id="bookEdition" placeholder="Edition" required></div>
                             <div class="col-md-2"><input type="text" class="form-control" id="bookLanguage" placeholder="Language" required></div>
                             <div class="col-md-2"><input type="number" class="form-control" id="bookYear" placeholder="Year" required></div>
-                            <div class="col-md-3"><input type="number" class="form-control" id="bookPublisherId" placeholder="Publisher Id" required></div>
-                            <div class="col-md-3"><input type="number" class="form-control" id="bookCategoryId" placeholder="Category Id" required></div>
-                            <div class="col-md-4"><input type="text" class="form-control" id="bookAuthorIds" placeholder="Author Ids, comma separated" required></div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="bookPublisherId" required>
+                                    <option value="">Select publisher...</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="bookCategoryId" required>
+                                    <option value="">Select category...</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select" id="bookAuthorIds" multiple size="3" required></select>
+                                <div class="form-text">Ctrl/Cmd+click to select multiple authors.</div>
+                            </div>
                             <div class="col-md-2"><button type="submit" class="btn btn-primary w-100">Add</button></div>
                         </form>
                     </div>
@@ -68,7 +79,11 @@
                                 <input type="hidden" id="copyBookId">
                                 <div id="copyBookResults" class="list-group position-absolute w-100" style="z-index: 1000; max-height: 220px; overflow-y: auto;"></div>
                             </div>
-                            <div class="col-md-1"><input type="number" class="form-control" id="copyShelfId" placeholder="Shelf Id" required></div>
+                            <div class="col-md-2 position-relative">
+                                <input type="text" class="form-control" id="copyShelfSearch" placeholder="Search shelf..." autocomplete="off" required>
+                                <input type="hidden" id="copyShelfId">
+                                <div id="copyShelfResults" class="list-group position-absolute w-100" style="z-index: 1000; max-height: 220px; overflow-y: auto;"></div>
+                            </div>
                             <div class="col-md-2">
                                 <select class="form-select" id="copyCondition">
                                     <option value="New">New</option>
@@ -103,9 +118,9 @@
                             <div class="col-md-2"><input type="text" class="form-control" id="authorFirstName" placeholder="First name" required></div>
                             <div class="col-md-2"><input type="text" class="form-control" id="authorLastName" placeholder="Last name" required></div>
                             <div class="col-md-3"><input type="email" class="form-control" id="authorEmail" placeholder="Email"></div>
-                            <div class="col-md-2"><input type="text" class="form-control" id="authorNationality" placeholder="Nationality"></div>
-                            <div class="col-md-2"><input type="text" class="form-control" id="authorBio" placeholder="Biography"></div>
-                            <div class="col-md-1"><button type="submit" class="btn btn-primary w-100">Add</button></div>
+                            <div class="col-md-3"><input type="text" class="form-control" id="authorNationality" placeholder="Nationality"></div>
+                            <div class="col-12"><textarea class="form-control" id="authorBio" placeholder="Biography" rows="4"></textarea></div>
+                            <div class="col-md-2"><button type="submit" class="btn btn-primary w-100">Add</button></div>
                         </form>
                     </div>
                 </div>

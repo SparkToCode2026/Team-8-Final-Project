@@ -312,7 +312,7 @@ function setupAddCopyForm() {
 
     if (successCount > 0) {
       event.target.reset();
-      document.getElementById("copyQuantity").value = 1;
+      document.getElementById("copyQuantity").value = "";
       showCatalogBanner(successCount === 1 ? "1 book copy was added." : `${successCount} book copies were added.`);
     }
 

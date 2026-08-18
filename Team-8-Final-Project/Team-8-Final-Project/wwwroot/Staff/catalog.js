@@ -33,6 +33,87 @@ function showCatalogBanner(message) {
   setTimeout(() => { banner.innerHTML = ""; }, 4000);
 }
 
+// ---- Searchable multi-select author picker ----
+// A book can have several authors, and typing/remembering author IDs (or
+// scrolling a giant native <select multiple>) is bad UX either way. This
+// renders a search box; typing filters a checkbox dropdown by name, checked
+// authors show as removable chips underneath, and the dropdown itself stays
+// hidden until you focus/type - same "don't dump the whole list on screen"
+// idea as the book/shelf search pickers above. One instanceId per picker on
+// the page (e.g. "add", or "edit-5") so the Add form and every open Edit
+// form can each have their own independent picker.
+
+function renderAuthorPickerHtml(instanceId, selectedIds) {
+  const selected = selectedIds.map(String);
+  const options = authorsData.map(a => `
+    <label class="list-group-item d-flex align-items-center gap-2">
+      <input type="checkbox" class="form-check-input author-checkbox" value="${a.authorId}" ${selected.includes(String(a.authorId)) ? "checked" : ""}>
+      ${a.firstName} ${a.lastName}
+    </label>
+  `).join("");
+
+  return `
+    <input type="text" class="form-control author-picker-search" placeholder="Search authors...">
+    <div class="author-picker-chips mt-1 d-flex flex-wrap gap-1"></div>
+    <div class="author-picker-list list-group position-absolute w-100" style="z-index: 1000; max-height: 220px; overflow-y: auto; display: none;">
+      ${options || '<div class="list-group-item text-muted">No authors yet - add one on the Authors tab first.</div>'}
+    </div>
+  `;
+}
+
+function initAuthorPicker(instanceId) {
+  const root = document.getElementById(`authorPickerContainer-${instanceId}`);
+  if (!root) return;
+
+  const searchInput = root.querySelector(".author-picker-search");
+  const chipsBox = root.querySelector(".author-picker-chips");
+  const listBox = root.querySelector(".author-picker-list");
+
+  function renderChips() {
+    const checked = Array.from(root.querySelectorAll(".author-checkbox:checked"));
+    chipsBox.innerHTML = checked.map(cb => {
+      const name = cb.closest("label").textContent.trim();
+      return `<span class="badge bg-secondary author-chip" data-value="${cb.value}">${name} <span class="author-chip-remove" style="cursor:pointer;">&times;</span></span>`;
+    }).join("");
+
+    chipsBox.querySelectorAll(".author-chip-remove").forEach(removeBtn => {
+      removeBtn.addEventListener("click", () => {
+        const value = removeBtn.closest(".author-chip").dataset.value;
+        const checkbox = root.querySelector(`.author-checkbox[value="${value}"]`);
+        if (checkbox) checkbox.checked = false;
+        renderChips();
+      });
+    });
+  }
+
+  root.querySelectorAll(".author-checkbox").forEach(cb => cb.addEventListener("change", renderChips));
+
+  function filterList() {
+    const query = searchInput.value.trim().toLowerCase();
+    root.querySelectorAll(".author-picker-list label").forEach(label => {
+      label.style.display = label.textContent.toLowerCase().includes(query) ? "" : "none";
+    });
+    listBox.style.display = "block";
+  }
+
+  searchInput.addEventListener("focus", filterList);
+  searchInput.addEventListener("input", filterList);
+
+  document.addEventListener("click", (event) => {
+    if (!root.contains(event.target)) {
+      listBox.style.display = "none";
+    }
+  });
+
+  renderChips(); // shows any pre-checked authors (Edit mode) as chips right away
+}
+
+function getAuthorPickerSelectedIds(instanceId) {
+  const root = document.getElementById(`authorPickerContainer-${instanceId}`);
+  if (!root) return [];
+  return Array.from(root.querySelectorAll(".author-checkbox:checked")).map(cb => Number(cb.value));
+}
+
 // Fills the Add Book form's Publisher/Category/Author dropdowns from
 // whatever's currently loaded in publishersData/categoriesData/authorsData.
 // Called at the end of loadPublishers/loadCategories/loadAuthors so it stays
@@ -41,7 +122,6 @@ function showCatalogBanner(message) {
 function populateBookDropdowns() {
   const publisherSelect = document.getElementById("bookPublisherId");
   const categorySelect = document.getElementById("bookCategoryId");
-  const authorSelect = document.getElementById("bookAuthorIds");
 
   if (publisherSelect) {
     const current = publisherSelect.value;
@@ -55,10 +135,12 @@ function populateBookDropdowns() {
       categoriesData.map(c => `<option value="${c.categoryId}">${c.categoryName}</option>`).join("");
     categorySelect.value = current;
   }
-  if (authorSelect) {
-    const selected = Array.from(authorSelect.selectedOptions).map(o => o.value);
-    authorSelect.innerHTML = authorsData.map(a => `<option value="${a.authorId}">${a.firstName} ${a.lastName}</option>`).join("");
-    Array.from(authorSelect.options).forEach(o => { o.selected = selected.includes(o.value); });
+
+  const authorPickerRoot = document.getElementById("authorPickerContainer-add");
+  if (authorPickerRoot) {
+    const currentlySelected = getAuthorPickerSelectedIds("add");
+    authorPickerRoot.innerHTML = renderAuthorPickerHtml("add", currentlySelected);
+    initAuthorPicker("add");
   }
 }
 
@@ -124,7 +206,7 @@ function startEditBook(id) {
     publishersData.map(p => `<option value="${p.publisherId}" ${String(p.publisherId) === String(publisherId) ? "selected" : ""}>${p.publisherName}</option>`).join("");
   const categoryOptions = '<option value="">Select category...</option>' +
     categoriesData.map(c => `<option value="${c.categoryId}" ${String(c.categoryId) === String(categoryId) ? "selected" : ""}>${c.categoryName}</option>`).join("");
-  const authorOptions = authorsData.map(a => `<option value="${a.authorId}" ${currentAuthorIds.includes(String(a.authorId)) ? "selected" : ""}>${a.firstName} ${a.lastName}</option>`).join("");
+  const editInstanceId = `edit-${id}`;
 
   card.innerHTML = `
     <div class="card-body">
@@ -137,10 +219,7 @@ function startEditBook(id) {
         <div class="col-md-2"><input type="number" class="form-control" id="editBookYear-${id}" placeholder="Year" value="${book.year ?? ""}"></div>
         <div class="col-md-3"><select class="form-select" id="editBookPublisherId-${id}">${publisherOptions}</select></div>
         <div class="col-md-3"><select class="form-select" id="editBookCategoryId-${id}">${categoryOptions}</select></div>
-        <div class="col-md-4">
-          <select class="form-select" id="editBookAuthorIds-${id}" multiple size="3">${authorOptions}</select>
-          <div class="form-text">Ctrl/Cmd+click to select multiple authors.</div>
-        </div>
+        <div class="col-md-4 position-relative" id="authorPickerContainer-${editInstanceId}"></div>
         <div class="col-md-2 d-flex gap-2">
           <button class="btn btn-sm btn-success save-book-btn" data-id="${id}">Save</button>
           <button class="btn btn-sm btn-secondary cancel-book-btn" data-id="${id}">Cancel</button>
@@ -148,6 +227,9 @@ function startEditBook(id) {
       </div>
     </div>
   `;
+
+  document.getElementById(`authorPickerContainer-${editInstanceId}`).innerHTML = renderAuthorPickerHtml(editInstanceId, currentAuthorIds);
+  initAuthorPicker(editInstanceId);
 
   card.querySelector(".save-book-btn").addEventListener("click", async () => {
     const updated = {
@@ -158,7 +240,7 @@ function startEditBook(id) {
       year: Number(document.getElementById(`editBookYear-${id}`).value),
       publisherId: Number(document.getElementById(`editBookPublisherId-${id}`).value),
       categoryId: Number(document.getElementById(`editBookCategoryId-${id}`).value),
-      authorIds: Array.from(document.getElementById(`editBookAuthorIds-${id}`).selectedOptions).map(o => Number(o.value))
+      authorIds: getAuthorPickerSelectedIds(editInstanceId)
     };
 
     try {
@@ -177,7 +259,7 @@ function setupAddBookForm() {
   document.getElementById("addBookForm").addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    const authorIds = Array.from(document.getElementById("bookAuthorIds").selectedOptions).map(o => Number(o.value));
+    const authorIds = getAuthorPickerSelectedIds("add");
 
     const book = {
       isbn: document.getElementById("bookIsbn").value,
@@ -193,6 +275,10 @@ function setupAddBookForm() {
     try {
       await createBook(book);
       event.target.reset();
+      // form.reset() doesn't reliably clear dynamically-injected checkboxes,
+      // so the author picker gets rebuilt from scratch with nothing checked.
+      document.getElementById("authorPickerContainer-add").innerHTML = renderAuthorPickerHtml("add", []);
+      initAuthorPicker("add");
       loadBooks();
       showCatalogBanner(`"${book.bookTitle}" was added.`);
     } catch (err) {

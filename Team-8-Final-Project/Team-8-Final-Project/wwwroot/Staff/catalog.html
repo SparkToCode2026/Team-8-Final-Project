@@ -63,7 +63,11 @@
                             at once, e.g. when a shipment of the same title comes in.
                         </p>
                         <form id="addCopyForm" class="row g-2">
-                            <div class="col-md-2"><input type="number" class="form-control" id="copyBookId" placeholder="Book Id" required></div>
+                            <div class="col-md-3 position-relative">
+                                <input type="text" class="form-control" id="copyBookSearch" placeholder="Search book by title..." autocomplete="off" required>
+                                <input type="hidden" id="copyBookId">
+                                <div id="copyBookResults" class="list-group position-absolute w-100" style="z-index: 1000; max-height: 220px; overflow-y: auto;"></div>
+                            </div>
                             <div class="col-md-1"><input type="number" class="form-control" id="copyShelfId" placeholder="Shelf Id" required></div>
                             <div class="col-md-2">
                                 <select class="form-select" id="copyCondition">

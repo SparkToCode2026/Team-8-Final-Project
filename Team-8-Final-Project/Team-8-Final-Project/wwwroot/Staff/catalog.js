@@ -270,15 +270,67 @@ function startEditCopy(id) {
   card.querySelector(".cancel-copy-btn").addEventListener("click", loadCopies);
 }
 
+// Type-ahead book picker for the Add Book Copies form - lets staff search by
+// title instead of memorizing/looking up a numeric Book Id. Filters the same
+// booksData array the Books tab already loaded, so no extra API call.
+function setupBookSearchPicker() {
+  const searchInput = document.getElementById("copyBookSearch");
+  const hiddenId = document.getElementById("copyBookId");
+  const resultsBox = document.getElementById("copyBookResults");
+
+  searchInput.addEventListener("input", () => {
+    hiddenId.value = ""; // typing again invalidates whatever was picked before
+    const query = searchInput.value.trim().toLowerCase();
+
+    if (!query) {
+      resultsBox.innerHTML = "";
+      return;
+    }
+
+    const matches = booksData
+      .filter(b => b.bookTitle && b.bookTitle.toLowerCase().includes(query))
+      .slice(0, 8);
+
+    resultsBox.innerHTML = matches.map(b => `
+      <button type="button" class="list-group-item list-group-item-action book-result" data-id="${b.bookId}" data-title="${b.bookTitle.replace(/"/g, "&quot;")}">
+        ${b.bookTitle} <span class="text-muted">(Edition ${b.bookEdition ?? "N/A"})</span>
+      </button>
+    `).join("");
+
+    resultsBox.querySelectorAll(".book-result").forEach(btn => {
+      btn.addEventListener("click", () => {
+        searchInput.value = btn.dataset.title;
+        hiddenId.value = btn.dataset.id;
+        resultsBox.innerHTML = "";
+      });
+    });
+  });
+
+  // Click anywhere outside the search box/results closes the dropdown
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest("#copyBookSearch") && !event.target.closest("#copyBookResults")) {
+      resultsBox.innerHTML = "";
+    }
+  });
+}
+
 function setupAddCopyForm() {
+  setupBookSearchPicker();
+
   document.getElementById("addCopyForm").addEventListener("submit", async (event) => {
     event.preventDefault();
+
+    const bookIdValue = document.getElementById("copyBookId").value;
+    if (!bookIdValue) {
+      alert("Search for the book by title and select it from the list before adding a copy.");
+      return;
+    }
 
     const barcodeInput = document.getElementById("copyBarcode").value.trim();
     const condition = document.getElementById("copyCondition").value;
     const availabilityStatus = document.getElementById("copyAvailability").value;
     const copyPrice = Number(document.getElementById("copyPrice").value);
-    const bookId = Number(document.getElementById("copyBookId").value);
+    const bookId = Number(bookIdValue);
     const shelfId = Number(document.getElementById("copyShelfId").value);
     const quantity = Math.max(1, Number(document.getElementById("copyQuantity").value) || 1);
 

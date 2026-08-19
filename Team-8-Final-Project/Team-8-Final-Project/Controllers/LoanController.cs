@@ -116,10 +116,11 @@ namespace Team_8_Final_Project.Controllers
         [Authorize(Roles = "Librarian,Admin")]
         public IActionResult GetAllLoans()
         {
-            List<Loan> loans = context.Loans.Include(l => l.BookCopy)
-                                            .Include(l => l.User)
-                                            .ToList();
-            return Ok(loans);
+            List<Loan> loans = context.Loans
+        .Include(l => l.BookCopy).ThenInclude(bc => bc.Book)
+        .Include(l => l.User)
+        .ToList();
+    return Ok(loans);
         }
 
         

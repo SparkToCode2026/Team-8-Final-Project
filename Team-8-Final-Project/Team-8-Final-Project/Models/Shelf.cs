@@ -6,7 +6,6 @@ namespace Team_8_Final_Project.Models;
 public class Shelf
 {
     [Key]
-    [JsonIgnore]
     public int ShelfId { get; set; }
 
     [Required]
@@ -15,6 +14,6 @@ public class Shelf
     public string Section { get; set; }
 
     public int FloorNumber { get; set; }
-
+    [JsonIgnore]
     public List<BookCopy> BookCopies { get; set; }
 }

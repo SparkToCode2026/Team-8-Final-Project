@@ -1,0 +1,188 @@
+/* ============================================================
+   styles.css — shared stylesheet for the whole site
+   Every page links to this one file (css/styles.css from root pages,
+   ../css/styles.css from member/staff/admin pages).
+
+   Three beige shades from lightest to darkest:
+     --beige-light  #F1E9D2  page background, input backgrounds
+     --beige-medium #E1C699  cards and list rows
+     --beige-dark   #C3B091  navbar, borders, buttons, active tabs
+
+   Status badges (Active/Overdue/Returned, Paid/Unpaid, etc.) are left
+   as Bootstrap's default red/green/blue on purpose - those colors
+   carry meaning at a glance, and forcing them to beige would make
+   every status look the same.
+   ============================================================ */
+
+:root {
+  --beige-light: #F1E9D2;
+  --beige-medium: #E1C699;
+  --beige-dark: #C3B091;
+  /* Not one of the three given colors - added because none of them is
+     dark enough to use as readable body text on a light background. */
+  --text-dark: #4A3D2A;
+  --text-muted-beige: #8A7660;
+}
+
+body {
+  background-color: var(--beige-light);
+  color: var(--text-dark);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+a {
+  color: var(--text-dark);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-dark);
+}
+
+.text-muted {
+  color: var(--text-muted-beige) !important;
+}
+
+/* ---- Navbar ---- */
+
+.navbar {
+  background-color: var(--beige-dark) !important;
+}
+
+.navbar .navbar-brand {
+  color: var(--text-dark) !important;
+}
+
+.navbar .btn-outline-light {
+  color: var(--text-dark) !important;
+  border-color: var(--text-dark);
+}
+
+.navbar .btn-outline-light:hover {
+  background-color: var(--text-dark);
+  color: var(--beige-light) !important;
+}
+
+/* ---- Cards - used everywhere as both boxes and list "rows" ---- */
+
+.card {
+  background-color: var(--beige-medium);
+  border: 1px solid var(--beige-dark);
+}
+
+/* ---- Buttons ---- */
+
+.btn-primary {
+  background-color: var(--beige-dark);
+  border-color: var(--beige-dark);
+  color: var(--text-dark);
+}
+.btn-primary:hover {
+  background-color: var(--text-dark);
+  border-color: var(--text-dark);
+  color: var(--beige-light);
+}
+
+.btn-outline-primary {
+  color: var(--text-dark);
+  border-color: var(--beige-dark);
+}
+.btn-outline-primary:hover {
+  background-color: var(--beige-dark);
+  color: var(--text-dark);
+}
+
+.btn-link {
+  color: var(--text-dark);
+}
+
+/* ---- Tabs (staff/catalog.html, staff/circulation.html) ---- */
+
+.nav-tabs {
+  border-bottom-color: var(--beige-dark);
+}
+.nav-tabs .nav-link {
+  color: var(--text-dark);
+}
+.nav-tabs .nav-link.active {
+  background-color: var(--beige-medium);
+  border-color: var(--beige-dark) var(--beige-dark) var(--beige-medium);
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+/* ---- Bootstrap form controls (member/staff/admin pages) ---- */
+
+.form-control,
+.form-select {
+  background-color: var(--beige-light);
+  border: 1px solid var(--beige-dark);
+  color: var(--text-dark);
+}
+.form-control:focus,
+.form-select:focus {
+  background-color: var(--beige-light);
+  border-color: var(--text-dark);
+  color: var(--text-dark);
+  box-shadow: 0 0 0 0.2rem rgba(195, 176, 145, 0.5);
+}
+
+/* ---- Plain pages: login, register, forgot-password, reset-password ----
+   These don't use Bootstrap at all - just bare <form>, <label>, <input>,
+   <button> - so they get their own simple box styling here.
+
+   IMPORTANT: scoped to .auth-form specifically, not a bare `form` selector.
+   A bare `form` selector here previously leaked onto every Bootstrap grid
+   form on the site (catalog.html, circulation.html, etc.), squashing them
+   into a 400px vertical column and shrinking every input. Only login.html,
+   register.html, forgot-password.html, and reset-password.html carry the
+   .auth-form class - Bootstrap pages are untouched by this block now. */
+
+h1 {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+body > p {
+  text-align: center;
+}
+
+.auth-form {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: var(--beige-medium);
+  border: 1px solid var(--beige-dark);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.auth-form label {
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.auth-form input,
+.auth-form textarea {
+  padding: 0.5rem;
+  border: 1px solid var(--beige-dark);
+  border-radius: 4px;
+  background-color: var(--beige-light);
+  color: var(--text-dark);
+}
+
+.auth-form button {
+  margin-top: 1rem;
+  padding: 0.6rem;
+  background-color: var(--beige-dark);
+  border: none;
+  border-radius: 4px;
+  color: var(--text-dark);
+  font-weight: 600;
+  cursor: pointer;
+}
+.auth-form button:hover {
+  background-color: var(--text-dark);
+  color: var(--beige-light);
+}

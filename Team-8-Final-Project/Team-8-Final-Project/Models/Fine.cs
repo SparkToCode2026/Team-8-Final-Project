@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Team_8_Final_Project.Models
 {
@@ -29,7 +30,7 @@ namespace Team_8_Final_Project.Models
 
         [ForeignKey("Loan")]
         public int LoanId { get; set; }
-        [JsonIgnore]
+        [ValidateNever]
         public Loan Loan { get; set; }
     }
 }

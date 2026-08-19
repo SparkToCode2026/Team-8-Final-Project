@@ -1,292 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catalog Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
 </head>
-
 <body>
 
-    <!-- Navigation -->
-    <header>
-        <nav>
-            <h1>Library Management System</h1>
+    <nav class="navbar navbar-dark bg-dark px-3">
+        <span class="navbar-brand mb-0 h1">Library Management System - Staff</span>
+        <button class="btn btn-outline-light" onclick="logout()">Log out</button>
+    </nav>
 
-            <ul>
-                <li><a href="dashboard.html">Dashboard</a></li>
-                <li><a href="catalog.html">Catalog</a></li>
-                <li><a href="circulation.html">Circulation</a></li>
-                <li><a href="fines.html">Fines</a></li>
-                <li><a href="reviews.html">Reviews</a></li>
-                <li><a href="events.html">Events</a></li>
-            </ul>
+    <div class="container mt-4">
+        <a href="dashboard.html" class="btn btn-link ps-0">&larr; Back to staff dashboard</a>
+        <h1>Catalog Management</h1>
 
-            <div>
-                <span>Welcome, Staff</span>
-                <button type="button">Logout</button>
-            </div>
-        </nav>
-    </header>
+        <div id="catalogBanner"></div>
 
-    <main>
+        <ul class="nav nav-tabs mt-3" id="catalogTabs" role="tablist">
+            <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#books-pane">Books</button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#copies-pane">Book Copies</button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#authors-pane">Authors</button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#publishers-pane">Publishers</button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#categories-pane">Categories</button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#shelves-pane">Shelves</button></li>
+        </ul>
 
-        <section>
-            <h2>Catalog Management</h2>
-            <p>Manage books, copies, authors, publishers, categories, and shelves.</p>
-        </section>
+        <div class="tab-content border border-top-0 p-3">
 
-
-        <!-- Catalog Navigation -->
-        <nav>
-            <ul>
-                <li><a href="#books">Books</a></li>
-                <li><a href="#book-copies">Book Copies</a></li>
-                <li><a href="#authors">Authors</a></li>
-                <li><a href="#publishers">Publishers</a></li>
-                <li><a href="#categories">Categories</a></li>
-                <li><a href="#shelves">Shelves</a></li>
-            </ul>
-        </nav>
-
-        <section id="books">
-
-            <h2>Books</h2>
-
-            <button type="button">Add Book</button>
-
-            <div>
-                <label for="book-search">Search Books:</label>
-                <input type="text" id="book-search" placeholder="Search by title or ISBN">
-                <button type="button">Search</button>
+            <!-- Books -->
+            <div class="tab-pane fade show active" id="books-pane">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Add a book</h5>
+                        <form id="addBookForm" class="row g-2">
+                            <div class="col-md-3"><input type="text" class="form-control" id="bookIsbn" placeholder="ISBN" required></div>
+                            <div class="col-md-3"><input type="text" class="form-control" id="bookTitle" placeholder="Title" required></div>
+                            <div class="col-md-2"><input type="number" class="form-control" id="bookEdition" placeholder="Edition" required></div>
+                            <div class="col-md-2"><input type="text" class="form-control" id="bookLanguage" placeholder="Language" required></div>
+                            <div class="col-md-2"><input type="number" class="form-control" id="bookYear" placeholder="Year" required></div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="bookPublisherId" required>
+                                    <option value="">Select publisher...</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="bookCategoryId" required>
+                                    <option value="">Select category...</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 position-relative" id="authorPickerContainer-add"></div>
+                            <div class="col-md-2"><button type="submit" class="btn btn-primary w-100">Add</button></div>
+                        </form>
+                    </div>
+                </div>
+                <div id="booksContainer"><p class="text-muted">Loading books...</p></div>
             </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>ISBN</th>
-                        <th>Title</th>
-                        <th>Edition</th>
-                        <th>Language</th>
-                        <th>Year</th>
-                        <th>Publisher</th>
-                        <th>Category</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <tr>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>
-                            <button type="button">Edit</button>
-                            <button type="button">Delete</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </section>
-
-        <section id="book-copies">
-
-            <h2>Book Copies</h2>
-
-            <button type="button">Add Book Copy</button>
-
-            <div>
-                <label for="copy-search">Search Copies:</label>
-                <input type="text" id="copy-search" placeholder="Search by barcode">
-                <button type="button">Search</button>
+            <!-- Book Copies -->
+            <div class="tab-pane fade" id="copies-pane">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Add book copies</h5>
+                        <p class="text-muted small mb-2">
+                            Leave Barcode blank to auto-generate placeholder barcodes (handy if you don't have a
+                            barcode scanner) - set Quantity above 1 to add several copies of the same book/edition
+                            at once, e.g. when a shipment of the same title comes in.
+                        </p>
+                        <form id="addCopyForm" class="row g-2">
+                            <div class="col-md-3 position-relative">
+                                <input type="text" class="form-control" id="copyBookSearch" placeholder="Search book by title..." autocomplete="off" required>
+                                <input type="hidden" id="copyBookId">
+                                <div id="copyBookResults" class="list-group position-absolute w-100" style="z-index: 1000; max-height: 220px; overflow-y: auto;"></div>
+                            </div>
+                            <div class="col-md-2 position-relative">
+                                <input type="text" class="form-control" id="copyShelfSearch" placeholder="Search shelf..." autocomplete="off" required>
+                                <input type="hidden" id="copyShelfId">
+                                <div id="copyShelfResults" class="list-group position-absolute w-100" style="z-index: 1000; max-height: 220px; overflow-y: auto;"></div>
+                            </div>
+                            <div class="col-md-2">
+                                <select class="form-select" id="copyCondition">
+                                    <option value="New">New</option>
+                                    <option value="Good">Good</option>
+                                    <option value="Fair">Fair</option>
+                                    <option value="Poor">Poor</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select class="form-select" id="copyAvailability">
+                                    <option value="Available">Available</option>
+                                    <option value="OnLoan">OnLoan</option>
+                                    <option value="Reserved">Reserved</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2"><input type="number" step="0.01" class="form-control" id="copyPrice" placeholder="Price" required></div>
+                            <div class="col-md-2"><input type="number" min="1" class="form-control" id="copyQuantity" placeholder="Quantity"></div>
+                            <div class="col-md-3"><input type="text" class="form-control" id="copyBarcode" placeholder="Barcode (optional - auto-generated if blank)"></div>
+                            <div class="col-md-2"><button type="submit" class="btn btn-primary w-100">Add</button></div>
+                        </form>
+                    </div>
+                </div>
+                <div id="copiesContainer"><p class="text-muted">Loading book copies...</p></div>
             </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Barcode</th>
-                        <th>Book</th>
-                        <th>Condition</th>
-                        <th>Availability</th>
-                        <th>Copy Price</th>
-                        <th>Shelf</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <tr>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>
-                            <button type="button">Edit</button>
-                            <button type="button">Delete</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </section>
-
-        <section id="authors">
-
-            <h2>Authors</h2>
-
-            <button type="button">Add Author</button>
-
-            <div>
-                <label for="author-search">Search Authors:</label>
-                <input type="text" id="author-search" placeholder="Search authors">
-                <button type="button">Search</button>
+            <!-- Authors -->
+            <div class="tab-pane fade" id="authors-pane">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Add an author</h5>
+                        <form id="addAuthorForm" class="row g-2">
+                            <div class="col-md-2"><input type="text" class="form-control" id="authorFirstName" placeholder="First name" required></div>
+                            <div class="col-md-2"><input type="text" class="form-control" id="authorLastName" placeholder="Last name" required></div>
+                            <div class="col-md-3"><input type="email" class="form-control" id="authorEmail" placeholder="Email"></div>
+                            <div class="col-md-3"><input type="text" class="form-control" id="authorNationality" placeholder="Nationality"></div>
+                            <div class="col-12"><textarea class="form-control" id="authorBio" placeholder="Biography" rows="4"></textarea></div>
+                            <div class="col-md-2"><button type="submit" class="btn btn-primary w-100">Add</button></div>
+                        </form>
+                    </div>
+                </div>
+                <div id="authorsContainer"><p class="text-muted">Loading authors...</p></div>
             </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Nationality</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <tr>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>
-                            <button type="button">Edit</button>
-                            <button type="button">Delete</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </section>
-
-        <section id="publishers">
-
-            <h2>Publishers</h2>
-
-            <button type="button">Add Publisher</button>
-
-            <div>
-                <label for="publisher-search">Search Publishers:</label>
-                <input type="text" id="publisher-search" placeholder="Search publishers">
-                <button type="button">Search</button>
+            <!-- Publishers -->
+            <div class="tab-pane fade" id="publishers-pane">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Add a publisher</h5>
+                        <form id="addPublisherForm" class="row g-2">
+                            <div class="col-md-2"><input type="text" class="form-control" id="publisherCode" placeholder="Code" required></div>
+                            <div class="col-md-3"><input type="text" class="form-control" id="publisherName" placeholder="Name" required></div>
+                            <div class="col-md-3"><input type="text" class="form-control" id="publisherAddress" placeholder="Address"></div>
+                            <div class="col-md-2"><input type="text" class="form-control" id="publisherLandline" placeholder="Landline No"></div>
+                            <div class="col-md-2"><button type="submit" class="btn btn-primary w-100">Add</button></div>
+                            <div class="col-md-4"><input type="email" class="form-control" id="publisherEmail" placeholder="Email"></div>
+                        </form>
+                    </div>
+                </div>
+                <div id="publishersContainer"><p class="text-muted">Loading publishers...</p></div>
             </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Address</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <tr>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>
-                            <button type="button">Edit</button>
-                            <button type="button">Delete</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </section>
-
-        <section id="categories">
-
-            <h2>Categories</h2>
-
-            <button type="button">Add Category</button>
-
-            <div>
-                <label for="category-search">Search Categories:</label>
-                <input type="text" id="category-search" placeholder="Search categories">
-                <button type="button">Search</button>
+            <!-- Categories -->
+            <div class="tab-pane fade" id="categories-pane">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Add a category</h5>
+                        <form id="addCategoryForm" class="row g-2">
+                            <div class="col-md-4"><input type="text" class="form-control" id="categoryName" placeholder="Name" required></div>
+                            <div class="col-md-6"><input type="text" class="form-control" id="categoryDescription" placeholder="Description"></div>
+                            <div class="col-md-2"><button type="submit" class="btn btn-primary w-100">Add</button></div>
+                        </form>
+                    </div>
+                </div>
+                <div id="categoriesContainer"><p class="text-muted">Loading categories...</p></div>
             </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Number of Books</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
+            <!-- Shelves -->
+            <div class="tab-pane fade" id="shelves-pane">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Add a shelf</h5>
+                        <form id="addShelfForm" class="row g-2">
+                            <div class="col-md-4"><input type="text" class="form-control" id="shelfCode" placeholder="Shelf code" required></div>
+                            <div class="col-md-4"><input type="text" class="form-control" id="shelfSection" placeholder="Section" required></div>
+                            <div class="col-md-2"><input type="number" class="form-control" id="shelfFloor" placeholder="Floor #" required></div>
+                            <div class="col-md-2"><button type="submit" class="btn btn-primary w-100">Add</button></div>
+                        </form>
+                    </div>
+                </div>
+                <div id="shelvesContainer"><p class="text-muted">Loading shelves...</p></div>
+            </div>
 
-                <tbody>
-                    <tr>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>
-                            <button type="button">Edit</button>
-                            <button type="button">Delete</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        </div>
+    </div>
 
-        </section>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="catalog.js"></script>
 
-        <section id="shelves">
+    <script>
+        const token = localStorage.getItem("token");
+        if (!token) {
+            window.location.href = "../login.html";
+        }
 
-            <h2>Shelves</h2>
-
-            <button type="button">Add Shelf</button>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Shelf Code</th>
-                        <th>Section</th>
-                        <th>Floor</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    <tr>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>
-                            <button type="button">Edit</button>
-                            <button type="button">Delete</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </section>
-
-    </main>
-
-    <footer>
-        <p>&copy; 2026 Library Management System</p>
-        <p>Developed by <strong>Team CodeStorm</strong></p>
-    </footer>
+        function logout() {
+            localStorage.removeItem("token");
+            window.location.href = "../login.html";
+        }
+    </script>
 
 </body>
-
 </html>

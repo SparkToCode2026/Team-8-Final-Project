@@ -6,7 +6,6 @@ namespace Team_8_Final_Project.Models
     public class Author
     {
         [Key]
-        [JsonIgnore]
         public int AuthorId { get; set; }
         [Required]
         public string FirstName { get; set; }
@@ -17,7 +16,7 @@ namespace Team_8_Final_Project.Models
         public string Biography { get; set; }
         public string Nationality { get; set; }
 
-
+        [JsonIgnore]
         public List<Book> Books { get; set; }
     }
 }

@@ -22,7 +22,7 @@ namespace Team_8_Final_Project.Models
     public class BookCopy
     {
         [Key]
-        [JsonIgnore]
+        
         public int BookCopyId { get; set; }
         [Required]
         public string Barcode { get; set; }
@@ -35,7 +35,7 @@ namespace Team_8_Final_Project.Models
         [ForeignKey("Book")]
         public int BookId { get; set; }
         public Book Book { get; set; }
-
+        [JsonIgnore]
         public List<Loan> Loans { get; set; }
 
         [ForeignKey("Shelf")]

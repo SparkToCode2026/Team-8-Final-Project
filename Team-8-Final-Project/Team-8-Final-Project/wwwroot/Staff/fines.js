@@ -2,11 +2,67 @@
 // fines.js — powers staff/fines.html
 // ============================================================
 
-document.addEventListener("DOMContentLoaded", () => {
+let usersForPicker = [];
+let loansForPicker = [];
+let fineUserPicker;
+let selectedLoanId = null;
+
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    [usersForPicker, loansForPicker] = await Promise.all([getAllUsers(), getAllLoans()]);
+  } catch (err) {
+    console.error("Could not load reference data for the member/loan picker:", err);
+  }
+
+  fineUserPicker = createSearchPicker({
+    containerId: "fineUserPicker",
+    items: () => usersForPicker,
+    getId: u => extractUserRecordId(u),
+    getLabel: u => `${u.firstName} ${u.lastName} (ID ${extractUserRecordId(u)}) - ${u.userEmail}`,
+    placeholder: "Search member by name...",
+    onSelect: (user) => showLoansForUser(user)
+  });
+
   loadFines();
   loadTotalUnpaid();
   setupAddFineForm();
 });
+
+// Shows every loan belonging to the picked member as its own clickable
+// card - a member can have more than one loan out at once, and this is also
+// how two members who happen to share a name get told apart (each loan
+// shown here is unambiguously tied to the one user id just picked above).
+function showLoansForUser(user) {
+  const container = document.getElementById("fineUserLoans");
+  const userId = extractUserRecordId(user);
+  const matchingLoans = loansForPicker.filter(loan => String(extractUserRecordId(loan.user)) === String(userId));
+
+  selectedLoanId = null;
+  document.getElementById("fineLoanId").value = "";
+
+  if (matchingLoans.length === 0) {
+    container.innerHTML = `<p class="text-muted small mb-0">${user.firstName} ${user.lastName} has no loans on record.</p>`;
+    return;
+  }
+
+  container.innerHTML = matchingLoans.map(loan => {
+    const title = loan.bookCopy?.book?.bookTitle ?? `Copy #${loan.bookCopyId}`;
+    return `
+      <button type="button" class="list-group-item list-group-item-action fine-loan-option" data-loan-id="${loan.loanId}">
+        Loan #${loan.loanId} - ${title}, due ${new Date(loan.loanDueDate).toLocaleDateString()} (${loan.loanStatus})
+      </button>
+    `;
+  }).join("");
+
+  container.querySelectorAll(".fine-loan-option").forEach(btn => {
+    btn.addEventListener("click", () => {
+      container.querySelectorAll(".fine-loan-option").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      selectedLoanId = btn.dataset.loanId;
+      document.getElementById("fineLoanId").value = selectedLoanId;
+    });
+  });
+}
 
 async function loadFines() {
   const container = document.getElementById("finesContainer");
@@ -87,10 +143,16 @@ function setupAddFineForm() {
   document.getElementById("addFineForm").addEventListener("submit", async (event) => {
     event.preventDefault();
 
+    const loanIdValue = document.getElementById("fineLoanId").value;
+    if (!loanIdValue) {
+      alert("Search for the member, then click one of their loans below before issuing a fine.");
+      return;
+    }
+
     // FineController takes the raw entity, not a DTO - loanId, fineAmount,
     // fineIssueDate are all it needs; status gets forced to Unpaid server-side
     const fine = {
-      loanId: Number(document.getElementById("fineLoanId").value),
+      loanId: Number(loanIdValue),
       fineAmount: Number(document.getElementById("fineAmount").value),
       fineIssueDate: document.getElementById("fineIssueDate").value
     };
@@ -98,6 +160,8 @@ function setupAddFineForm() {
     try {
       await createFine(fine);
       event.target.reset();
+      fineUserPicker.reset();
+      document.getElementById("fineUserLoans").innerHTML = '<p class="text-muted small mb-0">Search for a member above to see their loans.</p>';
       loadFines();
       loadTotalUnpaid();
     } catch (err) {

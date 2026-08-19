@@ -2,7 +2,25 @@
 // reviews.js — powers staff/reviews.html
 // ============================================================
 
-document.addEventListener("DOMContentLoaded", () => {
+let booksForPicker = [];
+let reviewBookPicker;
+
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    booksForPicker = await getBooks();
+  } catch (err) {
+    console.error("Could not load books for the search picker:", err);
+  }
+
+  reviewBookPicker = createSearchPicker({
+    containerId: "reviewBookPicker",
+    items: () => booksForPicker,
+    getId: b => b.bookId,
+    getLabel: b => `${b.bookTitle} (Edition ${b.bookEdition ?? "N/A"})`,
+    placeholder: "Search book by title...",
+    onSelect: () => loadReviewsForBook() // load immediately on pick, no need to also click the button
+  });
+
   document.getElementById("lookupForm").addEventListener("submit", (event) => {
     event.preventDefault();
     loadReviewsForBook();
@@ -11,8 +29,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function loadReviewsForBook() {
   const container = document.getElementById("reviewsContainer");
-  const bookId = document.getElementById("lookupBookId").value;
+  const bookId = reviewBookPicker.getSelectedId();
   const highOnly = document.getElementById("highRatingOnly").checked;
+
+  if (!bookId) {
+    container.innerHTML = '<p class="text-muted">Search for the book by title and select it from the list.</p>';
+    return;
+  }
 
   try {
     // FilterHighRatingReviews doesn't include the reviewer's info the way

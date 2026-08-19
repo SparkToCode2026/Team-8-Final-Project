@@ -99,6 +99,8 @@ namespace Team_8_Final_Project.EmailServices
 
                     }
 
+                    await context.SaveChangesAsync();
+
                 }
 
                 await Task.Delay( TimeSpan.FromMinutes(intervalMinutes), stoppingToken );

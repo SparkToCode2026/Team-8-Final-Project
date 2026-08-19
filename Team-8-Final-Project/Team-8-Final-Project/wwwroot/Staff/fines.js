@@ -1,11 +1,27 @@
 // ============================================================
 // fines.js — powers staff/fines.html
+//
+// The fines table is enriched client-side by cross-referencing each fine's
+// loanId against the already-loaded loansForPicker list (from GetAllLoans,
+// which reliably includes BookCopy -> Book -> User) instead of trusting
+// fine.loan directly - GetAllFines' own Loan include appears to be missing
+// or broken server-side (book copy showed as "Copy #?" even though the
+// exact same loan displays correctly everywhere else). Ask about
+// FineController.GetAllFines / Fine.cs if you want the root cause fixed
+// server-side too - this workaround doesn't depend on that being fixed.
 // ============================================================
+
+const FINES_PAGE_SIZE = 20;
 
 let usersForPicker = [];
 let loansForPicker = [];
+let allFines = [];
 let fineUserPicker;
 let selectedLoanId = null;
+
+let finesFilterUserId = null; // null = show every member's fines
+let finesSortOrder = "newest";
+let finesVisibleCount = FINES_PAGE_SIZE;
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -20,16 +36,39 @@ document.addEventListener("DOMContentLoaded", async () => {
     getId: u => extractUserRecordId(u),
     getLabel: u => `${u.firstName} ${u.lastName} (ID ${extractUserRecordId(u)}) - ${u.userEmail}`,
     placeholder: "Search member by name...",
-    onSelect: (user) => showLoansForUser(user)
+    onSelect: (user) => {
+      showLoansForUser(user);
+      // Searching a member here does double duty: it also filters the fines
+      // table below to that member's fines, so there's one search instead
+      // of two for "issue this person a fine AND see what they already owe."
+      finesFilterUserId = extractUserRecordId(user);
+      finesVisibleCount = FINES_PAGE_SIZE;
+      renderFinesTable();
+    }
   });
 
-  loadFines();
-  loadTotalUnpaid();
+  document.getElementById("clearFineFilterBtn").addEventListener("click", () => {
+    finesFilterUserId = null;
+    finesVisibleCount = FINES_PAGE_SIZE;
+    renderFinesTable();
+  });
+
+  document.getElementById("fineSortOrder").addEventListener("change", (event) => {
+    finesSortOrder = event.target.value;
+    renderFinesTable();
+  });
+
+  document.getElementById("loadMoreFinesBtn").addEventListener("click", () => {
+    finesVisibleCount += FINES_PAGE_SIZE;
+    renderFinesTable();
+  });
+
+  await loadFines();
   setupAddFineForm();
 });
 
 // Shows every loan belonging to the picked member as its own clickable
-// card - a member can have more than one loan out at once, and this is also
+// row - a member can have more than one loan out at once, and this is also
 // how two members who happen to share a name get told apart (each loan
 // shown here is unambiguously tied to the one user id just picked above).
 function showLoansForUser(user) {
@@ -65,18 +104,112 @@ function showLoansForUser(user) {
 }
 
 async function loadFines() {
-  const container = document.getElementById("finesContainer");
   try {
-    const fines = await getAllFines();
-    container.innerHTML = fines.length ? fines.map(renderFineRow).join("") : '<p class="text-muted">No fines yet.</p>';
-    attachFineHandlers();
+    allFines = await getAllFines();
   } catch (err) {
-    container.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+    document.getElementById("finesTableBody").innerHTML = `<tr><td colspan="7"><div class="alert alert-danger mb-0">${err.message}</div></td></tr>`;
+    return;
   }
+  renderFinesTable();
 }
 
-async function loadTotalUnpaid() {
+// Cross-references a fine against the already-loaded loan list to get the
+// book/borrower details GetAllFines itself doesn't reliably return.
+function getFineDetails(fine) {
+  const matchedLoan = loansForPicker.find(l => String(l.loanId) === String(fine.loanId));
+  const book = matchedLoan?.bookCopy?.book ?? fine.loan?.bookCopy?.book;
+  const user = matchedLoan?.user ?? fine.loan?.user;
+
+  return {
+    title: book?.bookTitle ?? `Copy #${matchedLoan?.bookCopyId ?? fine.loan?.bookCopyId ?? "?"}`,
+    edition: book?.bookEdition,
+    dueDate: matchedLoan?.loanDueDate ?? fine.loan?.loanDueDate,
+    borrowerName: user ? `${user.firstName} ${user.lastName}` : null,
+    borrowerId: user ? extractUserRecordId(user) : null
+  };
+}
+
+function renderFinesTable() {
+  const tbody = document.getElementById("finesTableBody");
+  const emptyMessage = document.getElementById("finesEmptyMessage");
+  const loadMoreBtn = document.getElementById("loadMoreFinesBtn");
+  const filterLabel = document.getElementById("finesFilterLabel");
+  const clearBtn = document.getElementById("clearFineFilterBtn");
+
+  let filtered = finesFilterUserId
+    ? allFines.filter(fine => String(getFineDetails(fine).borrowerId) === String(finesFilterUserId))
+    : allFines.slice();
+
+  filtered.sort((a, b) => {
+    const diff = new Date(a.fineIssueDate) - new Date(b.fineIssueDate);
+    return finesSortOrder === "newest" ? -diff : diff;
+  });
+
+  const visible = filtered.slice(0, finesVisibleCount);
+
+  if (finesFilterUserId) {
+    const filteredUser = usersForPicker.find(u => String(extractUserRecordId(u)) === String(finesFilterUserId));
+    filterLabel.textContent = filteredUser ? `Showing fines for ${filteredUser.firstName} ${filteredUser.lastName}` : "";
+    clearBtn.classList.remove("d-none");
+  } else {
+    filterLabel.textContent = "";
+    clearBtn.classList.add("d-none");
+  }
+
+  if (visible.length === 0) {
+    tbody.innerHTML = "";
+    emptyMessage.classList.remove("d-none");
+  } else {
+    emptyMessage.classList.add("d-none");
+    tbody.innerHTML = visible.map(renderFineTableRow).join("");
+  }
+
+  loadMoreBtn.classList.toggle("d-none", filtered.length <= visible.length);
+
+  attachFineHandlers();
+  updateTotalUnpaid(filtered);
+}
+
+function renderFineTableRow(fine) {
+  const details = getFineDetails(fine);
+  const statuses = ["Paid", "Unpaid", "Dismissed"];
+  const editionText = details.edition ? ` (Ed. ${details.edition})` : "";
+
+  return `
+    <tr data-fine-id="${fine.fineId}">
+      <td>${details.title}${editionText}</td>
+      <td>${details.borrowerName ?? "Unknown"}${details.borrowerId ? ` (ID ${details.borrowerId})` : ""}</td>
+      <td>$${fine.fineAmount.toFixed(2)}</td>
+      <td>${new Date(fine.fineIssueDate).toLocaleDateString()}</td>
+      <td>${details.dueDate ? new Date(details.dueDate).toLocaleDateString() : "N/A"}</td>
+      <td>
+        <select class="form-select form-select-sm fine-status-select">
+          ${statuses.map(s => `<option value="${s}" ${s === fine.status ? "selected" : ""}>${s}</option>`).join("")}
+        </select>
+      </td>
+      <td class="text-end">
+        <button class="btn btn-sm btn-outline-primary update-fine-btn">Update</button>
+        <button class="btn btn-sm btn-outline-danger delete-fine-btn">Delete</button>
+      </td>
+    </tr>
+  `;
+}
+
+// Global total (all members, all fines) uses the dedicated backend endpoint
+// when nothing's filtered; once filtered to one member, it's computed
+// client-side from that member's currently-sorted list instead, since the
+// backend endpoint only ever answers "everyone."
+async function updateTotalUnpaid(currentlyShownList) {
   const container = document.getElementById("totalUnpaid");
+
+  if (finesFilterUserId) {
+    const unpaidTotal = currentlyShownList
+      .filter(f => f.status === "Unpaid")
+      .reduce((sum, f) => sum + f.fineAmount, 0);
+    container.innerHTML = `<strong>Unpaid total for this member:</strong> $${unpaidTotal.toFixed(2)}`;
+    return;
+  }
+
   try {
     const result = await getTotalUnpaidFines();
     container.innerHTML = `<strong>Total unpaid across all members:</strong> $${result.totalUnpaid.toFixed(2)}`;
@@ -85,39 +218,14 @@ async function loadTotalUnpaid() {
   }
 }
 
-function renderFineRow(fine) {
-  // GetAllFines includes Loan, then BookCopy off of that
-  const bookCopyId = fine.loan?.bookCopyId ?? "?";
-  const statuses = ["Paid", "Unpaid", "Dismissed"];
-
-  return `
-    <div class="card mb-2" data-fine-id="${fine.fineId}">
-      <div class="card-body d-flex justify-content-between align-items-center flex-wrap gap-2">
-        <div>
-          <strong>$${fine.fineAmount.toFixed(2)}</strong>
-          <span class="text-muted"> - Loan #${fine.loanId} (Copy #${bookCopyId}), issued ${new Date(fine.fineIssueDate).toLocaleDateString()}</span>
-        </div>
-        <div class="d-flex gap-2">
-          <select class="form-select form-select-sm fine-status-select">
-            ${statuses.map(s => `<option value="${s}" ${s === fine.status ? "selected" : ""}>${s}</option>`).join("")}
-          </select>
-          <button class="btn btn-sm btn-outline-primary update-fine-btn">Update</button>
-          <button class="btn btn-sm btn-outline-danger delete-fine-btn">Delete</button>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
 function attachFineHandlers() {
   document.querySelectorAll(".update-fine-btn").forEach(btn => {
     btn.addEventListener("click", async () => {
-      const card = btn.closest("[data-fine-id]");
-      const newStatus = card.querySelector(".fine-status-select").value;
+      const row = btn.closest("[data-fine-id]");
+      const newStatus = row.querySelector(".fine-status-select").value;
       try {
-        await updateFineStatus(card.dataset.fineId, newStatus);
-        loadFines();
-        loadTotalUnpaid();
+        await updateFineStatus(row.dataset.fineId, newStatus);
+        await loadFines();
       } catch (err) {
         alert("Could not update fine: " + err.message);
       }
@@ -126,12 +234,11 @@ function attachFineHandlers() {
 
   document.querySelectorAll(".delete-fine-btn").forEach(btn => {
     btn.addEventListener("click", async () => {
-      const card = btn.closest("[data-fine-id]");
+      const row = btn.closest("[data-fine-id]");
       if (!confirm("Delete this fine?")) return;
       try {
-        await deleteFine(card.dataset.fineId);
-        loadFines();
-        loadTotalUnpaid();
+        await deleteFine(row.dataset.fineId);
+        await loadFines();
       } catch (err) {
         alert("Could not delete fine: " + err.message);
       }
@@ -162,8 +269,7 @@ function setupAddFineForm() {
       event.target.reset();
       fineUserPicker.reset();
       document.getElementById("fineUserLoans").innerHTML = '<p class="text-muted small mb-0">Search for a member above to see their loans.</p>';
-      loadFines();
-      loadTotalUnpaid();
+      await loadFines();
     } catch (err) {
       alert("Could not issue fine: " + err.message);
     }

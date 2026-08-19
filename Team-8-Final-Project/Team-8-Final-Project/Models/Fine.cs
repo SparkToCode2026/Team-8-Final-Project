@@ -29,7 +29,6 @@ namespace Team_8_Final_Project.Models
 
         [ForeignKey("Loan")]
         public int LoanId { get; set; }
-        [JsonIgnore]
         public Loan Loan { get; set; }
     }
 }

@@ -93,9 +93,9 @@ namespace Team_8_Final_Project.Controllers
         public async Task<IActionResult> GetAllFines()
         {
             var fines = await _context.Fines
-                .Include(f => f.Loan)
-               .ThenInclude(l => l.BookCopy)
-               .ToListAsync();
+    .Include(f => f.Loan).ThenInclude(l => l.BookCopy).ThenInclude(bc => bc.Book)
+    .Include(f => f.Loan).ThenInclude(l => l.User)
+    .ToListAsync();
 
             return Ok(fines);
         }

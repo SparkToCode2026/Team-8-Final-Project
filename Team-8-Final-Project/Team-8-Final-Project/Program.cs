@@ -108,13 +108,14 @@ namespace Team_8_Final_Project
 
             app.UseHttpsRedirection();
 
-            app.UseHttpsRedirection();
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
 
             app.UseCors("AllowFrontend");
 
 
 
-            app.UseAuthentication();
+            
             app.UseAuthorization();
 
 

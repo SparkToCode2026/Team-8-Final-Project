@@ -84,21 +84,34 @@ function showLoansForUser(user) {
     return;
   }
 
+  // Rendered as actual .btn elements rather than .list-group-item - the
+  // list-group styling was getting flattened by the site's dark theme CSS,
+  // so these showed up as plain unstyled text with no indication they were
+  // clickable at all. Buttons are styled correctly everywhere else in this
+  // project, so this sidesteps that gap. The text label under the buttons
+  // makes the selection state explicit instead of relying on a color change
+  // that might also get swallowed by the theme.
   container.innerHTML = matchingLoans.map(loan => {
     const title = loan.bookCopy?.book?.bookTitle ?? `Copy #${loan.bookCopyId}`;
     return `
-      <button type="button" class="list-group-item list-group-item-action fine-loan-option" data-loan-id="${loan.loanId}">
+      <button type="button" class="btn btn-outline-primary text-start w-100 mb-1 fine-loan-option" data-loan-id="${loan.loanId}">
         Loan #${loan.loanId} - ${title}, due ${new Date(loan.loanDueDate).toLocaleDateString()} (${loan.loanStatus})
       </button>
     `;
-  }).join("");
+  }).join("") + `<p class="small text-muted mt-1 mb-0" id="fineLoanSelectedLabel">No loan selected yet - click one above.</p>`;
 
   container.querySelectorAll(".fine-loan-option").forEach(btn => {
     btn.addEventListener("click", () => {
-      container.querySelectorAll(".fine-loan-option").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
+      container.querySelectorAll(".fine-loan-option").forEach(b => {
+        b.classList.remove("btn-primary");
+        b.classList.add("btn-outline-primary");
+      });
+      btn.classList.remove("btn-outline-primary");
+      btn.classList.add("btn-primary");
+
       selectedLoanId = btn.dataset.loanId;
       document.getElementById("fineLoanId").value = selectedLoanId;
+      document.getElementById("fineLoanSelectedLabel").textContent = `Selected: Loan #${selectedLoanId}`;
     });
   });
 }
